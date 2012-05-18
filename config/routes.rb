@@ -1,5 +1,6 @@
 WeVoteHere::Application.routes.draw do
-
+  resources :users
+  resources :sessions,      only: [:new, :create, :destroy]
 
 
   get "users/new"
@@ -10,13 +11,11 @@ WeVoteHere::Application.routes.draw do
   match '/signin', to: 'sessions#new'
   match '/signout', to: 'sessions#destroy', via: :delete
 
-  match '/help', to: 'static_pages#help'
   match '/about', to: 'static_pages#about'
   match '/terms', to: 'static_pages#terms'
   match '/privacy', to: 'static_pages#privacy'
 
   get "static_pages/home"
-  get "static_pages/help"
   get "static_pages/about"
   get "static_pages/terms"
   get "static_pages/privacy"
