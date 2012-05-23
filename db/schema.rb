@@ -11,7 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120519043527) do
+ActiveRecord::Schema.define(:version => 20120522074930) do
+
+  create_table "candidates", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "election_id"
+  end
+
+  create_table "elections", :force => true do |t|
+    t.datetime "finish_time"
+    t.text     "info"
+    t.string   "name"
+    t.integer  "privacy"
+    t.datetime "start_time"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "user_id"
+    t.integer  "display_preference"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email"
@@ -26,5 +45,13 @@ ActiveRecord::Schema.define(:version => 20120519043527) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["handle"], :name => "index_users_on_handle", :unique => true
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
+
+  create_table "votes", :force => true do |t|
+    t.string   "vote_string"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "user_id"
+    t.integer  "election_id"
+  end
 
 end

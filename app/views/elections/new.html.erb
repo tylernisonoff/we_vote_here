@@ -1,0 +1,53 @@
+<%= javascript_include_tag :defaults, "nested_form" %>
+
+<% provide(:title, 'Create an election') %>
+<h1>Create an election</h1>
+
+<%= nested_form_for(@election) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+	<%= f.label :name %>
+	<%= f.text_field :name %>
+
+	<%= f.label :info, "Additional information for voters:" %>
+	<%= f.text_area :info %>
+
+	<%= f.label :start_time, "Start time:" %>
+	<%= f.datetime_select :start_time %>
+
+	<%= f.label :finish_time, "Finish time:" %>
+	<%= f.datetime_select :finish_time %>
+
+	<br><br>
+	Election Privacy:
+	<br>
+	<%= f.radio_button :privacy, 0 %>
+	<%= f.label :privacy, "Public", :style => "display:inline" %>
+	<br>
+	<%= f.radio_button :privacy, 1 %>
+	<%= f.label :privacy, "Private", :style => "display:inline" %>
+
+	<br><br>
+
+	Displaying votes:
+	<br>
+	<%= f.radio_button :display_preference, 0 %>
+	<%= f.label :display_preference, "show standings and votes at all times", :style => "display:inline" %>
+	<br>
+	<%= f.radio_button :display_preference, 1 %>
+	<%= f.label :display_preference, "show standings during election, reveal votes after election", :style => "display:inline" %>
+	<br>
+	<%= f.radio_button :display_preference, 2 %>
+	<%= f.label :display_preference, "Reveal results and votes after election", :style => "display:inline" %>
+
+<br><br><br>
+	
+	<% f.fields_for :candidates do |c| %>
+		<%= c.text_field :name %>
+		<%= c.link_to_remove "Remove this candidate" %>
+	<% end %>
+	<p><%= f.link_to_add "Add another candidate", :candidates %></p>
+<br>
+
+	<%= f.submit "Create election", class: "btn btn-large btn-primary" %>
+<% end %>

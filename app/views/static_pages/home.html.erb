@@ -4,6 +4,8 @@
       <section>
       	<%= render 'shared/user_info' %>
       </section>
+      <%= link_to "Create an election", new_election_path, 
+                                class: "btn btn-large btn-primary" %>
     </aside>
   </div>  
 <% else %>

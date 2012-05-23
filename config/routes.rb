@@ -1,9 +1,12 @@
 WeVoteHere::Application.routes.draw do
+  resources :elections do
+    member do
+      get :candidates
+    end
+  end
   resources :users
   resources :sessions,      only: [:new, :create, :destroy]
-
-
-  get "users/new"
+  resources :votes
 
   root to: 'static_pages#home'
 
@@ -15,6 +18,9 @@ WeVoteHere::Application.routes.draw do
   match '/about', to: 'static_pages#about'
   match '/terms', to: 'static_pages#terms'
   match '/privacy', to: 'static_pages#privacy'
+
+  match '/new_election', to: 'elections#new'
+  match '/new_vote', to: 'votes#new'
 
   get "static_pages/home"
   get "static_pages/about"
