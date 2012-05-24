@@ -16,7 +16,9 @@ WeVoteHere::Application.configure do
 
   # I CHANGED THIS:
   # Fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = true
+  # I CHANGED IT BACK
+  # Don't fallback to assets pipeline if a precompiled asset is missed
+  config.assets.compile = false
 
   # Generate digests for assets URLs
   config.assets.digest = true

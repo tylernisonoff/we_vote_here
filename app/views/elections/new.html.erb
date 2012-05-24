@@ -32,10 +32,10 @@
 	Displaying votes:
 	<br>
 	<%= f.radio_button :display_preference, 0 %>
-	<%= f.label :display_preference, "show standings and votes at all times", :style => "display:inline" %>
+	<%= f.label :display_preference, "Show standings and votes at all times", :style => "display:inline" %>
 	<br>
 	<%= f.radio_button :display_preference, 1 %>
-	<%= f.label :display_preference, "show standings during election, reveal votes after election", :style => "display:inline" %>
+	<%= f.label :display_preference, "Show standings during election, reveal votes after election", :style => "display:inline" %>
 	<br>
 	<%= f.radio_button :display_preference, 2 %>
 	<%= f.label :display_preference, "Reveal results and votes after election", :style => "display:inline" %>
@@ -43,10 +43,8 @@
 <br><br><br>
 	
 	<% f.fields_for :candidates do |c| %>
-		<%= c.label :name %>
 		<%= c.text_field :name %>
 		<%= c.link_to_remove "Remove this candidate" %>
-		<%= c.check_box :_destroy %>
 	<% end %>
 	<p><%= f.link_to_add "Add another candidate", :candidates %></p>
 <br>
