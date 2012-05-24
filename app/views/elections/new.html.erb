@@ -43,6 +43,7 @@
 <br><br><br>
 	
 	<% f.fields_for :candidates do |c| %>
+		<%= c.label :name %>
 		<%= c.text_field :name %>
 		<%= c.link_to_remove "Remove this candidate" %>
 	<% end %>
