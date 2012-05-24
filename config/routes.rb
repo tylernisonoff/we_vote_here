@@ -1,4 +1,6 @@
 WeVoteHere::Application.routes.draw do
+  get "candidates/create"
+
   resources :elections do
     member do
       get :candidates

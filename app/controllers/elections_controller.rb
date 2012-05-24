@@ -2,14 +2,15 @@ class ElectionsController < ApplicationController
   
 	def new
 		@election = Election.new
-    2.times do
-      candidate = @election.candidates.build
+    @election.candidates.build
+    @election.candidates.each do |candidate|
+      candidate.election_id = @election.id
     end
 	end
 
 	def create
   		@election = current_user.elections.build(params[:election])
-  		if @election.save
+      if @election.save
   			flash[:success] = "Election created!"
   			redirect_to root_path
   		else
@@ -22,6 +23,15 @@ class ElectionsController < ApplicationController
   	@election.destroy
   	redirect_back_or root_path
   end
+
+  def update
+    if @election.update_attributes(params[:election])
+      flash[:success] = "Election updated"
+    else
+      redirect_back_or root_path
+    end
+  end
+
 
   def index
     @elections = Election.all

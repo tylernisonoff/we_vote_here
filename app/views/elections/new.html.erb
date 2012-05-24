@@ -3,7 +3,7 @@
 <% provide(:title, 'Create an election') %>
 <h1>Create an election</h1>
 
-<%= nested_form_for(@election) do |f| %>
+<%= nested_form_for @election do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
 	<%= f.label :name %>
@@ -43,8 +43,10 @@
 <br><br><br>
 	
 	<% f.fields_for :candidates do |c| %>
+		<%= c.label :name %>
 		<%= c.text_field :name %>
 		<%= c.link_to_remove "Remove this candidate" %>
+		<%= c.check_box :_destroy %>
 	<% end %>
 	<p><%= f.link_to_add "Add another candidate", :candidates %></p>
 <br>

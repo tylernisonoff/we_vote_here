@@ -1,8 +1,7 @@
 class Candidate < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :election_id
 
   belongs_to :election
 
   validates :name, presence: true
-  validates :election_id, presence: true
 end
