@@ -2,7 +2,24 @@
 <div class="row">
 	<aside class="span4">
     	<section>
-    	  	<%= render 'shared/user_info' %>
+    	  	<a href="<%= user_path(@user) %>">
+			</a>
+			<h1>
+  				<%= @user.email %>
+			</h1>
+			<% if @user.elections.any? %>
+				<br>
+				<% if @user.name %>
+					<%= link_to "#{@user.name}'s elections", elections_user_path(@user) %>
+				<% else %>
+					<%= link_to "Elections", elections_user_path(@user) %>
+				<% end %>
+				<br><br>
+				<% @user.elections.each do |election| %>
+					<%= link_to election.name, election %>
+				<br>
+				<% end %>
+			<% end %>
     	</section>
   	</aside>
 </div>

@@ -26,6 +26,11 @@ class UsersController < ApplicationController
   def edit
   end
 
+  def elections
+    @user = User.find(params[:id])
+    @elections = @user.elections
+  end
+
   def destroy
     User.find(params[:id]).destroy
     flash[:success] = "User destroyed."

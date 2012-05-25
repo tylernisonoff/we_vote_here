@@ -6,7 +6,12 @@ WeVoteHere::Application.routes.draw do
       get :candidates
     end
   end
-  resources :users
+  resources :users do
+    member do
+      get :elections
+    end
+  end
+  
   resources :sessions,      only: [:new, :create, :destroy]
   resources :votes
 

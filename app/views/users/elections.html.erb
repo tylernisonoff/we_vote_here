@@ -1,0 +1,18 @@
+<% provide(:title, @user.name) %>
+<div class="row">
+	<aside class="span4">
+    	<section>
+      		<h1>
+        		<%= @user.name %>
+      		</h1>
+    	</section>
+  	</aside>
+	<div class="span8">
+  	<% if @elections.any? %>
+    		<% @elections.each do |election| %>
+          <%= link_to election.name, election %>
+          <br>
+        <% end %>
+  	<% end %>
+	</div>
+</div>

@@ -8,6 +8,11 @@ class ElectionsController < ApplicationController
     end
 	end
 
+  def show
+    @election = Election.find(params[:id])
+    @candidates = @election.candidates
+  end
+
 	def create
   		@election = current_user.elections.build(params[:election])
       if @election.save
@@ -21,7 +26,7 @@ class ElectionsController < ApplicationController
 
   def destroy
   	@election.destroy
-  	redirect_back_or root_path
+  	redirect_to root_path
   end
 
   def update

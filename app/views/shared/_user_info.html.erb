@@ -3,4 +3,16 @@
 <h1>
   <%= current_user.email %>
 </h1>
-<%= current_user.elections %>
+<% if current_user.elections.any? %>
+	<br>
+	<% if current_user.name %>
+		<%= link_to "#{current_user.name}'s elections", elections_user_path(current_user) %>
+	<% else %>
+		<%= link_to "Elections", elections_user_path(current_user) %>
+	<% end %>
+	<br><br>
+	<% current_user.elections.each do |election| %>
+		<%= link_to election.name, election %>
+		<br>
+	<% end %>
+<% end %>
