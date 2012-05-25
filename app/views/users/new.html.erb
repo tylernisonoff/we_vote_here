@@ -3,6 +3,9 @@
 <%= form_for(@user) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
+	<%= f.label :handle %>
+	<%= f.text_field :handle %>
+
 	<%= f.label :email %>
 	<%= f.text_field :email %>
 
