@@ -8,7 +8,7 @@
 	<% if current_user.name %>
 		<%= link_to "#{current_user.name}'s elections", elections_user_path(current_user) %>
 	<% else %>
-		<%= link_to "Elections", elections_user_path(current_user) %>
+		<%= link_to "#{current_user.handle}'s elections", elections_user_path(current_user) %>
 	<% end %>
 	<br><br>
 	<% current_user.elections.each do |election| %>

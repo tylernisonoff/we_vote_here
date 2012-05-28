@@ -1,16 +1,23 @@
 <% provide(:title, @election.name) %>
 <div>
+
+
   Owner:
   <% if @election.user.name %>
     <%= link_to @election.user.name, @election.user %>
   <% else %>
-    <%= link_to @election.user.email, @election.user %>
+    <%= link_to @election.user.handle, @election.user %>
   <% end %>
   <br><br>
+
+
   <% if @election.info %>
-    <%= "Extra information: " + @election.info %>
+    Extra information:
+    <%= @election.info %>
   <% end %>
   <br><br>
+
+
   Candidates:
   <br>
   <% @election.candidates.each do |candidate| %>
@@ -18,6 +25,8 @@
     <br>
   <% end %>
   <br>
+
+
   Privacy:
   <% if @election.privacy == 0 %>
     public
@@ -25,17 +34,19 @@
     private
   <% end %>
   <br>
-  Display preference: 
-  <% if @election.display_preference == 0 %>
-    Show standings and votes at all times
-  <% elsif @election.display_preference == 1 %>
-    Show standings during election, reveal votes after election
-  <% else %>
-    Reveal results and votes after election
-  <% end %>
-  <br>
-  <br>
+
+
   Start time: <%= @election.start_time %>
   <br>
   End time: <%= @election.finish_time %>
+  <br>
+  <br>
+
+
+  Show votes: 
+  <% if @election.display_preference == 0 %>
+    as they are created
+  <% else %>
+    when the election ends
+  <% end %>
 </div>

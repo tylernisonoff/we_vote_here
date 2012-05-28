@@ -11,35 +11,37 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524163408) do
+ActiveRecord::Schema.define(:version => 20120528172713) do
 
   create_table "candidates", :force => true do |t|
-    t.string   "name"
+    t.string   "name",        :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
-    t.integer  "election_id"
+    t.integer  "election_id", :null => false
   end
 
+  add_index "candidates", ["election_id", "name"], :name => "index_candidates_on_election_id_and_name", :unique => true
+
   create_table "elections", :force => true do |t|
-    t.datetime "finish_time"
+    t.datetime "finish_time",                                 :null => false
     t.text     "info"
-    t.string   "name"
-    t.integer  "privacy"
-    t.datetime "start_time"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
-    t.integer  "user_id"
-    t.integer  "display_preference"
+    t.string   "name",                                        :null => false
+    t.datetime "start_time",                                  :null => false
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
+    t.integer  "user_id",                                     :null => false
+    t.boolean  "private",                  :default => true,  :null => false
+    t.boolean  "display_votes_as_created", :default => false, :null => false
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email"
-    t.string   "name"
+    t.string   "email",           :null => false
+    t.string   "name",            :null => false
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
-    t.string   "password_digest"
+    t.string   "password_digest", :null => false
     t.string   "remember_token"
-    t.string   "handle"
+    t.string   "handle",          :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
@@ -53,5 +55,7 @@ ActiveRecord::Schema.define(:version => 20120524163408) do
     t.integer  "user_id"
     t.integer  "election_id"
   end
+
+  add_index "votes", ["election_id", "user_id"], :name => "index_votes_on_election_id_and_user_id", :unique => true
 
 end
