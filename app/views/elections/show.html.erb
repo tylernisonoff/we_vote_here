@@ -1,10 +1,9 @@
 <% provide(:title, @election.name) %>
 <div>
 
-
   Owner:
-  <% if @election.user.name %>
-    <%= link_to @election.user.name, @election.user %>
+  <% if @election.user.nickname %>
+    <%= link_to @election.user.nickname, @election.user %>
   <% else %>
     <%= link_to @election.user.handle, @election.user %>
   <% end %>
@@ -28,10 +27,10 @@
 
 
   Privacy:
-  <% if @election.privacy == 0 %>
-    public
-  <% else %>
+  <% if @election.privacy %>
     private
+  <% else %>
+    public
   <% end %>
   <br>
 
@@ -44,7 +43,7 @@
 
 
   Show votes: 
-  <% if @election.display_preference == 0 %>
+  <% if @election.display_votes_as_created %>
     as they are created
   <% else %>
     when the election ends

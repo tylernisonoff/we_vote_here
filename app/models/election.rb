@@ -8,10 +8,9 @@ class Election < ActiveRecord::Base
   belongs_to :user # the owner of the election
   validates_presence_of :user
 
-  # Privacy settings: 0 = public, 1 = private
+  #validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain the '@' character" },
+            uniqueness: { case_sensitive: false }, length: { minimum: 2 }   
 
-  # Display preferences:
-  # 0 = show standings and votes at all times
-  # 1 = show standings during election, reveal votes after election
-  # 2 = reveal results/standings and votes at end
+  # Privacy: true = private, false = public
+
 end

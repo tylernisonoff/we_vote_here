@@ -10,7 +10,7 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :name, :email, :handle, :password, :password_confirmation
+  attr_accessible :nickname, :email, :handle, :password, :password_confirmation
   has_secure_password
 
   has_many :elections, dependent: :destroy
@@ -27,11 +27,15 @@ class User < ActiveRecord::Base
   before_save :create_remember_token
 
   # validates :name, presence: true, length: { maximum: 50 }
-  validates :name, length: { maximum: 50 }
+  validates :nickname, length: { maximum: 50 }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  VALID_HANDLE_REGEX = /^[^@]*$/
+
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
   					uniqueness: { case_sensitive: false }
+  validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain the '@' character" },
+            uniqueness: { case_sensitive: false }, length: { minimum: 2 }          
   validates :password, length: { minimum: 6 }
   validates :password_confirmation, presence: true
 
