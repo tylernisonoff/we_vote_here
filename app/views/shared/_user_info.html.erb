@@ -1,15 +1,11 @@
 <a href="<%= user_path(current_user) %>">
 </a>
 <h1>
-  <%= current_user.email %>
+  <%= current_user.handle %>
 </h1>
 <% if current_user.elections.any? %>
 	<br>
-	<% if current_user.name %>
-		<%= link_to "#{current_user.name}'s elections", elections_user_path(current_user) %>
-	<% else %>
-		<%= link_to "#{current_user.handle}'s elections", elections_user_path(current_user) %>
-	<% end %>
+		<%= link_to "#{current_user.pretty_name}'s elections", elections_user_path(current_user) %>
 	<br><br>
 	<% current_user.elections.each do |election| %>
 		<%= link_to election.name, election %>

@@ -2,11 +2,7 @@
 <div>
 
   Owner:
-  <% if @election.user.nickname %>
-    <%= link_to @election.user.nickname, @election.user %>
-  <% else %>
-    <%= link_to @election.user.handle, @election.user %>
-  <% end %>
+  <%= link_to @election.user.pretty_name, @election.user %>
   <br><br>
 
 
@@ -25,6 +21,12 @@
   <% end %>
   <br>
 
+  Start time: <%= @election.start_time %>
+  <br>
+  End time: <%= @election.finish_time %>
+  <br>
+  <br>
+
 
   Privacy:
   <% if @election.privacy %>
@@ -32,13 +34,6 @@
   <% else %>
     public
   <% end %>
-  <br>
-
-
-  Start time: <%= @election.start_time %>
-  <br>
-  End time: <%= @election.finish_time %>
-  <br>
   <br>
 
 

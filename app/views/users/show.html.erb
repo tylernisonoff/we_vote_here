@@ -1,4 +1,4 @@
-<% provide(:title, @user.email) %>
+<% provide(:title, @user.pretty_name) %>
 <div class="row">
 	<aside class="span4">
     	<section>
@@ -9,11 +9,7 @@
 			</h1>
 			<% if @user.elections.any? %>
 				<br>
-				<% if @user.name %>
-					<%= link_to "#{@user.name}'s elections", elections_user_path(@user) %>
-				<% else %>
-					<%= link_to "Elections", elections_user_path(@user) %>
-				<% end %>
+				<%= link_to "#{@user.pretty_name}'s elections", elections_user_path(@user) %>
 				<br><br>
 				<% @user.elections.each do |election| %>
 					<%= link_to election.name, election %>

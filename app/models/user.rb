@@ -26,7 +26,6 @@ class User < ActiveRecord::Base
   before_save { |user| user.email = email.downcase }
   before_save :create_remember_token
 
-  # validates :name, presence: true, length: { maximum: 50 }
   validates :nickname, length: { maximum: 50 }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -39,21 +38,9 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 6 }
   validates :password_confirmation, presence: true
 
-  # def feed
-  #   Micropost.from_users_followed_by(self)
-  # end
-
-  # def following?(other_user)
-  #   relationships.find_by_followed_id(other_user.id)
-  # end
-
-  # def follow!(other_user)
-  #   relationships.create!(followed_id: other_user.id)
-  # end
-
-  # def unfollow!(other_user)
-  #   relationships.find_by_followed_id(other_user.id).destroy
-  # end
+  def pretty_name
+    nickname || handle
+  end
 
   private
   	
