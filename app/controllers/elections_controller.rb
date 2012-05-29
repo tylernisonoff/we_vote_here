@@ -1,5 +1,7 @@
 class ElectionsController < ApplicationController
-  
+  respond_to :html, :json
+
+
 	def new
 		@election = Election.new
     @election.candidates.build
@@ -30,10 +32,13 @@ class ElectionsController < ApplicationController
   end
 
   def update
+    @election = Election.find(params[:id])
     if @election.update_attributes(params[:election])
       flash[:success] = "Election updated"
+      respond_with @election
     else
       redirect_back_or root_path
+      flash[:failure] = "Failed to update election"
     end
   end
 

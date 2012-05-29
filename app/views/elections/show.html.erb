@@ -1,46 +1,40 @@
 <% provide(:title, @election.name) %>
 <div>
 
-  Owner:
+Owner:
   <%= link_to @election.user.pretty_name, @election.user %>
   <br><br>
+Name:
+  <%= best_in_place_if !@election.votes.any?, @election, :name, ok_button: 'Save', cancel_button: 'Cancel' %>
+  <br>
+
+Extra information:
+  <%= best_in_place_if !@election.votes.any?, @election, :info, type: :textarea, nil: "Click here to add information", ok_button: 'Save', cancel_button: 'Cancel' %>
 
 
-  <% if @election.info %>
-    Extra information:
-    <%= @election.info %>
-  <% end %>
-  <br><br>
+<br><br>
 
 
   Candidates:
   <br>
   <% @election.candidates.each do |candidate| %>
-    <%= candidate.name %>
+    <%= candidate :name %>
     <br>
   <% end %>
-  <br>
 
-  Start time: <%= @election.start_time %>
   <br>
-  End time: <%= @election.finish_time %>
+  Start time: <%= best_in_place_if !@election.votes.any?, @election, :start_time, type: :date %>
+  <br>
+  End time: <%= best_in_place_if !@election.votes.any?, @election, :finish_time, type: :date %>
   <br>
   <br>
 
 
   Privacy:
-  <% if @election.privacy %>
-    private
-  <% else %>
-    public
-  <% end %>
+  <%= best_in_place_if !@election.votes.any?, @election, :privacy, type: :select, collection: [[false, "public"], [true, "private"]] %>
   <br>
 
-
   Show votes: 
-  <% if @election.display_votes_as_created %>
-    as they are created
-  <% else %>
-    when the election ends
-  <% end %>
+  <%= best_in_place_if !@election.votes.any?, @election, :display_votes_as_created, type: :select, collection: [[true, "as they are created"], [false, "when the election ends"]] %>
+
 </div>
