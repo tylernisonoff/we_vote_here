@@ -27,16 +27,13 @@
 
 	<br><br>
 
-	Displaying votes:
+	Show votes:
 	<br>
-	<%= f.radio_button :display_preference, 0 %>
-	<%= f.label :display_preference, "Show standings and votes at all times", :style => "display:inline" %>
+	<%= f.radio_button :display_votes_as_created, true %>
+	<%= f.label :display_votes_as_created, "as they are created", :style => "display:inline" %>
 	<br>
-	<%= f.radio_button :display_preference, 1 %>
-	<%= f.label :display_preference, "Show standings during election, reveal votes after election", :style => "display:inline" %>
-	<br>
-	<%= f.radio_button :display_preference, 2 %>
-	<%= f.label :display_preference, "Reveal results and votes after election", :style => "display:inline" %>
+	<%= f.radio_button :display_votes_as_created, false %>
+	<%= f.label :display_votes_as_created, "when the election ends", :style => "display:inline" %>
 
 <br><br><br>
 	

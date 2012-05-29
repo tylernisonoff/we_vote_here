@@ -1,5 +1,5 @@
 class Election < ActiveRecord::Base
-  attr_accessible :display_preference, :finish_time, :info, :name, :privacy, :start_time, :candidates_attributes
+  attr_accessible :display_votes_as_created, :finish_time, :info, :name, :privacy, :start_time, :candidates_attributes
   
   # has_many :votes, dependent: destroy
   has_many :candidates, dependent: :destroy
