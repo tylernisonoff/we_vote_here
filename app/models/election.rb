@@ -9,7 +9,7 @@ class Election < ActiveRecord::Base
   validates_presence_of :user
 
   #validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain the '@' character" },
-            uniqueness: { case_sensitive: false }, length: { minimum: 2 }   
+         #   uniqueness: { case_sensitive: false }, length: { minimum: 2 }   
 
   # Privacy: true = private, false = public
 
