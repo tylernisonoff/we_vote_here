@@ -1,7 +1,7 @@
 <a href="<%= user_path(current_user) %>">
 </a>
 <h1>
-  <%= current_user.handle %>
+  <%= current_user.pretty_name %>
 </h1>
 <% if current_user.elections.any? %>
 	<br>

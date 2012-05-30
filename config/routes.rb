@@ -11,7 +11,7 @@ WeVoteHere::Application.routes.draw do
       get :elections
     end
   end
-  
+
   resources :sessions,      only: [:new, :create, :destroy]
   resources :votes
 

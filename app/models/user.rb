@@ -10,7 +10,7 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :nickname, :email, :handle, :password, :password_confirmation
+  attr_accessible :nickname, :email, :handle, :password, :password_confirmation, :pretty_name
   has_secure_password
 
   has_many :elections, dependent: :destroy
@@ -35,15 +35,19 @@ class User < ActiveRecord::Base
   					uniqueness: { case_sensitive: false }
   validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain the '@' character" },
             uniqueness: { case_sensitive: false }, length: { minimum: 2 }          
-  validates :password, length: { minimum: 6 }
-  validates :password_confirmation, presence: true
+  validates :password, length: { minimum: 6 }, on: :create
+  validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
 
   def pretty_name
-    nickname || handle
+    if !nickname.blank? && !nickname.nil?
+      nickname
+    else
+      handle
+    end
   end
 
   private
-  	
+
   	def create_remember_token
   		self.remember_token = SecureRandom.urlsafe_base64
   	end

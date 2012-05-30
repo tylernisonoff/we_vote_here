@@ -15,8 +15,8 @@
 
 	<%= f.label :finish_time, "Finish time:" %>
 	<%= f.datetime_select :finish_time %>
-
 	<br><br>
+	
 	Election Privacy:
 	<br>
 	<%= f.radio_button :privacy, 0 %>
@@ -38,7 +38,7 @@
 <br><br><br>
 	
 	<% f.fields_for :candidates do |c| %>
-		<%= c.label :name %>
+		<%= c.label :name %>w
 		<%= c.text_field :name %>
 		<%= c.link_to_remove "Remove this candidate" %>
 	<% end %>

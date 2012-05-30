@@ -7,4 +7,8 @@ module UsersHelper
     gravatar_url = "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}"
     image_tag(gravatar_url, alt: user.pretty_name, class: "gravatar")
   end
+
+  def edit_user_condition(current_user, user)
+  	current_user == user
+  end
 end
