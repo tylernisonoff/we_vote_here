@@ -4,7 +4,7 @@ class Candidate < ActiveRecord::Base
   belongs_to :election
 
   validates :name, presence: true, length: { minimum: 1 }
-  validate :candidate_uniqueness, on: :update
+  # validate :candidate_uniqueness, on: :update
 
   def candidate_uniqueness
   	count = 0
