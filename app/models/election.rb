@@ -15,14 +15,17 @@ class Election < ActiveRecord::Base
   validate :check_finish_time, on: :create
 
 
-  validates :name, presence: true
-  validates :candidates, length: { minimum: 2, message: "^Election must have at least 2 candidates" } 
+  validates :name, presence: true, length: { within: 2..255 }
+
+  validates :candidates, length: { minimum: 2, message: "^Election must have at least 2 candidates" }
+  validate :candidates_check, on: :create
+
 
   # Privacy: true = private, false = public
 
 
   def check_start_time
-    errors.add(:start_time, "^Election cannot start before now.") unless self.start_time >= 1.minute.ago
+    errors.add(:start_time, "^Election cannot start before now.") unless self.start_time >= 10.minutes.ago
   end
 
   def check_finish_time
@@ -34,5 +37,22 @@ class Election < ActiveRecord::Base
   		true
   	end
   end
+
+  def candidates_check
+  	self.candidates.each do |candidate1|
+  		count = 0
+  		self.candidates.each do |candidate2|
+  			if candidate1.name == candidate2.name
+  				count = count + 1
+  			end
+  		end
+  		if count > 1
+  			errors.add(:candidates, "^Names of candidates must be unique.")
+  			break
+  		end
+  	end
+  	return true
+  end
+
 
 end
