@@ -7,7 +7,7 @@
 	<%= f.label :name %>
 	<%= f.text_field :name %>
 
-	<%= f.label :info, "Additional information for voters:" %>
+	<%= f.label :info, "Voting instructions:" %>
 	<%= f.text_area :info %>
 
 	<%= f.label :start_time, "Start time:" %>
@@ -19,28 +19,28 @@
 	
 	Election Privacy:
 	<br>
-	<%= f.radio_button :privacy, 0 %>
-	<%= f.label :privacy, "Public", :style => "display:inline" %>
+	<%= f.radio_button :privacy, 0, checked: false %>
+	<%= f.label :privacy, "Public", style: "display:inline" %>
 	<br>
-	<%= f.radio_button :privacy, 1 %>
-	<%= f.label :privacy, "Private", :style => "display:inline" %>
+	<%= f.radio_button :privacy, 1, checked: true %>
+	<%= f.label :privacy, "Private", style: "display:inline" %>
 
 	<br><br>
 
 	Show votes:
 	<br>
-	<%= f.radio_button :display_votes_as_created, 1 %>
-	<%= f.label :display_votes_as_created, "as they are created", :style => "display:inline" %>
+	<%= f.radio_button :display_votes_as_created, 1, checked: false %>
+	<%= f.label :display_votes_as_created, "as they are created", style: "display:inline" %>
 	<br>
-	<%= f.radio_button :display_votes_as_created, 0 %>
-	<%= f.label :display_votes_as_created, "when the election ends", :style => "display:inline" %>
+	<%= f.radio_button :display_votes_as_created, 0, checked: true %>
+	<%= f.label :display_votes_as_created, "when the election ends", style: "display:inline" %>
 
 <br><br><br>
 	
 	<% f.fields_for :candidates do |c| %>
-		<%= c.label :name %>w
+		<%= c.label :name %>
 		<%= c.text_field :name %>
-		<%= c.link_to_remove "Remove this candidate" %>
+		<%= c.link_to_remove "Remove" %>
 	<% end %>
 	<p><%= f.link_to_add "Add another candidate", :candidates %></p>
 <br>

@@ -22,7 +22,7 @@ class ElectionsController < ApplicationController
   			redirect_to root_path
   		else
   			flash[:failure] = "Failure creating election :("
-  			redirect_to root_path
+  			render 'new'
   		end
   	end
 
@@ -33,10 +33,15 @@ class ElectionsController < ApplicationController
 
   def update
     @election = Election.find(params[:id])
-    if @election.update_attributes(params[:election])
-      respond_with @election
-    else
-      redirect_back_or root_path
+
+    respond_to do |format|
+      if @election.update_attributes(params[:election])
+        format.html { redirect_to(@election, :notice => 'Election was successfully updated.') }
+        format.json { respond_with_bip(@election) }
+      else
+        format.html { render :action => "edit" }
+        format.json { respond_with_bip(@election) }
+      end
     end
   end
 

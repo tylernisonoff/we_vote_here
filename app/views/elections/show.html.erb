@@ -9,7 +9,7 @@ Name:
   <br>
 
 Extra information:
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, type: :textarea, nil: "Click here to add information" %>
+  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, nil: "Click here to add information" %>
 
 
 <br><br>
@@ -18,14 +18,14 @@ Extra information:
   Candidates:
   <br>
   <% @election.candidates.each do |candidate| %>
-    <%= candidate.name %>
+    <%= best_in_place_if edit_election_condition(current_user, @election), candidate, :name %>
     <br>
   <% end %>
 
   <br>
-  Start time: <%= best_in_place_if edit_election_condition(current_user, @election), @election, :start_time, type: :date %>
+  Start time: <%= @election.start_time %>
   <br>
-  End time: <%= best_in_place_if edit_election_condition(current_user, @election), @election, :finish_time, type: :date %>
+  End time: <%= @election.finish_time %>
   <br>
   <br>
 
@@ -35,6 +35,6 @@ Extra information:
   <br>
 
   Show votes: 
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :display_votes_as_created, type: :select, collection: [[true, "as they are created"], [false, "when the election ends"]] %>
+  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :display_votes_as_created, type: :select, collection: [[false, "when the election ends"], [true, "as they are created"]] %>
 
 </div>

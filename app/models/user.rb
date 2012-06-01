@@ -24,16 +24,17 @@ class User < ActiveRecord::Base
   # has_many :followers, through: :reverse_relationships, source: :follower
 
   before_save { |user| user.email = email.downcase }
+  before_save { |user| user.handle = handle.downcase }
   before_save :create_remember_token
 
   validates :nickname, length: { maximum: 50 }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  VALID_HANDLE_REGEX = /^[^@]*$/
+  VALID_HANDLE_REGEX = /^[^(@|\s)]*$/
 
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
   					uniqueness: { case_sensitive: false }
-  validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain the '@' character" },
+  validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain spaces or the '@' character" },
             uniqueness: { case_sensitive: false }, length: { minimum: 2 }          
   validates :password, length: { minimum: 6 }, on: :create
   validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
