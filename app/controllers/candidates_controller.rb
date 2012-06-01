@@ -4,8 +4,12 @@ class CandidatesController < ApplicationController
   
   def update
   	@candidate = Candidate.find(params[:id])
-  	@candidate.update_attributes(params[:candidate])
-  	respond_with @candidate
+	if @candidate.update_attributes(params[:candidate])
+  		respond_with @candidate
+  	else 
+  		# render json: @candidate.errors.full_messages
+  		respond_with @candidate
+  	end
   end
 
 

@@ -3,20 +3,7 @@ class Candidate < ActiveRecord::Base
 
   belongs_to :election
 
-  validates :name, presence: true, length: { minimum: 1 }
-  # validate :candidate_uniqueness, on: :update
+  validates :name, presence: true, length: { minimum: 1, message: "Candidates cannot be blank"}
+  validates_uniqueness_of :name, scope: [:election_id], message: "Candidates cannot have the same name"
 
-  def candidate_uniqueness
-  	count = 0
-  	self.election.candidates.each do |candidate|
-  		if self.name == candidate.name
-  			count = count + 1
-  		end
-  	end
-  	if true
-  		errors.add("^A candidate already has this name")
-  	else
-  		return true
-  	end
-  end
 end

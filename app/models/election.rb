@@ -18,7 +18,7 @@ class Election < ActiveRecord::Base
   validates :name, presence: true, length: { within: 2..255 }
 
   validates :candidates, length: { minimum: 2, message: "^Election must have at least 2 candidates" }
-  validate :candidates_check, on: :create
+  # validates_associated :candidates
 
 
   # Privacy: true = private, false = public

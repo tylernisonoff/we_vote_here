@@ -9,7 +9,7 @@ Name:
   <br>
 
 Extra information:
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, nil: "Click here to add information" %>
+  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, type: :textarea, nil: "Click here to add information" %>
 
 
 <br><br>
@@ -31,10 +31,27 @@ Extra information:
 
 
   Privacy:
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :privacy, type: :select, collection: [[false, "public"], [true, "private"]] %>
+  <% if edit_election_condition(current_user, @election) %>
+    <%= best_in_place @election, :privacy, type: :select, collection: [[false, "public"], [true, "private"]] %>
+  <% else %>
+    <% if @election.privacy %>
+      private
+    <% else %>
+      public
+    <% end %>
+  <% end %>
   <br>
 
-  Show votes: 
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :display_votes_as_created, type: :select, collection: [[false, "when the election ends"], [true, "as they are created"]] %>
+  Show votes:
+  <% if edit_election_condition(current_user, @election) %>
+    <%= best_in_place @election, :display_votes_as_created, type: :select, collection: [[false, "when the election ends"], [true, "as they are created"]] %>
+  <% else %>
+    <% if @election.display_votes_as_created %>
+      as they are created
+    <% else %>
+      when the election ends
+    <% end %>
+  <% end %>
+  <br>
 
 </div>
