@@ -7,9 +7,8 @@ class VotesController < ApplicationController
   def new
     @question = Question.find_by_id(params[:question_id])
   	@vote = @question.votes.build
-    @vote.preferences.build
-    @vote.preferences.each do |preference|
-      preference.vote_id = @vote.id
+    @question.candidates.each do |candidate|
+      @preference = @vote.preferences.build(candidate_id: candidate.id)
     end
     respond_with @vote
   end

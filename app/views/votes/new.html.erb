@@ -6,6 +6,38 @@
 <%= form_for(@vote, url: question_votes_path(@question)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
+
+<table>
+  <thead>
+    <tr><th>Candidates</th></tr>
+  </thead>
+  <tbody id="preferences">
+    <% @vote.preferences.each do |preference| %>
+      <tr id="preference-<%= preference.id %>"><td><%= Candidate.find_by_id(preference.candidate_id).name %></td></tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% content_for :head do -%>
+  <%= javascript_include_tag 'jquery.js', 'jquery.tablednd_0_5.js' %>
+  <script type="text/javascript" charset="utf-8">
+    $().ready(function() {
+      $('#preferences').tableDnD({
+        onDrop: function(table, row) {
+          $.ajax({
+             type: "POST",
+             url: "<%= url_for(:action => 'sort') %>",
+             processData: false,
+             data: $.tableDnD.serialize() + '&authenticity_token=' + encodeURIComponent('<%= form_authenticity_token if protect_against_forgery? %>'),
+             success: function(msg) {
+               alert("Your ballot has been updated")
+             }
+           });
+        }
+      })
+    })
+  </script>
+<% end -%>
 	<br>
 	<br>
 	
