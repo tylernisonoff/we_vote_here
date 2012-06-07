@@ -1,6 +1,7 @@
 class Question < ActiveRecord::Base
-  attr_accessible :name, :info, :candidates_attributes, :election_id # :display_votes_as_created, :finish_time, :privacy, :start_time
+  attr_accessible :name, :info, :candidates_attributes, :election_id, :votes_attributes # :display_votes_as_created, :finish_time, :privacy, :start_time
   
+  has_many :votes, dependent: :destroy
   has_many :preferences, dependent: :destroy
   has_many :candidates, dependent: :destroy
   accepts_nested_attributes_for :candidates, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
@@ -29,8 +30,9 @@ class Question < ActiveRecord::Base
   	return true
   end
 
-  def votes
-    @question = Question.find(params[:id])
-    @votes = @question.votes
-  end
+  # def votes
+  #   @question = Question.find(params[:id])
+  #   @votes = @question.votes
+  # end
+
 end

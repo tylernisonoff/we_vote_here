@@ -1,5 +1,7 @@
 class VotesController < ApplicationController
-  before_filter :signed_in_user, only: [:index, :edit, :update, ]
+  respond_to :html, :json
+
+  # before_filter :signed_in_user, only: [:index, :edit, :update]
 
 
   def new
@@ -9,7 +11,7 @@ class VotesController < ApplicationController
     @vote.preferences.each do |preference|
       preference.vote_id = @vote.id
     end
-    respond with @vote
+    respond_with @vote
   end
 
   def create

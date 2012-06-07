@@ -3,18 +3,8 @@
 <h2> Election: <%= @question.election.name %> </h2>
 <h2> Question: <%= @question.name %> </h2>
 
-<%= form_for(@vote, url: election_questions_path(@question)) do |f| %>
+<%= form_for(@vote, url: question_votes_path(@question)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
-
-	<br>
-	
-	<% f.fields_for :preferences do |preference| %>
-		<% @question.candidates.each do |candidate| %>
-			<%= preference.label candidate.name %>
-			<%= preference.text_field :position %>
-		<% end %>
-	<% end %>
-
 
 	<br>
 	<br>

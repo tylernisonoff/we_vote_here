@@ -1,4 +1,6 @@
 class Vote < ActiveRecord::Base
+
+
 	attr_accessible :rijndael_or_user_id, :question_id
 
 	has_many :preferences
@@ -15,6 +17,14 @@ class Vote < ActiveRecord::Base
 				errors.add(:preferences, "^Preferences are invalid")
 			end
 			temp = preference
+		end
+	end
+
+	def sort
+		@vote = Vote.find(params[:id])
+		@vote.preferences.each do |preference|
+			preference.position = params["vote"].index(preference.id.to_s)+1
+			preference.save
 		end
 	end
 
