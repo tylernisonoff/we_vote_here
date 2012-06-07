@@ -177,9 +177,18 @@ aside {
 
 /* forms */
 
-input, textarea, .uneditable-input {
+input, .uneditable-input {
   border: 1px solid #bbb;
   width: 80%;
+  padding: 10px;
+  height: auto;
+  margin-bottom: 15px;
+  @include box_sizing;
+}
+
+textarea, .uneditable-input {
+  border: 1px solid #bbb;
+  width: 100%;
   padding: 10px;
   height: auto;
   margin-bottom: 15px;

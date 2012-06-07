@@ -32,6 +32,6 @@ class VotesController < ApplicationController
 
 		def correct_user
 	  		@user = User.find(params[:id])
-	  		redirect_to root_path unless @vote.user_id == current_user.id# redirect to election page
+	  		redirect_to root_path unless @vote.user_id == current_user.id # redirect to election page
 		end
 end

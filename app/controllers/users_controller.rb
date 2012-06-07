@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  respond_to :html, :json
-  
+  #respond_to :html, :json
+
   before_filter :signed_in_user, 
                 only: [:index, :edit, :update, :destroy]
   before_filter :correct_user,   only: [:edit, :update, :change_password]
@@ -19,7 +19,7 @@ class UsersController < ApplicationController
     if @user.save
       sign_in @user
       flash[:success] = "Welcome to WeVoteHere!"
-      redirect_to @user
+      redirect_to root_path
     else
       render 'new'
     end

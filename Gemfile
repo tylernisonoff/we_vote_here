@@ -32,7 +32,8 @@ end
 
 gem 'jquery-rails'
 gem 'best_in_place'
-gem "custom_error_message"
+gem 'custom_error_message'
+gem 'acts_as_list'
 
 group :test do
   gem 'capybara', '1.1.2'

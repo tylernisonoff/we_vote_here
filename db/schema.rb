@@ -11,16 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120528175730) do
+ActiveRecord::Schema.define(:version => 20120607061120) do
 
   create_table "candidates", :force => true do |t|
     t.string   "name",        :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
-    t.integer  "election_id", :null => false
+    t.integer  "question_id", :null => false
   end
 
-  add_index "candidates", ["election_id", "name"], :name => "index_candidates_on_election_id_and_name", :unique => true
+  add_index "candidates", ["name"], :name => "index_candidates_on_election_id_and_name", :unique => true
 
   create_table "elections", :force => true do |t|
     t.datetime "finish_time",                                 :null => false
@@ -32,6 +32,26 @@ ActiveRecord::Schema.define(:version => 20120528175730) do
     t.integer  "user_id",                                     :null => false
     t.boolean  "display_votes_as_created", :default => false, :null => false
     t.boolean  "privacy",                  :default => true,  :null => false
+  end
+
+  create_table "preferences", :force => true do |t|
+    t.integer  "vote_id",      :null => false
+    t.integer  "candidate_id", :null => false
+    t.integer  "position",     :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.integer  "question_id",  :null => false
+  end
+
+  add_index "preferences", ["vote_id", "candidate_id"], :name => "index_preferences_on_vote_id_and_candidate_id", :unique => true
+  add_index "preferences", ["vote_id", "position"], :name => "index_preferences_on_vote_id_and_position", :unique => true
+
+  create_table "questions", :force => true do |t|
+    t.string   "name",        :null => false
+    t.text     "info"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "election_id", :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -49,13 +69,12 @@ ActiveRecord::Schema.define(:version => 20120528175730) do
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
   create_table "votes", :force => true do |t|
-    t.string   "vote_string"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.integer  "user_id"
-    t.integer  "election_id"
+    t.string   "rijndael_or_user_id", :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "question_id",         :null => false
   end
 
-  add_index "votes", ["election_id", "user_id"], :name => "index_votes_on_election_id_and_user_id", :unique => true
+  add_index "votes", ["question_id", "rijndael_or_user_id"], :name => "index_votes_on_question_id_and_rijndael_or_user_id", :unique => true
 
 end

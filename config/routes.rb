@@ -1,20 +1,24 @@
 WeVoteHere::Application.routes.draw do
   
   resources :elections do
-    member do
-      get :candidates
-    end
+    resources :questions
   end
+
   resources :users do
     member do
       get :elections
     end
   end
 
+  resources :questions do
+    member do
+      get :candidates
+    end
+  end
+
   resources :candidates
 
-  resources :sessions,      only: [:new, :create, :destroy]
-  resources :votes
+  resources :sessions, only: [:new, :create, :destroy]
 
   root to: 'static_pages#home'
 
@@ -28,7 +32,8 @@ WeVoteHere::Application.routes.draw do
   match '/privacy', to: 'static_pages#privacy'
 
   match '/new_election', to: 'elections#new'
-  match '/new_vote', to: 'votes#new'
+  match '/new_question', to: 'questions#new'
+  # match '/edit_question', to: 'questions#edit'
 
   get "static_pages/home"
   get "static_pages/about"

@@ -1,9 +1,9 @@
 class Election < ActiveRecord::Base
-  attr_accessible :display_votes_as_created, :finish_time, :info, :name, :privacy, :start_time, :candidates_attributes
+  attr_accessible :display_votes_as_created, :finish_time, :info, :name, :privacy, :start_time, :questions_attributes
   
-  has_many :votes, dependent: :destroy
-  has_many :candidates, dependent: :destroy
-  accepts_nested_attributes_for :candidates, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
+  has_many :questions, dependent: :destroy
+
+  accepts_nested_attributes_for :questions, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
   belongs_to :user # the owner of the election
   validates_presence_of :user
@@ -16,12 +16,6 @@ class Election < ActiveRecord::Base
 
 
   validates :name, presence: true, length: { within: 2..255 }
-
-  validates :candidates, length: { minimum: 2, message: "^Election must have at least 2 candidates" }
-  # validates_associated :candidates
-
-
-  # Privacy: true = private, false = public
 
 
   def check_start_time
@@ -37,22 +31,5 @@ class Election < ActiveRecord::Base
   		true
   	end
   end
-
-  def candidates_check
-  	self.candidates.each do |candidate1|
-  		count = 0
-  		self.candidates.each do |candidate2|
-  			if candidate1.name == candidate2.name
-  				count = count + 1
-  			end
-  		end
-  		if count > 1
-  			errors.add(:candidates, "^Names of candidates must be unique.")
-  			break
-  		end
-  	end
-  	return true
-  end
-
 
 end

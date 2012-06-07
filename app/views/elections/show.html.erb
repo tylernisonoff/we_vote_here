@@ -9,16 +9,16 @@ Name:
   <br>
 
 Extra information:
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, type: :textarea, nil: "Click here to add information" %>
+  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, type: :textarea, ok_button: "Save", cancel_button: "Cancel", nil: "Click here to add information" %>
 
 
 <br><br>
 
 
-  Candidates:
+  Questions:
   <br>
-  <% @election.candidates.each do |candidate| %>
-    <%= best_in_place_if edit_election_condition(current_user, @election), candidate, :name %>
+  <% @election.questions.each do |question| %>
+    <%= link_to question.name, question %>
     <br>
   <% end %>
 
@@ -53,5 +53,11 @@ Extra information:
     <% end %>
   <% end %>
   <br>
+
+  <br>
+  <br>
+  <% if edit_election_condition(current_user, @election) %>
+    <%= link_to "Add another question", new_election_question_path(@election), class: "btn btn-large btn-primary" %>
+  <% end %>
 
 </div>

@@ -1,0 +1,29 @@
+<% provide(:title, "Create a question") %>
+<h1>Create a question</h1>
+<h2> Election: <%= @election.name %> </h2>
+
+<%= nested_form_for(@question, url: election_questions_path(@election)) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+	<%= f.label :name %>
+	<%= f.text_field :name %>
+
+	<%= f.label :info, "Question instructions:" %>
+	<%= f.text_area :info %>
+
+	<br><br>
+
+	<% f.fields_for :candidates do |c| %>
+		<%= c.label :name %>
+		<%= c.text_field :name %>
+		<%= c.link_to_remove "Remove" %>
+	<% end %>
+	<p><%= f.link_to_add "Add another candidate", :candidates %></p>
+	
+	<br>
+	<br>
+	
+
+	<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+	<%= f.submit "Add another question", class: "btn btn-large btn-primary" %>
+<% end %>

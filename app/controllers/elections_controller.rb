@@ -4,22 +4,22 @@ class ElectionsController < ApplicationController
 
 	def new
 		@election = Election.new
-    @election.candidates.build
-    @election.candidates.each do |candidate|
-      candidate.election_id = @election.id
-    end
+    # @election.questions.build
+    # @election.questions.each do |question|
+    #   question.election_id = @election.id
+    # end
 	end
 
   def show
     @election = Election.find(params[:id])
-    @candidates = @election.candidates
+    # @questions = @election.questions
   end
 
 	def create
   		@election = current_user.elections.build(params[:election])
       if @election.save
-  			flash[:success] = "Election created!"
-  			redirect_to root_path
+  			flash[:success] = "Election created! Now make questions"
+  			redirect_to new_election_question_path(@election)
   		else
   			flash[:failure] = "Failure creating election :("
   			render 'new'
