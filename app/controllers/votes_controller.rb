@@ -3,7 +3,13 @@ class VotesController < ApplicationController
 
 
   def new
-  	@vote = Vote.new
+    @question = Question.find_by_id(params[:question_id])
+  	@vote = @question.votes.build
+    @vote.preferences.build
+    @vote.preferences.each do |preference|
+      preference.vote_id = @vote.id
+    end
+    respond with @vote
   end
 
   def create

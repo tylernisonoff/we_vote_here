@@ -29,4 +29,8 @@ class Question < ActiveRecord::Base
   	return true
   end
 
+  def votes
+    @question = Question.find(params[:id])
+    @votes = @question.votes
+  end
 end

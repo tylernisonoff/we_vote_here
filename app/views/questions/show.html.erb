@@ -20,3 +20,6 @@ Candidates:
 	<%= candidate.name %>
 	<br>
 <% end %>
+
+<br>
+<%= link_to "Vote", new_question_vote_path(@question), class: "btn btn-large btn-primary" %>

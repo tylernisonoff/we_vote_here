@@ -11,6 +11,7 @@ WeVoteHere::Application.routes.draw do
   end
 
   resources :questions do
+    resources :votes
     member do
       get :candidates
     end
