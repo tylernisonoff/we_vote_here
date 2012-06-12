@@ -1,5 +1,4 @@
 class PreferencesController < ApplicationController
-	attr_accessible :name, :position
 
 	belongs_to :vote, dependent: :allow_destroy
 
@@ -10,5 +9,5 @@ class PreferencesController < ApplicationController
       		end
     	end
     	render nothing: true, :status => 200
-  	end
+  end
 end
