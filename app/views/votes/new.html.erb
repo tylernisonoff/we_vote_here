@@ -6,41 +6,75 @@
 <%= form_for(@vote, url: question_votes_path(@question)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-
-<table>
-  <thead>
-    <tr><th>Candidates</th></tr>
-  </thead>
-  <tbody id="preferences">
-    <% @vote.preferences.each do |preference| %>
-      <tr id="preference-<%= preference.id %>"><td><%= Candidate.find_by_id(preference.candidate_id).name %></td></tr>
-    <% end %>
-  </tbody>
-</table>
-
-<% content_for :head do -%>
-  <%= javascript_include_tag 'jquery.js', 'jquery.tablednd_0_5.js' %>
-  <script type="text/javascript" charset="utf-8">
-    $().ready(function() {
-      $('#preferences').tableDnD({
-        onDrop: function(table, row) {
-          $.ajax({
-             type: "POST",
-             url: "<%= url_for(:action => 'sort') %>",
-             processData: false,
-             data: $.tableDnD.serialize() + '&authenticity_token=' + encodeURIComponent('<%= form_authenticity_token if protect_against_forgery? %>'),
-             success: function(msg) {
-               alert("Your ballot has been updated")
-             }
-           });
-        }
-      })
-    })
+<meta charset="utf-8">
+  
+  <style>
+  #sortable1, #sortable2 { list-style-type: none; margin: 0; padding: 0 0 2.5em; float: left; margin-right: 10px; }
+  #sortable1 li, #sortable2 li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
+  </style>
+  <script>
+  $(function() {
+    $( "#sortable1, #sortable2" ).sortable({
+      connectWith: ".connectedSortable"
+    }).disableSelection();
+  });
   </script>
-<% end -%>
-	<br>
-	<br>
-	
+
+
+<div class="demo">
+
+<ul id="sortable1" class="connectedSortable">
+  <li class="ui-state-highlight">Item 1</li>
+</ul>
+
+<ul id="sortable2" class="connectedSortable">
+  <% @question.candidates.each do |candidate| %>
+    <%= render candidate, candidate: candidate %>
+  <% end %>
+</ul>
+
+</div><!-- End demo -->
+
+
+
+<div class="demo-description">
+<p>
+  Sort items from one list into another and vice versa, by passing a selector into
+  the <code>connectWith</code> option. The simplest way to do this is to
+  group all related lists with a CSS class, and then pass that class into the
+  sortable function (i.e., <code>connectWith: '.myclass'</code>).
+</p>
+</div><!-- End demo-description -->
 
 	<%= f.submit "Save", class: "btn btn-large btn-primary" %>
 <% end %>
+
+<script src="/assets/javascripts/rijndael.js"></script>
+
+<body>
+  <form name="f">
+  <fieldset><legend>How we store your vote safely</legend>
+  <ul>
+    <li>
+      <label for="pw">Your secret key (even we don't know this!)</label>
+      <input type="text" name="pw" id="pw" value="L0ck it up saf3" class="w12">
+    </li>
+    <li>
+      <label for="pt">Secret message (we don't know this either)</label>
+      <textarea name="pt" id="pt" class="w36">pssst ... đon’t tell anyøne!</textarea>
+    </li>
+    <li><label><button type="button" name="encrypt" id="encrypt"
+        onClick='f.cipher.value = Aes.Ctr.encrypt(f.pt.value, f.pw.value, 256)'>What we save in the database</button>
+      </label>
+      <textarea name="cipher" id="cipher" readonly class="w36"></textarea>
+    </li>
+    <li><label><button type="button" name="decrypt" id="decrypt"
+        onClick='f.plain.value = Aes.Ctr.decrypt(f.cipher.value, f.pw.value, 256)'>Decrypt message</button>
+      </label>
+      <textarea name="plain" id="plain" readonly class="w36"></textarea>
+    </li>
+  </ul>
+  </fieldset>
+  </form>
+  <p id="debug">&nbsp;</p>
+</body>

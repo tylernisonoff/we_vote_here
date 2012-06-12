@@ -23,9 +23,6 @@ class VotesController < ApplicationController
   	end
   end
 
-  def edit
-  end
-
   def update
   	if @vote.update_attributes(params[:vote])
   		flash[:success] = "Vote updated"
