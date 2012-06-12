@@ -1,7 +1,5 @@
 class PreferencesController < ApplicationController
 
-	belongs_to :vote, dependent: :allow_destroy
-
 	# def sort
  #    	Preference.all.each do |preference|
  #      		if position = params[:preferences].index(preference.id.to_s)
