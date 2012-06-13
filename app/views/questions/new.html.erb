@@ -6,10 +6,10 @@
 	<%= render 'shared/error_messages', object: f.object %>
 
 	<%= f.label :name %>
-	<%= f.text_field :name %>
+	<%= f.text_field :name, placeholder: "question name" %>
 
 	<%= f.label :info, "Question instructions:" %>
-	<%= f.text_area :info %>
+	<%= f.text_area :info, placeholder: "question instructions" %>
 
 	<br><br>
 
@@ -17,7 +17,7 @@
 	<br>
 	<% f.fields_for :candidates do |c| %>
 		<%= c.label :name %>
-		<%= c.text_field :name %>
+		<%= c.text_field :name, placeholder: "candidate name" %>
 		<%= c.link_to_remove "Remove" %>
 	<% end %>
 	<p><%= f.link_to_add "Add another candidate", :candidates %></p>

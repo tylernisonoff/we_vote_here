@@ -1,21 +1,19 @@
 <% provide(:title, 'Sign up') %>
 <h1>Sign up</h1>
-<%= form_for(@user) do |f| %>
+
+<%= form_for(@user, html: { autocomplete: :off } ) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
 	<%= f.label :handle %>
-	<%= f.text_field :handle %>
+	<%= f.text_field :handle, placeholder: "handle" %>
 
 	<%= f.label :email %>
-	<%= f.text_field :email %>
+	<%= f.text_field :email, placeholder: "email" %>
 
 	<%= f.label :password %>
-	<%= f.password_field :password %>
+	<%= f.password_field :password, placeholder: "password" %>
 
 	<%= f.label :password_confirmation, "Confirmation" %>
-	<%= f.password_field :password_confirmation %>
+	<%= f.password_field :password_confirmation, placeholder: "confirmation" %>
 
-	<br>
-
-	<%= f.submit "Create my account", class: "btn btn-large btn-primary" %>
 <% end %>

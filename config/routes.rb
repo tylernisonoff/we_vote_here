@@ -34,7 +34,8 @@ WeVoteHere::Application.routes.draw do
 
   match '/new_election', to: 'elections#new'
   match '/new_question', to: 'questions#new'
-  # match '/edit_question', to: 'questions#edit'
+  
+  match 'votes/save_preferences', to: 'votes#save_preferences'
 
   get "static_pages/home"
   get "static_pages/about"
