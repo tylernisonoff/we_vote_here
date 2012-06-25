@@ -39,10 +39,10 @@ class QuestionsController < ApplicationController
   	redirect_to root_path
   end
 
-  def questions
-    @election = Election.find(params[:id])
-    @questions = @election.questions
-  end
+  # def questions
+  #   @election = Election.find(params[:id])
+  #   @questions = @election.questions
+  # end
 
   def update
     respond_to do |format|

@@ -17,6 +17,14 @@ WeVoteHere::Application.routes.draw do
     end
   end
 
+  resources :votes do
+    put :sort
+  end
+
+  resources :preferences do
+    post :sort, on: :collection
+  end
+
   resources :candidates
 
   resources :sessions, only: [:new, :create, :destroy]

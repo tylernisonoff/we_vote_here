@@ -23,3 +23,19 @@ Candidates:
 
 <br>
 <%= link_to "Vote", new_question_vote_path(@question), class: "btn btn-large btn-primary" %>
+
+<br>
+<br>
+
+Votes:
+<br>
+<% @question.votes.each do |vote| %>
+	Vote SVC1: <%= vote.svc1 %> <br>
+	Preferences:
+	<br>
+	<% vote.preferences.each do |preference| %>
+		<%= preference.position %>) <%= preference.candidate.name %>
+		<br>
+	<% end %>
+	<br><br>
+<% end %>

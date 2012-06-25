@@ -3,94 +3,58 @@
 <h2> Election: <%= @question.election.name %> </h2>
 <h2> Question: <%= @question.name %> </h2>
 
-<%= form_for @vote, url: question_votes_path(@question), html: { class: "sortable" } do |f| %>
+<%= form_for @vote, url: question_votes_path(@question), html: { class: "sortable" }, remote: true do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-<meta charset="utf-8">
-
-<div type="demo">
-
-  <style>
-  #sortable1, #sortable2 { list-style-type: none; margin: 0; padding: 0; float: left; margin-right: 10px; background: #eee; padding: 5px; width: 143px;}
-  #sortable1 li, #sortable2 li { margin: 5px; padding: 5px; font-size: 1.2em; width: 120px; }
-  </style>
   <script>
-  $(function() {
-    $( "ul.droptrue" ).sortable({
-      connectWith: "ul"
-    });
-
-    $( "ul.dropfalse" ).sortable({
-      connectWith: "ul",
-      dropOnEmpty: false
-    });
-
-    $( "#sortable1, #sortable2" ).disableSelection();
-  });
-
-  function update_order() {
-    window.location.href = "/votes/save_preferences?"+$('#sortable1').sortable('serialize');
-  }
+  var svc1 = "hello";
   </script>
 
-<ul id="sortable1" class='droptrue'>
-Preferences:
+  <%= f.label :svc1, "Secret Voting Code #1" %>
+  <%= f.text_field :svc1, placeholder: "SVC1" %>
 
-</ul>
+  <div class="actions clearfix">
+        <%= f.submit "Update", class: "button" %>
+  </div>
 
-<ul id="sortable2" class='droptrue'>
-Unranked candidates:
-  <% @vote.preferences.each do |preference| %>
-    <%= render preference, preference: preference %>
-  <% end %>
-</ul>
-
-<br clear="both" />
-
-</div><!-- End demo -->
-<br>
-	<%= f.submit "Save", class: "btn btn-large btn-primary" %>
 <% end %>
 
-<script src="/assets/javascripts/rijndael.js"></script>
 
-<body>
-  <form name="f">
-  <fieldset><legend>How we store your vote safely</legend>
-  <ul>
-    <li>
-      <label for="email">Your email</label>
-      <input name="email" id="email" class="w36"></input>
-    </li>
-    <!-- <li><label><button type="button" name="hash" id="hash"
-        onClick='f.cipher.value = Aes.Ctr.encrypt(f.password.value, f.code.value, 256)'>What we save in the database</button>
-      </label>
-      <textarea name="cipher" id="cipher" readonly class="w36"></textarea>
-    </li> -->
-    <li>
-      <label for="code">Your secret key (even we don't know this!)</label>
-      <input type="text" name="code" id="code" placeholder="To verify your vote quicker" class="w12">
-    </li>
-    <li>
-      <label for="password">Your password</label>
-      <input name="password" type="password" id="password" class="w36"></input>
-    </li>
-    <!-- <li>
-      <label for="password_confirmation">Confirm password</label>
-      <input name="password_confirmation" type="password" id="password_confirmation" class="w36"></input>
-    </li> -->
-    <li><label><button type="button" name="encrypt" id="encrypt"
-        onClick='f.cipher.value = Aes.Ctr.encrypt(f.password.value, f.code.value, 256)'>What we save in the database</button>
-      </label>
-      <textarea name="cipher" id="cipher" readonly class="w36"></textarea>
-    </li>
-    <!-- <li><label><button type="button" name="decrypt" id="decrypt"
-        onClick='f.plain.value = Aes.Ctr.decrypt(f.cipher.value, f.pw.value, 256)'>Decrypt message</button>
-      </label>
-      <textarea name="plain" id="plain" readonly class="w36"></textarea>
-    </li>
-  </ul> -->
-  </fieldset>
-  </form>
-  <p id="debug">&nbsp;</p>
-</body>
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+  </style>
+
+  <script>
+  $(function() {
+    $('#sortable').sortable({
+      cursor: 'crosshair',
+      items: 'li',
+      opacity: 0.4,
+      scroll: true,
+      update: function(){
+        $.ajax({
+          type: 'post',
+          data: $('#sortable').sortable('serialize') +"&svc1=" + svc1,
+          dataType: 'script',
+          complete: function(request){
+            $('#sortable').effect('highlight');
+          },
+          url: '/preferences/sort'
+        })
+      }
+    });
+  });
+  </script>
+
+  <div class="demo">
+
+    <ul id="sortable">
+      <% @vote.preferences.each do |preference| %>
+      <li id="preferences_<%= preference.candidate.id %>
+      " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= preference.candidate.name %> </li>
+      <% end %>
+    </ul>
+
+  </div>

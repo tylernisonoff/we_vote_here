@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120612175259) do
+ActiveRecord::Schema.define(:version => 20120625062620) do
 
   create_table "candidates", :force => true do |t|
     t.string   "name",        :null => false
@@ -35,12 +35,11 @@ ActiveRecord::Schema.define(:version => 20120612175259) do
   end
 
   create_table "preferences", :force => true do |t|
-    t.integer  "vote_id",      :null => false
     t.integer  "candidate_id", :null => false
     t.integer  "position",     :null => false
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
-    t.integer  "question_id",  :null => false
+    t.integer  "vote_id"
   end
 
   add_index "preferences", ["vote_id", "candidate_id"], :name => "index_preferences_on_vote_id_and_candidate_id", :unique => true
@@ -69,13 +68,12 @@ ActiveRecord::Schema.define(:version => 20120612175259) do
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
   create_table "votes", :force => true do |t|
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-    t.integer  "question_id",               :null => false
-    t.string   "cipher"
-    t.string   "handle_at_password_digest", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "question_id", :null => false
+    t.string   "svc1",        :null => false
   end
 
-  add_index "votes", ["question_id", "handle_at_password_digest"], :name => "index_votes_on_question_id_and_handle_at_password_digest", :unique => true
+  add_index "votes", ["question_id", "svc1"], :name => "index_votes_on_question_id_and_svc1", :unique => true
 
 end
