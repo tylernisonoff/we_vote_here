@@ -25,7 +25,7 @@ class QuestionsController < ApplicationController
 		if @question.save
 			flash[:success] = "Question saved"
       if params[:commit] == "Save"
-			  redirect_to root_path
+			  redirect_to @election
       elsif params[:commit] == "Add another question"
         redirect_to new_election_question_path(@question.election)
 		  end

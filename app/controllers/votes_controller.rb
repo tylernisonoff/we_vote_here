@@ -4,15 +4,15 @@ class VotesController < ApplicationController
   # before_filter :signed_in_user, only: [:index, :edit, :update]
 
 
-  def new
-    @question = Question.find_by_id(params[:question_id])
-  	@vote = @question.votes.build
-    @vote.question_id = @question.id
-    @question.candidates.each do |candidate|
-      @preference = @vote.preferences.build(candidate_id: candidate.id)
-    end
-    respond_with @vote
-  end
+  # def new
+  #   @question = Question.find_by_id(params[:question_id])
+  # 	@vote = @question.votes.build
+  #   @vote.question_id = @question.id
+  #   @question.candidates.each do |candidate|
+  #     @preference = @vote.preferences.build(candidate_id: candidate.id)
+  #   end
+  #   respond_with @vote
+  # end
 
   # def create
   # end
