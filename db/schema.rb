@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120712202720) do
+ActiveRecord::Schema.define(:version => 20120712205554) do
 
   create_table "candidates", :force => true do |t|
     t.string   "name",        :null => false
@@ -101,5 +101,6 @@ ActiveRecord::Schema.define(:version => 20120712202720) do
   end
 
   add_index "votes", ["bsn"], :name => "index_votes_on_bsn", :unique => true
+  add_index "votes", ["svc"], :name => "index_votes_on_svc"
 
 end

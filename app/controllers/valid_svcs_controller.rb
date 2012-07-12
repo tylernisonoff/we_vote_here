@@ -1,5 +1,6 @@
 class ValidSvcsController < ApplicationController
 
+
   def make
     @question = Question.find(params[:question_id])
 
@@ -29,26 +30,28 @@ class ValidSvcsController < ApplicationController
   end
 
   def confirm
-    @question = Question.find(params[:question_id])
-    @valid_svc = ValidSvc.find_by_svc(params[:valid_svc][:svc])
-    @vote = Vote.find_by_svc(@valid_svc.svc)
-    if @vote
-      redirect_to @vote
-    else
-      if @valid_svc && @valid_svc.question == @question
-        @vote = @question.votes.build
-        @vote.svc = @valid_svc.svc
-        @vote.bsn = SecureRandom.urlsafe_base64
-        if @vote.save
-          redirect_to @vote
-        else
-          flash[:error] = "This is a completely valid SVC, but we were unable to create your vote. Please try again"
-          redirect_to enter_question_valid_svcs_path(@question)
-        end
+    if ValidSvc.exists?(svc: params[:valid_svc][:svc])
+      @question = Question.find(params[:question_id])
+      @valid_svc = ValidSvc.find_by_svc(params[:valid_svc][:svc])
+    # @vote = Vote.find_by_svc(@valid_svc.svc)
+    # if @vote
+    #   redirect_to @vote
+    # else
+      # if @valid_svc && @valid_svc.question == @question
+      @vote = @question.votes.build
+      @vote.svc = @valid_svc.svc
+      @vote.bsn = SecureRandom.urlsafe_base64
+      if @vote.save
+        redirect_to @vote
       else
-        flash[:error] = "This is an invalid SVC"
+        flash[:error] = "This is a completely valid SVC, but we were unable to create your vote. Please try again"
         redirect_to enter_question_valid_svcs_path(@question)
       end
+    else
+      flash[:error] = "This is an invalid SVC"
+      redirect_to enter_question_valid_svcs_path(@question)
     end
+    # end
   end
+
 end

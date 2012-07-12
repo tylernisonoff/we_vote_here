@@ -35,10 +35,13 @@
   <div class="demo">
 
     <ul id="sortable">
+      <h3> Candidates: </h3>
+      <br>
       <% @vote.question.candidates.each do |candidate| %>
       <li id="candidate_<%= candidate.id %>
       " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= candidate.name %> </li>
       <% end %>
     </ul>
-
   </div>
+<br>
+<%= link_to "Back to #{@vote.question.election.name}", @vote.question.election, class: "btn btn-large btn-primary" %>

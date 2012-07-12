@@ -49,7 +49,7 @@ class VotesController < ApplicationController
   # end
 
   def show
-    @vote = Vote.find_by_svc(params[:id])
+    @vote = Vote.find(:last, conditions: {svc: params[:id]})
   end
 
 	private
