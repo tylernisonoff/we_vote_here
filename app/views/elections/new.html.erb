@@ -10,6 +10,11 @@
 	<%= f.label :info, "Voting instructions:" %>
 	<%= f.text_area :info, placeholder: "voting instructions" %>
 
+	<%= f.label :emails, "Valid email addresses:" %>
+	<%= f.text_area :emails, value: "christian@drappi.com christiandrappi@gmail.com, bray@duke.edu" %>
+
+	<br><br>
+
 	<%= f.label :start_time, "Start time:" %>
 	<%= f.datetime_select :start_time %>
 

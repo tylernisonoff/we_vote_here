@@ -1,13 +1,9 @@
 class Vote < ActiveRecord::Base
-	attr_accessible :question_id, :svc1, :svc2
+	attr_accessible :question_id, :svc, :bsn
 
-	has_many :preferences, order: "position asc"
-
-	# validates :svc1, presence: true
-	# validates :svc2, presence: true
-
+	has_many :preferences #, order: "position asc"
 	belongs_to :question
-	
+
 	accepts_nested_attributes_for :preferences, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
 	# def preferences_check
@@ -20,5 +16,9 @@ class Vote < ActiveRecord::Base
 	# 		temp = preference
 	# 	end
 	# end
+
+	def to_param
+		svc
+	end
 
 end

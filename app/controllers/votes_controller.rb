@@ -14,16 +14,30 @@ class VotesController < ApplicationController
     respond_with @vote
   end
 
-  def create
-    @question = Question.find_by_id(params[:question_id])
-  	@vote = @question.votes.build(params[:vote])
-  	if @vote.save
-  		flash[:success] = "Your vote has been recorded."
-  		redirect_to root_path # redirect to election page
-  	else
-  		render 'new'
-  	end
-  end
+  # def create
+  # end
+
+  # def enter
+  #   if true #Svc.exists?(svc1: params[:svc1])
+      
+  #     unless Vote.exists?(svc: params[:svc], question_id: params[:question_id])
+  #       @question = Question.find_by_id(params[:question_id])
+  #       @vote = @question.votes.build
+  #       @vote.svc1 = params[:svc1]
+  #       if @vote.save
+  #         flash[:success] = "Your vote has been recorded."
+  #         # redirect_to root_path # redirect to election page
+  #       else
+  #         render 'new'
+  #       end
+  #     else
+  #       @vote = Vote.find_by_question_id_and_svc1(params[:question_id], params[:svc1])
+  #     end
+  #     render nothing: true
+  #   else
+  #     print "\n\n\n\n\n\n\n\nSVC ISN'T VALID\n\n\n\n\n\n\n\n"
+  #   end
+  # end
 
   # def update
   # 	if @vote.update_attributes(params[:vote])
@@ -35,14 +49,7 @@ class VotesController < ApplicationController
   # end
 
   def show
-    @vote = Vote.find(params[:id])
-  end
-
-  def sort
-    params[:preferences].each_with_index do |id, index|
-      @vote.preferences.update(['position=?', index+1], ['id=?', id])
-    end
-    render nothing: true
+    @vote = Vote.find_by_svc(params[:id])
   end
 
 	private

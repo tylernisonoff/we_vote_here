@@ -2,8 +2,12 @@ class Question < ActiveRecord::Base
   attr_accessible :name, :info, :candidates_attributes, :election_id, :votes_attributes # :display_votes_as_created, :finish_time, :privacy, :start_time
   
   has_many :votes, dependent: :destroy
+  has_many :valid_svcs, dependent: :destroy
+  
   has_many :preferences, dependent: :destroy
   has_many :candidates, dependent: :destroy
+
+  accepts_nested_attributes_for :valid_svcs, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
   accepts_nested_attributes_for :candidates, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
   belongs_to :election
@@ -13,6 +17,8 @@ class Question < ActiveRecord::Base
 
   # validates :candidates, length: { minimum: 2, message: "^Question must have at least 2 candidates" }
   validate :candidates_check
+
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   def candidates_check
   	self.candidates.each do |candidate1|
@@ -30,9 +36,5 @@ class Question < ActiveRecord::Base
   	return true
   end
 
-  # def votes
-  #   @question = Question.find(params[:id])
-  #   @votes = @question.votes
-  # end
 
 end

@@ -3,6 +3,9 @@
 
 Owner:
   <%= link_to @question.election.user.pretty_name, @question.election.user %>
+  <br>
+Election:
+  <%= link_to @question.election.name, @question.election %>
   <br><br>
 Question:
   <%= best_in_place_if edit_election_condition(current_user, @question.election), @question.election, :name %>
@@ -22,20 +25,30 @@ Candidates:
 <% end %>
 
 <br>
-<%= link_to "Vote", new_question_vote_path(@question), class: "btn btn-large btn-primary" %>
+<% if @question.election.privacy %>
+	<%= link_to "Vote", enter_question_valid_svcs_path(@question), class: "btn btn-large btn-primary" %>
+<% else %>
+	<%= link_to "Vote", make_question_valid_svcs_path(@question), class: "btn btn-large btn-primary" %>
+<% end %>
 
-<br>
-<br>
+<br><br><br><br>
 
-Votes:
+SVCs:
 <br>
-<% @question.votes.each do |vote| %>
-	Vote SVC1: <%= vote.svc1 %> <br>
-	Preferences:
+<% @question.valid_svcs.each_with_index do |valid_svc, index| %>
+	Vote SVC #<%= index + 1 %>: id = <%= valid_svc.id %>; <%= valid_svc.svc %> <br><br>
+<% end %>
+
+
+<br><br><br><br>
+
+Preferences:
 	<br>
+<% @question.votes.each do |vote| %>
+	BSN: <%= vote.bsn %> <br>
 	<% vote.preferences.each do |preference| %>
-		<%= preference.position %>) <%= preference.candidate.name %>
-		<br>
+	<%= preference.position %>) <%= preference.candidate.name %>
+	<br>
 	<% end %>
-	<br><br>
+	<br>
 <% end %>

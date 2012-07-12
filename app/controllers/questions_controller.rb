@@ -14,6 +14,14 @@ class QuestionsController < ApplicationController
 	def create
     @election = Election.find(params[:election_id])
 		@question = @election.questions.build(params[:question])
+    if @election.privacy  
+      @election.voters.each do |voter|
+        @valid_svc = @question.valid_svcs.build
+        # puts "\n\n\n\n\n\n\n\n#{@valid_svc}\n\n\n\n\n\n\n\n"
+        # @valid_svc.question = @question
+        @valid_svc.svc = SecureRandom.urlsafe_base64
+      end
+    end
 		if @question.save
 			flash[:success] = "Question saved"
       if params[:commit] == "Save"
@@ -39,10 +47,9 @@ class QuestionsController < ApplicationController
   	redirect_to root_path
   end
 
-  # def questions
-  #   @election = Election.find(params[:id])
-  #   @questions = @election.questions
-  # end
+  def index
+    @elections = Election.all
+  end
 
   def update
     respond_to do |format|

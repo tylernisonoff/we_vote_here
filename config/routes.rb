@@ -12,20 +12,28 @@ WeVoteHere::Application.routes.draw do
 
   resources :questions do
     resources :votes
+    resources :valid_svcs do
+      get :enter, on: :collection
+      get :make, on: :collection
+      post :confirm, on: :collection
+    end
     member do
       get :candidates
     end
   end
 
-  resources :votes do
-    put :sort
-  end
+  resources :valid_svcs #do
+    # post :enter, on: :collection
+    # post :make
+    # post :confirm
+  # end
 
   resources :preferences do
     post :sort, on: :collection
   end
 
   resources :candidates
+  resources :votes
 
   resources :sessions, only: [:new, :create, :destroy]
 

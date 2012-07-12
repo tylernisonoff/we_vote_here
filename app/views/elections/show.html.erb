@@ -52,10 +52,22 @@ Extra information:
       when the election ends
     <% end %>
   <% end %>
-  <br>
+  
+  <br><br>
+  Voters:
+  <br><br>
+  <% @election.voters.each_with_index do |voter, voter_index| %>
+    Voter #<%= voter_index + 1%>:
+    <br> 
+    <% voter.valid_emails.each_with_index do |valid_email, email_index| %>
+      Email #<%= email_index + 1 %>: <%= valid_email.email %>
+      <br>
+    <% end %>
+    <br><br>
+  <% end %>
 
-  <br>
-  <br>
+  <br><br>
+
   <% if edit_election_condition(current_user, @election) %>
     <%= link_to "Add another question", new_election_question_path(@election), class: "btn btn-large btn-primary" %>
   <% end %>

@@ -1,0 +1,44 @@
+<% provide(:title, "Submit your vote") %>
+<h1>Submit your vote</h1>
+<h2> Election: <%= link_to @vote.question.election.name, @vote.question.election %> </h2>
+<h2> Question: <%= link_to @vote.question.name, @vote.question %> </h2>
+<h2> Your BSN: <%= @vote.bsn %> </h2>
+
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+  </style>
+
+  <script>
+  $(function() {
+    $('#sortable').sortable({
+      cursor: 'crosshair',
+      items: 'li',
+      opacity: 0.4,
+      scroll: true,
+      update: function(){
+        $.ajax({
+          type: 'post',
+          data: $('#sortable').sortable('serialize') +"&svc=<%= @vote.svc %>",
+          dataType: 'script',
+          complete: function(request){
+            $('#sortable').effect('highlight');
+          },
+          url: '/preferences/sort'
+        })
+      }
+    });
+  });
+  </script>
+
+  <div class="demo">
+
+    <ul id="sortable">
+      <% @vote.question.candidates.each do |candidate| %>
+      <li id="candidate_<%= candidate.id %>
+      " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= candidate.name %> </li>
+      <% end %>
+    </ul>
+
+  </div>

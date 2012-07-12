@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120625062620) do
+ActiveRecord::Schema.define(:version => 20120712170740) do
 
   create_table "candidates", :force => true do |t|
     t.string   "name",        :null => false
@@ -67,13 +67,39 @@ ActiveRecord::Schema.define(:version => 20120625062620) do
   add_index "users", ["handle"], :name => "index_users_on_handle", :unique => true
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
+  create_table "valid_emails", :force => true do |t|
+    t.string   "email",       :null => false
+    t.integer  "voter_id",    :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "election_id", :null => false
+  end
+
+  add_index "valid_emails", ["election_id", "email"], :name => "index_valid_emails_on_election_id_and_email", :unique => true
+
+  create_table "valid_svcs", :force => true do |t|
+    t.string   "svc",         :null => false
+    t.integer  "question_id", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "valid_svcs", ["svc"], :name => "index_valid_svcs_on_svc", :unique => true
+
+  create_table "voters", :force => true do |t|
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "election_id", :null => false
+  end
+
   create_table "votes", :force => true do |t|
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.integer  "question_id", :null => false
-    t.string   "svc1",        :null => false
+    t.string   "svc",         :null => false
+    t.string   "bsn",         :null => false
   end
 
-  add_index "votes", ["question_id", "svc1"], :name => "index_votes_on_question_id_and_svc1", :unique => true
+  add_index "votes", ["svc"], :name => "index_votes_on_svc", :unique => true
 
 end

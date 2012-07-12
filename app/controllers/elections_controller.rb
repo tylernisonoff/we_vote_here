@@ -4,15 +4,10 @@ class ElectionsController < ApplicationController
 
 	def new
 		@election = Election.new
-    # @election.questions.build
-    # @election.questions.each do |question|
-    #   question.election_id = @election.id
-    # end
 	end
 
   def show
     @election = Election.find(params[:id])
-    # @questions = @election.questions
   end
 
 	def create
