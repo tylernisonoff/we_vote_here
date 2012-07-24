@@ -16,29 +16,40 @@
 	<br><br>
 
 	<%= f.label :start_time, "Start time:" %>
-	<%= f.datetime_select :start_time %>
+	<%= f.datetime_select :start_time%>
 
 	<%= f.label :finish_time, "Finish time:" %>
-	<%= f.datetime_select :finish_time, default: Time.now.tomorrow() %>
+	<%= f.datetime_select :finish_time, default: Time.now + 1.week %>
 	<br><br>
 	
 	Election Privacy:
 	<br>
-	<%= f.radio_button :privacy, 0, checked: false %>
+	<%= f.radio_button :privacy, 0, checked: true %>
 	<%= f.label :privacy, "Public", style: "display:inline" %>
 	<br>
-	<%= f.radio_button :privacy, 1, checked: true %>
+	<%= f.radio_button :privacy, 1, checked: false %>
 	<%= f.label :privacy, "Private", style: "display:inline" %>
 
 	<br><br>
 
-	Show votes:
+	Dynamic voting:
 	<br>
-	<%= f.radio_button :display_votes_as_created, 1, checked: false %>
-	<%= f.label :display_votes_as_created, "as they are created", style: "display:inline" %>
+	<%= f.radio_button :dynamic, 1, checked: true %>
+	<%= f.label :dynamic, "On", style: "display:inline" %>
 	<br>
-	<%= f.radio_button :display_votes_as_created, 0, checked: true %>
-	<%= f.label :display_votes_as_created, "when the election ends", style: "display:inline" %>
+	<%= f.radio_button :display_votes_as_created, 0, checked: false %>
+	<%= f.label :display_votes_as_created, "Off", style: "display:inline" %>
+
+	<br><br>
+
+	Record timestamps:
+	<br>
+	<%= f.radio_button :record_time, 1, checked: true %>
+	<%= f.label :record_time, "Yes", style: "display:inline" %>
+	<br>
+	<%= f.radio_button :record_time, 0, checked: false %>
+	<%= f.label :record_time, "No", style: "display:inline" %>
+
 
 <br><br><br>
 

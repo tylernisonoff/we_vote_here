@@ -1,5 +1,5 @@
 class Election < ActiveRecord::Base
-  attr_accessible :display_votes_as_created, :finish_time, :info, :name, :privacy, :start_time, :questions_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
+  attr_accessible :dynamic, :finish_time, :info, :name, :privacy, :start_time, :questions_attributes, :emails, :record_time, :voter_attributes, :valid_emails, :valid_emails_attributes
   
   has_many :questions, dependent: :destroy
 
@@ -20,8 +20,9 @@ class Election < ActiveRecord::Base
   validate :check_start_time, on: :create
   validate :check_finish_time, on: :create
 
-
   validates :name, presence: true, length: { within: 2..255 }
+
+  before_save { :check_timestamps }
 
 
   def check_start_time
@@ -44,17 +45,20 @@ class Election < ActiveRecord::Base
 
   def emails=(emails_text)
     voter_array = emails_text.split(",")
-    puts "\n\n\n\n\n#{voter_array}\n\n\n\n\n"
     voter_array.each do |voter|
-      puts "\n\n\n\n\n\n\n#{voter}\n\n\n\n\n"
       @voters_emails = voter.split(" ")
-      puts "\n\n\n\n\nvoter emails: #{@voters_emails}\n\n\n\n\n"
       @voter = self.voters.build
       @voters_emails.each do |valid_email|
         @email = self.valid_emails.build
         @email.voter = @voter
         @email.email = valid_email
       end
+    end
+  end
+
+  def check_timestamps
+    if self.dynamic
+      self.record_time = true
     end
   end
 

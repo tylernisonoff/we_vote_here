@@ -13,14 +13,14 @@
 
 	<br><br>
 
-	<h3>Candidates:</h3>
+	<h3>Choices:</h3>
 	<br>
-	<% f.fields_for :candidates do |c| %>
+	<% f.fields_for :choices do |c| %>
 		<%= c.label :name %>
-		<%= c.text_field :name, placeholder: "candidate name" %>
+		<%= c.text_field :name, placeholder: "choice" %>
 		<%= c.link_to_remove "Remove" %>
 	<% end %>
-	<p><%= f.link_to_add "Add another candidate", :candidates %></p>
+	<p><%= f.link_to_add "Add another choice", :choices %></p>
 	
 	<br>
 	<br>

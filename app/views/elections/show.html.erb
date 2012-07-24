@@ -42,14 +42,26 @@ Extra information:
   <% end %>
   <br>
 
-  Show votes:
+  Dynamic voting:
   <% if edit_election_condition(current_user, @election) %>
-    <%= best_in_place @election, :display_votes_as_created, type: :select, collection: [[false, "when the election ends"], [true, "as they are created"]] %>
+    <%= best_in_place @election, :dynamic, type: :select, collection: [[false, "Off"], [true, "On"]] %>
   <% else %>
-    <% if @election.display_votes_as_created %>
-      as they are created
+    <% if @election.dynamic %>
+      On
     <% else %>
-      when the election ends
+      Off
+    <% end %>
+  <% end %>
+
+  <br>
+  Record timestamp:
+  <% if edit_election_condition(current_user, @election) %>
+    <%= best_in_place @election, :record_time, type: :select, collection: [[false, "No"], [true, "Yes"]] %>
+  <% else %>
+    <% if @election.record_time %>
+      Yes
+    <% else %>
+      No
     <% end %>
   <% end %>
   

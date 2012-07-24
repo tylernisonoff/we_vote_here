@@ -19,8 +19,8 @@ Voting instructions:
 
 Candidates:
 <br>
-<% @question.candidates.each do |candidate| %>
-	<%= candidate.name %>
+<% @question.choices.each do |choice| %>
+	<%= choice.name %>
 	<br>
 <% end %>
 
@@ -36,7 +36,7 @@ Candidates:
 SVCs:
 <br>
 <% @question.valid_svcs.each_with_index do |valid_svc, index| %>
-	Vote SVC #<%= index + 1 %>: id = <%= valid_svc.id %>; <%= valid_svc.svc %> <br><br>
+	Vote SVC #<%= index + 1 %>: id = <%= valid_svc.id %>; Link: <%= link_to valid_svc.svc, vote_path(valid_svc) %><br><br>
 <% end %>
 
 
@@ -46,8 +46,8 @@ Preferences:
 	<br>
 <% @question.votes.each do |vote| %>
 	BSN: <%= vote.bsn %> <br>
-	<% vote.preferences.each do |preference| %>
-	<%= preference.position %>) <%= preference.candidate.name %>
+	<% vote.active_preferences.each do |preference| %>
+	<%= preference.position %>) <%= preference.choice.name %>
 	<br>
 	<% end %>
 	<br>

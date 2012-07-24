@@ -1,35 +1,35 @@
 class Question < ActiveRecord::Base
-  attr_accessible :name, :info, :candidates_attributes, :election_id, :votes_attributes # :display_votes_as_created, :finish_time, :privacy, :start_time
+  attr_accessible :name, :info, :choices_attributes, :election_id, :votes_attributes # :display_votes_as_created, :finish_time, :privacy, :start_time
   
   has_many :votes, dependent: :destroy
   has_many :valid_svcs, dependent: :destroy
   
   has_many :preferences, dependent: :destroy
-  has_many :candidates, dependent: :destroy
+  has_many :choices, dependent: :destroy
 
   accepts_nested_attributes_for :valid_svcs, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
-  accepts_nested_attributes_for :candidates, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
+  accepts_nested_attributes_for :choices, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
   belongs_to :election
   # validates_presence_of :election
 
   validates :name, presence: true, length: { within: 2..255 }
 
-  # validates :candidates, length: { minimum: 2, message: "^Question must have at least 2 candidates" }
-  validate :candidates_check
+  # validates :choices, length: { minimum: 2, message: "^Question must have at least 2 choices" }
+  validate :choices_check
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  def candidates_check
-  	self.candidates.each do |candidate1|
+  def choices_check
+  	self.choices.each do |choice1|
   		count = 0
-  		self.candidates.each do |candidate2|
-  			if candidate1.name == candidate2.name
+  		self.choices.each do |choice2|
+  			if choice1.name == choice2.name
   				count = count + 1
   			end
   		end
   		if count > 1
-  			errors.add(:candidates, "^Names of candidates must be unique.")
+  			errors.add(:choices, "^Names of choices must be unique.")
   			break
   		end
   	end

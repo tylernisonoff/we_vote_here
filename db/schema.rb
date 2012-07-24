@@ -11,39 +11,54 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120712205554) do
+ActiveRecord::Schema.define(:version => 20120724223321) do
 
-  create_table "candidates", :force => true do |t|
+  create_table "active_preferences", :force => true do |t|
+    t.integer  "choice_id",  :null => false
+    t.integer  "position",   :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "svc",        :null => false
+    t.string   "bsn",        :null => false
+  end
+
+  add_index "active_preferences", ["svc", "choice_id"], :name => "index_preferences_on_svc_and_choice_id", :unique => true
+  add_index "active_preferences", ["svc", "position"], :name => "index_preferences_on_svc_and_position", :unique => true
+
+  create_table "choices", :force => true do |t|
     t.string   "name",        :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.integer  "question_id", :null => false
+    t.integer  "position"
   end
 
-  add_index "candidates", ["question_id", "name"], :name => "index_candidates_on_question_id_and_name", :unique => true
+  add_index "choices", ["question_id", "name"], :name => "index_choices_on_question_id_and_name", :unique => true
+  add_index "choices", ["question_id", "position"], :name => "index_choices_on_question_id_and_position", :unique => true
 
   create_table "elections", :force => true do |t|
-    t.datetime "finish_time",                                 :null => false
+    t.datetime "finish_time",                    :null => false
     t.text     "info"
-    t.string   "name",                                        :null => false
-    t.datetime "start_time",                                  :null => false
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
-    t.integer  "user_id",                                     :null => false
-    t.boolean  "display_votes_as_created", :default => false, :null => false
-    t.boolean  "privacy",                  :default => true,  :null => false
+    t.string   "name",                           :null => false
+    t.datetime "start_time",                     :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.integer  "user_id",                        :null => false
+    t.boolean  "dynamic",     :default => false, :null => false
+    t.boolean  "privacy",     :default => true,  :null => false
+    t.boolean  "record_time", :default => true,  :null => false
   end
 
   create_table "preferences", :force => true do |t|
-    t.integer  "candidate_id", :null => false
-    t.integer  "position",     :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-    t.integer  "vote_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "bsn",        :null => false
+    t.integer  "position",   :null => false
+    t.integer  "choice_id",  :null => false
   end
 
-  add_index "preferences", ["vote_id", "candidate_id"], :name => "index_preferences_on_vote_id_and_candidate_id", :unique => true
-  add_index "preferences", ["vote_id", "position"], :name => "index_preferences_on_vote_id_and_position", :unique => true
+  add_index "preferences", ["bsn", "choice_id"], :name => "index_inactive_preferences_on_bsn_and_choice_id", :unique => true
+  add_index "preferences", ["bsn", "position"], :name => "index_inactive_preferences_on_bsn_and_position", :unique => true
 
   create_table "questions", :force => true do |t|
     t.string   "name",        :null => false

@@ -1,0 +1,15 @@
+Your SVC: <%= @active_vote.svc %>
+<br><br>
+Your choices:
+<% @active_vote.preferences.each do |preference| %>
+	<%= preference.position %>) <%= preference.choice.name %>
+	<br>
+<% end %>
+
+<br><br>
+List of Associated BSNs:
+<br>
+<% @votes.each_with_index do |vote, index| %>
+	BSN #<%= index %>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %>
+	<br>
+<% end %>

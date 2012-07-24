@@ -1,56 +1,69 @@
 class VotesController < ApplicationController
   respond_to :html, :json
 
-  # before_filter :signed_in_user, only: [:index, :edit, :update]
-
-
-  # def new
-  #   @question = Question.find_by_id(params[:question_id])
-  # 	@vote = @question.votes.build
-  #   @vote.question_id = @question.id
-  #   @question.candidates.each do |candidate|
-  #     @preference = @vote.preferences.build(candidate_id: candidate.id)
-  #   end
-  #   respond_with @vote
-  # end
-
-  # def create
-  # end
-
-  # def enter
-  #   if true #Svc.exists?(svc1: params[:svc1])
-      
-  #     unless Vote.exists?(svc: params[:svc], question_id: params[:question_id])
-  #       @question = Question.find_by_id(params[:question_id])
-  #       @vote = @question.votes.build
-  #       @vote.svc1 = params[:svc1]
-  #       if @vote.save
-  #         flash[:success] = "Your vote has been recorded."
-  #         # redirect_to root_path # redirect to election page
-  #       else
-  #         render 'new'
-  #       end
-  #     else
-  #       @vote = Vote.find_by_question_id_and_svc1(params[:question_id], params[:svc1])
-  #     end
-  #     render nothing: true
-  #   else
-  #     print "\n\n\n\n\n\n\n\nSVC ISN'T VALID\n\n\n\n\n\n\n\n"
-  #   end
-  # end
-
-  # def update
-  # 	if @vote.update_attributes(params[:vote])
-  # 		flash[:success] = "Vote updated"
-  # 		redirect_to root_path # redirect to election page
-  # 	else
-  # 		render 'edit'
-  # 	end
-  # end
-
   def show
-    @vote = Vote.find(:last, conditions: {svc: params[:id]})
+    svc = params[:id]
+    if @vote
+      @vote.assign_bsn
+      unless @vote.save
+        flash[:error] = "We were unable to save your vote"
+        redirect_to @question
+      end
+    elsif ValidSvc.exists?(svc: svc)
+      @valid_svc = ValidSvc.find_by_svc(svc)
+      @question = @valid_svc.question
+      @vote = @question.votes.build
+      @vote.assign_svc(svc)
+      @vote.assign_bsn
+      unless @vote.save
+        flash[:error] = "We were unable to save your vote"
+        redirect_to @question
+      end
+    else
+      redirect_back_or root_path
+      flash[:error] = "This is an invalid SVC."
+    end
   end
+
+  def display
+    bsn = params[:id]
+   	@vote = Vote.find_by_bsn(bsn)
+    svc = @vote.svc
+    if bsn == active_bsn(svc)
+      @preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    else
+      @preferences = Preference.find(:all, conditions: {bsn: bsn})
+  end
+
+  def status
+    svc = params[:id]
+    @votes = Vote.find(:all, conditions: {svc: svc})
+    @active_bsn = active_bsn(svc)
+    @active_vote = Vote.find_by_bsn(@active_bsn)
+  end
+
+  def activate(bsn)
+    bsn = params[:id]
+    @vote_to_activate = Vote.find_by_bsn(bsn)
+  	@vote_to_activate.activate
+
+  	redirect_to status_vote_path(@vote_to_activate.svc)
+  end
+
+  def clear
+    bsn = params[:id]
+    if Vote.exists?(bsn: bsn)
+      @vote = Vote.find_by_bsn(bsn)
+      if @vote.check_last_bsn(bsn)
+        @vote.forget_vote(bsn)
+      else
+        flash[:error] = "Sorry, you can only delete your last vote"
+      end
+    else
+      flash[:error] = "This BSN does not exist"
+      redirect_back_or root_path
+    end
+  end    
 
 	private
 
@@ -58,4 +71,15 @@ class VotesController < ApplicationController
 	  		@user = User.find(params[:id])
 	  		redirect_to root_path unless @vote.user_id == current_user.id # redirect to election page
 		end
+
+		def active_bsn(svc)
+			if ActivePreference.exists?(svc: svc)
+        @preference = ActivePreference.find(:first, conditions: {svc: svc})
+        bsn = @preference.bsn
+        return bsn
+			else
+        return false
+    	end
+  	end
+  end
 end

@@ -2,7 +2,7 @@
 <h1>Submit your vote</h1>
 <h2> Election: <%= link_to @vote.question.election.name, @vote.question.election %> </h2>
 <h2> Question: <%= link_to @vote.question.name, @vote.question %> </h2>
-<h2> Your BSN: <%= @vote.bsn %> </h2>
+<h2> Your BSN: <%= link_to @vote.bsn, display_vote_path(@vote.bsn) %> </h2>
 
   <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
@@ -20,7 +20,7 @@
       update: function(){
         $.ajax({
           type: 'post',
-          data: $('#sortable').sortable('serialize') +"&svc=<%= @vote.svc %>",
+          data: $('#sortable').sortable('serialize') +"&svc=<%= @vote.svc %>"+"&bsn=<%= @vote.bsn %>",
           dataType: 'script',
           complete: function(request){
             $('#sortable').effect('highlight');
@@ -37,11 +37,15 @@
     <ul id="sortable">
       <h3> Candidates: </h3>
       <br>
-      <% @vote.question.candidates.each do |candidate| %>
-      <li id="candidate_<%= candidate.id %>
-      " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= candidate.name %> </li>
+      <% @vote.question.choices.each do |choice| %>
+      <li id="choice_<%= choice.id %>
+      " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
       <% end %>
     </ul>
   </div>
 <br>
-<%= link_to "Back to #{@vote.question.election.name}", @vote.question.election, class: "btn btn-large btn-primary" %>
+<%= link_to "Back to #{@vote.question.name}", @vote.question, class: "btn btn-large btn-primary" %>
+
+<%= link_to "Click here to VOTE", activate_vote_path(@vote.bsn), class: "btn btn-large btn-primary" %>
+
+<%= link_to "DISCARD VOTE AND EXIT", clear_vote_path(@vote.bsn), class: "btn btn-large btn-primary" %>

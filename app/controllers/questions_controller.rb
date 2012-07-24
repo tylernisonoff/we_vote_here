@@ -4,9 +4,9 @@ class QuestionsController < ApplicationController
 	def new
     @election = Election.find_by_id(params[:election_id])
     @question = @election.questions.build
-    @question.candidates.build
-    @question.candidates.each do |candidate|
-      candidate.question_id = @question.id
+    @question.choices.build
+    @question.choices.each do |choice|
+      choice.question_id = @question.id
     end
     respond_with @question
 	end

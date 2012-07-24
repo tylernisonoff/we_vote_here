@@ -22,18 +22,22 @@ WeVoteHere::Application.routes.draw do
     end
   end
 
-  resources :valid_svcs #do
-    # post :enter, on: :collection
-    # post :make
-    # post :confirm
-  # end
+  resources :valid_svcs
 
   resources :preferences do
     post :sort, on: :collection
   end
 
   resources :candidates
-  resources :votes
+
+  resources :votes do
+    member do
+      get :display
+      get :status
+      get :activate
+      post :clear
+    end
+  end
 
   resources :sessions, only: [:new, :create, :destroy]
 
@@ -57,6 +61,7 @@ WeVoteHere::Application.routes.draw do
   get "static_pages/about"
   get "static_pages/terms"
   get "static_pages/privacy"
+
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

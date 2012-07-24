@@ -1,0 +1,10 @@
+Your BSN: <%= @vote.bsn %>
+
+<br><br>
+
+Your choices:
+<br>
+<% @preferences.each do |inactive_preference| %>
+	<%= inactive_preference.position %>) <%= inactive_preference.choice.name %>
+	<br>
+<% end %>
