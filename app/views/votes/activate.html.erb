@@ -1,7 +1,11 @@
 BSN: <%= link_to @activated_vote.bsn, display_vote_path(@activated_vote.bsn) %>
 <br><br>
-Your choices: <br>
-<% @active_preferences.each do |pref| %>
-	<%= pref.position %>) <%= pref.choice.name %>
-	<br>
+<h3>Your choices</h3> <br>
+<% if @active_preferences.any? %>
+	<% @active_preferences.each do |pref| %>
+		<%= pref.position %>) <%= pref.choice.name %>
+		<br>
+	<% end %>
+<% else %>
+	<h3> Your ballot has no choices <h3>
 <% end %>

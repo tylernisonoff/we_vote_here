@@ -1,0 +1,7 @@
+BSN: <%= link_to @vote.bsn, display_vote_path(@activated_vote.bsn) %>
+<br><br>
+Your choices: <br>
+<% @active_preferences.each do |pref| %>
+	<%= pref.position %>) <%= pref.choice.name %>
+	<br>
+<% end %>

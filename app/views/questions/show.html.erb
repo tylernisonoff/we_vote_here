@@ -16,14 +16,6 @@ Voting instructions:
 
 <br>
 <br>
-
-Candidates:
-<br>
-<% @question.choices.each do |choice| %>
-	<%= choice.name %>
-	<br>
-<% end %>
-
 <br>
 <% if @question.election.privacy %>
 	<%= link_to "Vote", enter_question_valid_svcs_path(@question), class: "btn btn-large btn-primary" %>
@@ -33,22 +25,26 @@ Candidates:
 
 <br><br><br><br>
 
-SVCs:
+<h3>Choices</h3>
+<br>
+<% @question.choices.each do |choice| %>
+	<%= choice.name %>
+	<br>
+<% end %>
+
+<br><br>
+
+<h3>SVCs</h3>
 <br>
 <% @question.valid_svcs.each_with_index do |valid_svc, index| %>
-	Vote SVC #<%= index + 1 %>: id = <%= valid_svc.id %>; Link: <%= link_to valid_svc.svc, vote_path(valid_svc) %><br><br>
+	SVC #<%= index + 1 %>: <%= link_to "Status", status_vote_path(valid_svc) %> --- <%= link_to valid_svc.svc, vote_path(valid_svc) %><br>
 <% end %>
 
 
-<br><br><br><br>
+<br><br>
 
-Preferences:
+<h3>BSNs</h3>
 	<br>
-<% @question.votes.each do |vote| %>
-	BSN: <%= vote.bsn %> <br>
-	<% vote.active_preferences.each do |preference| %>
-	<%= preference.position %>) <%= preference.choice.name %>
-	<br>
-	<% end %>
-	<br>
+<% @question.votes.each_with_index do |vote, index| %>
+	BSN #<%=index+1%>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %><br>
 <% end %>

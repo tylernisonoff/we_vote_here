@@ -5,15 +5,19 @@
 <h2> Your SVC: <%= link_to @vote.svc, status_vote_path(@vote.svc) %> </h2>
 <h2> Your BSN: <%= link_to @vote.bsn, display_vote_path(@vote.bsn) %> </h2>
 
+
+<br><br><br>
+
+
   <style>
-  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-  #sortable li span { position: absolute; margin-left: -1.3em; }
+  #sortable1, #sortable2 { list-style-type: none; margin: 0; padding: 0 0 2.5em; float: left; margin-right: 10px; }
+  #sortable1 li, #sortable2 li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
   </style>
 
   <script>
   $(function() {
-    $('#sortable').sortable({
+    $('#sortable1, #sortable2').sortable({
+      connectWith: ".connectedSortable",
       cursor: 'crosshair',
       items: 'li',
       opacity: 0.4,
@@ -21,10 +25,10 @@
       update: function(){
         $.ajax({
           type: 'post',
-          data: $('#sortable').sortable('serialize') +"&svc=<%= @vote.svc %>"+"&bsn=<%= @vote.bsn %>",
+          data: $('#sortable1').sortable('serialize') +"&svc=<%= @vote.svc %>"+"&bsn=<%= @vote.bsn %>",
           dataType: 'script',
           complete: function(request){
-            $('#sortable').effect('highlight');
+            $('#sortable1').effect('highlight');
           },
           url: '/preferences/sort'
         })
@@ -33,19 +37,24 @@
   });
   </script>
 
-  <div class="demo">
+<div class = "demo">
+  <ul id="sortable1" class = "connectedSortable">
+    <h3>Ballot</h3><br>
+    
+  </ul>
 
-    <ul id="sortable">
-      <h3> Candidates: </h3>
-      <br>
-      <% @vote.question.choices.each do |choice| %>
-      <li id="choice_<%= choice.id %>
-      " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
-      <% end %>
-    </ul>
-  </div>
-<br>
-<%= link_to "Back to #{@vote.question.name}", @vote.question, class: "btn btn-large btn-primary" %>
+
+  <ul id="sortable2" class = "connectedSortable">
+    <h3>Unsorted Choices</h3><br>
+    <% @vote.question.choices.each do |choice| %>
+    <li id="choice_<%= choice.id %>
+    " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
+    <% end %>
+  </ul>
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 <%= link_to "Click here to VOTE", activate_vote_path(@vote.bsn), class: "btn btn-large btn-primary" %>
 

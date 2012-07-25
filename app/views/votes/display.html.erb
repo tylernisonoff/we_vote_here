@@ -6,9 +6,13 @@
 
 <br><br>
 
-Your choices:
+<h3>Choices</h3>
 <br>
-<% @preferences.each do |inactive_preference| %>
-	<%= inactive_preference.position %>) <%= inactive_preference.choice.name %>
-	<br>
+<% if @preferences.any? %>
+	<% @preferences.each do |pref| %>
+		<%= pref.position %>) <%= pref.choice.name %>
+		<br>
+	<% end %>
+<% else %>
+	<h3> This ballot has no choices <h3>
 <% end %>

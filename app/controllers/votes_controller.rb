@@ -7,8 +7,7 @@ class VotesController < ApplicationController
     @vote_to_activate.activate_vote
 
     @activated_vote = Vote.find_by_bsn(bsn)
-    svc = @activated_vote.svc
-    @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    @active_preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
   end
 
   def show
@@ -38,11 +37,10 @@ class VotesController < ApplicationController
   def display
     bsn = params[:id]
    	@vote = Vote.find_by_bsn(bsn)
-    svc = @vote.svc
-    if bsn == active_bsn(svc)
-      @preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    if ActivePreference.exists?(bsn: bsn)
+      @preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
     else
-      @preferences = Preference.find(:all, conditions: {bsn: bsn})
+      @preferences = false
     end
   end
 
@@ -51,7 +49,11 @@ class VotesController < ApplicationController
     @votes = Vote.find(:all, conditions: {svc: svc})
     @active_bsn = active_bsn(svc)
     @active_vote = Vote.find_by_bsn(@active_bsn)
-    @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    if ActivePreference.exists?(svc: svc)
+      @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    else
+      @active_preferences = false
+    end
   end
 
   def clear
@@ -67,6 +69,8 @@ class VotesController < ApplicationController
       flash[:error] = "This BSN does not exist"
       redirect_back_or root_path
     end
+    @active_preferences = ActivePreference.find(:all, conditions: {bsn: @vote.bsn})
+    redirect_to @vote.question
   end    
 
 	private

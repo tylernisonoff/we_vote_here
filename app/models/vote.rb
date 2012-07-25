@@ -28,13 +28,11 @@ class Vote < ActiveRecord::Base
 
 	def activate_vote
 		@current_preferences = ActivePreference.find(:all, conditions: {svc: svc})
-		puts "\n\n\n\n\n\n#{@current_preferences}\n\n\n\n\n"
     	@current_preferences.each do |current_preference|
       		current_preference.delete
       	end
 
       	@new_preferences = Preference.find(:all, conditions: {bsn: bsn})
-      	puts "\n\n\n\n\n\n#{@current_preferences}\n\n\n\n\n"
     	@new_preferences.each do |new_preference|
     		new_preference.make_active
     	end

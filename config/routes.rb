@@ -35,7 +35,7 @@ WeVoteHere::Application.routes.draw do
       get :display
       get :status
       get :activate
-      post :clear
+      get :clear
     end
   end
 
