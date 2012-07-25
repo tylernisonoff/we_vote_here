@@ -9,6 +9,8 @@ class ValidSvcsController < ApplicationController
     unless @question.election.privacy
       @vote = @question.votes.build
       @vote.assign_svc
+      @vote.assign_bsn
+      @vote.save
       redirect_to @vote
     else
       redirect_to @question
@@ -28,6 +30,8 @@ class ValidSvcsController < ApplicationController
       @question = Question.find(params[:question_id])
       @vote = @question.votes.build
       @vote.assign_svc(params[:valid_svc][:svc])
+      @vote.assign_bsn
+      @vote.save
       redirect_to @vote
     else
       flash[:error] = "This is an invalid SVC"

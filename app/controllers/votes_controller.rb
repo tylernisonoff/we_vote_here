@@ -13,11 +13,7 @@ class VotesController < ApplicationController
   def show
     svc = params[:id]
     if @vote
-      @vote.assign_bsn
-      unless @vote.save
-        flash[:error] = "We were unable to save your vote"
-        redirect_to @question
-      end
+      # Just chill, show as usual.
     elsif ValidSvc.exists?(svc: svc)
       @valid_svc = ValidSvc.find_by_svc(svc)
       @question = @valid_svc.question
@@ -37,11 +33,7 @@ class VotesController < ApplicationController
   def display
     bsn = params[:id]
    	@vote = Vote.find_by_bsn(bsn)
-    if ActivePreference.exists?(bsn: bsn)
-      @preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
-    else
-      @preferences = false
-    end
+    @preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
   end
 
   def status
@@ -49,11 +41,7 @@ class VotesController < ApplicationController
     @votes = Vote.find(:all, conditions: {svc: svc})
     @active_bsn = active_bsn(svc)
     @active_vote = Vote.find_by_bsn(@active_bsn)
-    if ActivePreference.exists?(svc: svc)
-      @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
-    else
-      @active_preferences = false
-    end
+    @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
   end
 
   def clear

@@ -13,6 +13,7 @@ class Vote < ActiveRecord::Base
 	
 	def assign_svc(svc = false)
 	  unless svc
+	  	@question = self.question
 	  	@valid_svc = @question.valid_svcs.build
       	@valid_svc.svc = SecureRandom.urlsafe_base64
       	@valid_svc.save
