@@ -1,6 +1,16 @@
 class VotesController < ApplicationController
   respond_to :html, :json
 
+  def activate
+    bsn = params[:id]
+    @vote_to_activate = Vote.find_by_bsn(bsn)
+    @vote_to_activate.activate_vote
+
+    @activated_vote = Vote.find_by_bsn(bsn)
+    svc = @activated_vote.svc
+    @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
+  end
+
   def show
     svc = params[:id]
     if @vote
@@ -33,6 +43,7 @@ class VotesController < ApplicationController
       @preferences = ActivePreference.find(:all, conditions: {svc: svc})
     else
       @preferences = Preference.find(:all, conditions: {bsn: bsn})
+    end
   end
 
   def status
@@ -40,14 +51,7 @@ class VotesController < ApplicationController
     @votes = Vote.find(:all, conditions: {svc: svc})
     @active_bsn = active_bsn(svc)
     @active_vote = Vote.find_by_bsn(@active_bsn)
-  end
-
-  def activate(bsn)
-    bsn = params[:id]
-    @vote_to_activate = Vote.find_by_bsn(bsn)
-  	@vote_to_activate.activate
-
-  	redirect_to status_vote_path(@vote_to_activate.svc)
+    @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
   end
 
   def clear
@@ -81,5 +85,4 @@ class VotesController < ApplicationController
         return false
     	end
   	end
-  end
 end

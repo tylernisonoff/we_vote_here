@@ -30,7 +30,7 @@ class Preference < ActiveRecord::Base
       @active_preference.created_at = self.created_at
 
       @active_preference.save
-  end
+  	end
 
 
 end

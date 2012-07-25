@@ -17,14 +17,14 @@ class ActivePreference < ActiveRecord::Base
   	end
   end
 
-  def make_inactive
-    @preference = Preference.new
-    @preference.bsn = self.bsn
-    @preference.choice_id = self.choice_id
-    @preference.position = self.position
-    @preference.created_at = self.created_at
+  # def make_inactive
+  #   @preference = Preference.new
+  #   @preference.bsn = self.bsn
+  #   @preference.choice_id = self.choice_id
+  #   @preference.position = self.position
+  #   @preference.created_at = self.created_at
     
-    @inactive_preference.save
-  end
+  #   @preference.save
+  # end
 
 end

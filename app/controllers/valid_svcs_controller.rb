@@ -9,13 +9,7 @@ class ValidSvcsController < ApplicationController
     unless @question.election.privacy
       @vote = @question.votes.build
       @vote.assign_svc
-      @vote.assign_bsn
-      if @vote.save
-        redirect_to @vote
-        flash[:success] = "Cast your vote!"
-      else
-        flash[:error] = "There has been an error creating your SVC"
-      end
+      redirect_to @vote
     else
       redirect_to @question
     end

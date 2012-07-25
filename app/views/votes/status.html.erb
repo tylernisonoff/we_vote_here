@@ -1,12 +1,20 @@
-Your SVC: <%= @active_vote.svc %>
+<h2> Election: <%= link_to @active_vote.question.election.name, @active_vote.question.election %> </h2>
+<h2> Question: <%= link_to @active_vote.question.name, @active_vote.question %> </h2>
+<h2> SVC: <%= link_to @active_vote.svc, vote_path(@active_vote.svc) %> </h2>
+
 <br><br>
-Your choices:
-<% @active_vote.preferences.each do |preference| %>
-	<%= preference.position %>) <%= preference.choice.name %>
+
+Active Vote:
+<br>
+BSN: <%= link_to @active_vote.bsn, display_vote_path(@active_vote.bsn) %> <br>
+<% @active_preferences.each do |active_preference| %>
+	<%= active_preference.position %>) <%= active_preference.choice.name %>
 	<br>
 <% end %>
 
 <br><br>
+
+
 List of Associated BSNs:
 <br>
 <% @votes.each_with_index do |vote, index| %>

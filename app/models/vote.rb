@@ -10,28 +10,7 @@ class Vote < ActiveRecord::Base
 	def to_param
 		svc
 	end
-
-	def make_inactive
-		if ActivePreference.exists?(svc: id)
-			@preferences = ActivePreference.find(svc: id)
-			no_loop = true
-			@preferences.each do |preference|
-				@inactive_preference = Preference.new
-				@inactive_preference.bsn = self.bsn
-				@inactive_preference.choice_id = preference.choice_id
-				@inactive_preference.position = preference.position
-				unless @inactive_preference.save
-					no_loop = false
-				end
-			end
-			if no_loop
-				@preferences.delete
-			else
-				flash[:error] = "We could not clear the old preferences"
-			end
-		end
-	end
-
+	
 	def assign_svc(svc = false)
 	  unless svc
 	  	@valid_svc = @question.valid_svcs.build
@@ -47,19 +26,17 @@ class Vote < ActiveRecord::Base
    		self.bsn = SecureRandom.urlsafe_base64
     end
 
-	def activate
-		@current_preferences = ActivePreference.find(:all, conditions: {svc: self.svc})
+	def activate_vote
+		@current_preferences = ActivePreference.find(:all, conditions: {svc: svc})
 		puts "\n\n\n\n\n\n#{@current_preferences}\n\n\n\n\n"
     	@current_preferences.each do |current_preference|
-      		current_preference.make_inactive
       		current_preference.delete
       	end
 
-      	@new_preferences = Preference.find(:all, conditions: {bsn: self.bsn})
+      	@new_preferences = Preference.find(:all, conditions: {bsn: bsn})
       	puts "\n\n\n\n\n\n#{@current_preferences}\n\n\n\n\n"
     	@new_preferences.each do |new_preference|
     		new_preference.make_active
-    		new_preference.delete
     	end
 	end
 
