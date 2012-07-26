@@ -38,6 +38,7 @@ class VotesController < ApplicationController
 
   def status
     svc = params[:id]
+    @valid_svc = ValidSvc.find_by_svc(svc)
     @votes = Vote.find(:all, conditions: {svc: svc})
     @active_bsn = active_bsn(svc)
     @active_vote = Vote.find_by_bsn(@active_bsn)
