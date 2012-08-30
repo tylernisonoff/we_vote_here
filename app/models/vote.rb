@@ -28,6 +28,16 @@ class Vote < ActiveRecord::Base
     end
 
 	def activate_vote
+		if ActiveVote.exists?(svc: svc)
+			@active_vote = ActiveVote.find(svc)
+      	else
+      		@active_vote = ActiveVote.new
+      		@active_vote.svc = svc
+      		@active_vote.question_id = question_id
+      	end
+      	@active_vote.bsn = bsn
+      	@active_vote.save
+
 		@current_preferences = ActivePreference.find(:all, conditions: {svc: svc})
     	@current_preferences.each do |current_preference|
       		current_preference.delete
@@ -52,6 +62,10 @@ class Vote < ActiveRecord::Base
 	def forget_vote(bsn)
 		@vote = Vote.find_by_bsn(bsn)
 		@vote.delete
+		if ActiveVote.exists?(bsn: bsn)
+			@active_vote = ActiveVote.find_by_bsn(bsn)
+			@active_vote.delete
+		end
 	end
 
 end

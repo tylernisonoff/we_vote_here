@@ -1,0 +1,9 @@
+You have been invited by <%= @question.election.user.pretty_name %> to Question: <%= @question.name %>
+
+==================================================
+
+You will use your Secret Voting Code (SVC) to securely vote on this question. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!
+
+Your SVC is <%= link_to @svc, vote_path(@svc) %>. You can click it to vote.
+
+You can also view the status of your vote here: <%= link_to "Status", status_vote_path(@svc) %>

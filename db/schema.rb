@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120724223321) do
+ActiveRecord::Schema.define(:version => 20120805121243) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",  :null => false
@@ -22,19 +22,26 @@ ActiveRecord::Schema.define(:version => 20120724223321) do
     t.string   "bsn",        :null => false
   end
 
-  add_index "active_preferences", ["svc", "choice_id"], :name => "index_preferences_on_svc_and_choice_id", :unique => true
-  add_index "active_preferences", ["svc", "position"], :name => "index_preferences_on_svc_and_position", :unique => true
+  add_index "active_preferences", ["svc", "choice_id"], :name => "index_active_preferences_on_svc_and_choice_id", :unique => true
+
+  create_table "active_votes", :force => true do |t|
+    t.integer  "question_id"
+    t.string   "svc"
+    t.string   "bsn"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "active_votes", ["svc"], :name => "index_active_votes_on_svc", :unique => true
 
   create_table "choices", :force => true do |t|
     t.string   "name",        :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.integer  "question_id", :null => false
-    t.integer  "position"
   end
 
   add_index "choices", ["question_id", "name"], :name => "index_choices_on_question_id_and_name", :unique => true
-  add_index "choices", ["question_id", "position"], :name => "index_choices_on_question_id_and_position", :unique => true
 
   create_table "elections", :force => true do |t|
     t.datetime "finish_time",                    :null => false
@@ -57,8 +64,7 @@ ActiveRecord::Schema.define(:version => 20120724223321) do
     t.integer  "choice_id",  :null => false
   end
 
-  add_index "preferences", ["bsn", "choice_id"], :name => "index_inactive_preferences_on_bsn_and_choice_id", :unique => true
-  add_index "preferences", ["bsn", "position"], :name => "index_inactive_preferences_on_bsn_and_position", :unique => true
+  add_index "preferences", ["bsn", "choice_id"], :name => "index_preferences_on_bsn_and_choice_id", :unique => true
 
   create_table "questions", :force => true do |t|
     t.string   "name",        :null => false
@@ -67,6 +73,16 @@ ActiveRecord::Schema.define(:version => 20120724223321) do
     t.datetime "updated_at",  :null => false
     t.integer  "election_id", :null => false
   end
+
+  create_table "results", :force => true do |t|
+    t.integer  "question_id"
+    t.integer  "choice_id"
+    t.integer  "position"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "results", ["question_id", "choice_id"], :name => "index_results_on_question_id_and_choice_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "email",           :null => false

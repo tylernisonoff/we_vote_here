@@ -14,14 +14,6 @@ class QuestionsController < ApplicationController
 	def create
     @election = Election.find(params[:election_id])
 		@question = @election.questions.build(params[:question])
-    if @election.privacy  
-      @election.voters.each do |voter|
-        @valid_svc = @question.valid_svcs.build
-        # puts "\n\n\n\n\n\n\n\n#{@valid_svc}\n\n\n\n\n\n\n\n"
-        # @valid_svc.question = @question
-        @valid_svc.svc = SecureRandom.urlsafe_base64
-      end
-    end
 		if @question.save
 			flash[:success] = "Question saved"
       if params[:commit] == "Save"
@@ -32,6 +24,12 @@ class QuestionsController < ApplicationController
     else
 			flash[:failure] = "Failed to save question"
 		end
+
+    # If the election is private, then create SVCs
+    # This also sends an email to every valid email with their SVC
+    if @election.privacy  
+      @question.create_svcs
+    end
 	end
 
 	def edit
