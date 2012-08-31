@@ -38,18 +38,7 @@ WeVoteHere::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  # Configure Gmail SMTP Settings
-  config.action_mailer.smtp_settings = {
-  :address              => "smtp.gmail.com",
-  :port                 => 587,
-  :domain               => 'wevotehere.herokuapp.com',
-  :user_name            => 'wevotehere@gmail.com',
-  :password             => 'condorcet89S',
-  :authentication       => 'plain',
-  :enable_starttls_auto => true  }
-
   # Make sure Rails raises errors on mail delivery:
   config.action_mailer.raise_delivery_errors = true
 
-  # heroku config:add GMAIL_USERNAME=wevotehere@gmail.com GMAIL_PASSWORD=condorcet89S
 end
