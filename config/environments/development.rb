@@ -51,5 +51,5 @@ WeVoteHere::Application.configure do
   # Make sure Rails raises errors on mail delivery:
   config.action_mailer.raise_delivery_errors = true
 
-
+  # heroku config:add GMAIL_USERNAME=wevotehere@gmail.com GMAIL_PASSWORD=condorcet89S
 end
