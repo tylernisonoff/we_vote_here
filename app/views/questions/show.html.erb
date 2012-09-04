@@ -37,7 +37,7 @@ Voting instructions:
 <h3>SVCs</h3>
 <br>
 <% @question.valid_svcs.each_with_index do |valid_svc, index| %>
-	SVC #<%= index + 1 %>: <%= link_to "Status", status_vote_path(valid_svc) %> --- <%= link_to valid_svc.svc, vote_path(valid_svc) %><br>
+	SVC #<%= index + 1 %>: <%= link_to "Status", status_active_vote_path(valid_svc) %> --- <%= link_to valid_svc.svc, vote_path(id: valid_svc.svc) %><br>
 <% end %>
 
 
@@ -48,3 +48,5 @@ Voting instructions:
 <% @question.votes.each_with_index do |vote, index| %>
 	BSN #<%=index+1%>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %><br>
 <% end %>
+
+<%= link_to 'Export MOV to CSV', export_mov_to_csv_question_path(@question) %>

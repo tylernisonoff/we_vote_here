@@ -1,5 +1,5 @@
 class Election < ActiveRecord::Base
-  attr_accessible :dynamic, :finish_time, :info, :name, :privacy, :start_time, :questions_attributes, :emails, :record_time, :voter_attributes, :valid_emails, :valid_emails_attributes
+  attr_accessible :dynamic, :finish_time, :info, :name, :privacy, :start_time, :questions_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
   
   has_many :questions, dependent: :destroy
 
@@ -21,8 +21,6 @@ class Election < ActiveRecord::Base
   validate :check_finish_time, on: :create
 
   validates :name, presence: true, length: { within: 2..255 }
-
-  before_save { :check_timestamps }
 
 
   def check_start_time
@@ -55,13 +53,6 @@ class Election < ActiveRecord::Base
       end
     end
   end
-
-  def check_timestamps
-    if self.dynamic
-      self.record_time = true
-    end
-  end
-
 
 
 

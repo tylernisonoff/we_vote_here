@@ -10,7 +10,7 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :nickname, :email, :handle, :password, :password_confirmation, :pretty_name
+  attr_accessible :nickname, :email, :handle, :password, :password_confirmation, :pretty_name, :handle_or_email
   has_secure_password
 
   has_many :elections, dependent: :destroy
@@ -35,15 +35,30 @@ class User < ActiveRecord::Base
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
   					uniqueness: { case_sensitive: false }
   validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain spaces or the '@' character" },
-            uniqueness: { case_sensitive: false }, length: { minimum: 2 }          
-  validates :password, length: { minimum: 6 }, on: :create
+            uniqueness: { case_sensitive: false }, length: { within: 2..20 }          
+  validates :password, length: { within: 6..50 }, on: :create
   validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
 
   def pretty_name
     if !nickname.blank? && !nickname.nil?
-      nickname
+      return nickname
     else
-      handle
+      return handle
+    end
+  end
+
+  # I believe this function doesn't do anything but is necessary
+  def handle_or_email
+    # Handle chosen somewhat arbitrarily, the main plus is privacy
+    self.handle
+  end
+
+  # I believe this function doesn't do anything but is necessary
+  def handle_or_email=(login)
+    if login.include? "@"
+      self.email
+    else
+      self.handle
     end
   end
 

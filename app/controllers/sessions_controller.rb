@@ -4,10 +4,11 @@ class SessionsController < ApplicationController
 	end
 
 	def create
-		if params[:session][:email].include? "@"
-			user = User.find_by_email(params[:session][:email])
+		login = params[:session][:handle_or_email]
+		if contains_at(login)
+			user = User.find_by_email(login)
 		else
-			user = User.find_by_handle(params[:session][:email])
+			user = User.find_by_handle(login)
 		end
 
 		if user && user.authenticate(params[:session][:password])

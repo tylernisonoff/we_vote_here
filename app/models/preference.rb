@@ -9,27 +9,23 @@ class Preference < ActiveRecord::Base
 	validates :choice_id, presence: true
 	validates :position, presence: true
 
-	before_save { :check_timestamp }
-
-	def check_timestamp
-		unless self.vote.question.election.record_time
-	  		self.timestamps = nil
-	  	end
-	end
-
 	def make_active
-      @active_preference = ActivePreference.new
+            @active_preference = ActivePreference.new
 
-      @vote = Vote.find_by_bsn(self.bsn)
-      svc = @vote.svc
-      
-      @active_preference.svc = svc
-      @active_preference.bsn = self.bsn
-      @active_preference.choice_id = self.choice_id
-      @active_preference.position = self.position
-      @active_preference.created_at = self.created_at
+            @vote = Vote.find_by_bsn(bsn)
+            svc = @vote.svc
 
-      @active_preference.save
+            puts "\n\n\n\n\n\n#{svc}\n\n\n\n\n\n"
+            
+            @active_preference.svc = svc
+            @active_preference.bsn = bsn
+            @active_preference.choice_id = choice_id
+            @active_preference.position = position
+            @active_preference.created_at = self.created_at
+
+            if @active_preference.save
+                  # puts "\n\n\n\n\nSAVES\n\n\n\n"
+            end
   	end
 
 

@@ -13,14 +13,25 @@
 
 	<br><br>
 
+	<script>
+	$(document).ready(function(){
+		$("form").keypress(function(event){ // change to ".enter_question_name"
+    		if(event.keyCode == 13){ // clicked enter
+        		$('#add_new_choice').click();
+        		return false;
+    		}
+		});
+	});
+	</script>
+
 	<h3>Choices:</h3>
 	<br>
 	<% f.fields_for :choices do |c| %>
 		<%= c.label :name %>
-		<%= c.text_field :name, placeholder: "choice" %>
+		<%= c.text_field :name, placeholder: "choice", :class => "enter_choice_name" %>
 		<%= c.link_to_remove "Remove" %>
 	<% end %>
-	<p><%= f.link_to_add "Add another choice", :choices %></p>
+	<p><%= f.link_to_add "Add new choice", :choices, id: "add_new_choice" %></p>
 	
 	<br>
 	<br>

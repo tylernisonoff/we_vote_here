@@ -1,5 +1,6 @@
 class QuestionsController < ApplicationController
-	respond_to :html, :json
+  require 'csv'
+  respond_to :html, :json
 
 	def new
     @election = Election.find_by_id(params[:election_id])
@@ -59,6 +60,36 @@ class QuestionsController < ApplicationController
         format.json { respond_with_bip(@question) }
       end
     end
+  end
+
+  def export_mov_to_csv
+    @question = Question.find(params[:id])
+    @choice_names = @question.choice_name_array
+    @adj_choice_names = [0] + @choice_names
+    
+    @choice_ids = @question.choice_id_array
+    @mov = @question.get_mov
+
+    filename ="election_#{@question.election.name}_question_#{@question.name}"
+    
+    csv_data = CSV.generate do |csv|
+      @adj_choice_names.each_with_index do |choice_name, index|
+        if index == 0
+          csv << @adj_choice_names
+        else  
+          add_to_csv = [choice_name]
+          @choice_ids.each do |choice_id|
+            # puts "\n\n\n\n\n\n#{@mov[@choice_ids[index]][choice_id]}\n\n\n\n\n"
+            add_to_csv.push(@mov[@choice_ids[index-1]][choice_id])
+          end
+          csv << add_to_csv
+        end
+      end
+    end
+
+    send_data csv_data,
+      type: 'text/csv; charset=iso-8859-1; header=present',
+      disposition: "attachment; filename=#{filename}.csv"
   end
 
    private

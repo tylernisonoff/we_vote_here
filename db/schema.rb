@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120805121243) do
+ActiveRecord::Schema.define(:version => 20120904223948) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",  :null => false
@@ -25,9 +25,9 @@ ActiveRecord::Schema.define(:version => 20120805121243) do
   add_index "active_preferences", ["svc", "choice_id"], :name => "index_active_preferences_on_svc_and_choice_id", :unique => true
 
   create_table "active_votes", :force => true do |t|
-    t.integer  "question_id"
-    t.string   "svc"
-    t.string   "bsn"
+    t.integer  "question_id", :null => false
+    t.string   "svc",         :null => false
+    t.string   "bsn",         :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
@@ -53,7 +53,6 @@ ActiveRecord::Schema.define(:version => 20120805121243) do
     t.integer  "user_id",                        :null => false
     t.boolean  "dynamic",     :default => false, :null => false
     t.boolean  "privacy",     :default => true,  :null => false
-    t.boolean  "record_time", :default => true,  :null => false
   end
 
   create_table "preferences", :force => true do |t|

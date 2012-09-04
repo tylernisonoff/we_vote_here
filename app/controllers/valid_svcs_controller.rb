@@ -11,7 +11,7 @@ class ValidSvcsController < ApplicationController
       @vote.assign_svc
       @vote.assign_bsn
       @vote.save
-      redirect_to @vote
+      redirect_to vote_path(@vote)
     else
       redirect_to @question
     end
@@ -32,7 +32,7 @@ class ValidSvcsController < ApplicationController
       @vote.assign_svc(params[:valid_svc][:svc])
       @vote.assign_bsn
       @vote.save
-      redirect_to @vote
+      redirect_to vote_path(@vote)
     else
       flash[:error] = "This is an invalid SVC"
       redirect_to enter_question_valid_svcs_path(@question)

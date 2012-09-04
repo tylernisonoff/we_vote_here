@@ -22,6 +22,27 @@ class Question < ActiveRecord::Base
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
+  def choice_name_array
+  # Returns choice names sorted by choice id
+    choice_names = Array.new
+    @sorted_choices = self.choices.sort { |a, b| a.id <=> b.id }
+    @sorted_choices.each do |choice|
+      choice_names.push(choice.name)
+    end
+    return choice_names
+  end
+
+  def choice_id_array
+    # Returns choice ids sorted by choice id
+    choice_array = self.choices
+    @choice_ids = Array.new
+    choice_array.each do |choice|
+      @choice_ids.push(choice.id)
+    end
+    choice_ids.sort!
+    return choice_ids
+  end
+
   def choices_check
   	self.choices.each do |choice1|
   		count = 0
@@ -56,10 +77,26 @@ class Question < ActiveRecord::Base
     end
   end
 
-  def ranked_pairs
+  def get_mov # doesn't work sending data to controller
+    
+    # Initialize margin-of-victory hash-of-hashes
+    # @mov[i][j] stores the margin of victory of choice j over 
+    @mov = Hash.new
+    @choices = Choice.find(:all, conditions: {question_id: self.id})
+    
+    # Initialize MOV as a hash of hashes with all 0 values.
+    @choices.each do |choice_1|
+      @mov[choice_1.id] = Hash.new
+      @choices.each do |choice_2|
+        @mov[choice_1.id][choice_2.id] = 0
+      end
+    end
+
+
     @formatted_votes = Array.new
 
-    @active_votes = ActiveVote.find(:all, conditions: {question_id: id})
+    @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
+    # puts "\n\n\n\n\n\nACTIVE VOTES: #{@active_votes} \n\n\n\n\n\n\n"
 
     @active_votes.each_with_index do |vote, index|
       @formatted_votes[index] = Hash.new
@@ -68,20 +105,8 @@ class Question < ActiveRecord::Base
       end
     end
 
-    # Initialize margin-of-victory hash-of-hashes
-    # @mov[i][j] stores the margin of victory of choice j over 
-    @mov = Hash.new
-
     @formatted_votes.each do |vote|
       vote.each do |choice1, position1|
-        
-        unless @mov[choice1]
-          @mov[choice1] = Hash.new
-        end
-        unless @mov[choice2]
-          @mov[choice2] = Hash.new
-        end
-
         vote.each do |choice2, position2|
           if choice1 > choice2
             if position1 < position2 # choice 1 is ranked higher (lower number)
@@ -95,6 +120,17 @@ class Question < ActiveRecord::Base
         end
       end
     end
+
+    # puts "\n\n\n\n\nMODEL: #{@mov} \n\n\n\n\n"
+  
+    return @mov
+  end
+
+  def ranked_pairs
+
+    # Initialize margin-of-victory hash-of-hashes
+    # @mov[i][j] stores the margin of victory of choice j over 
+    @mov = self.get_mov
 
     ### ALGO TEST STARTS HERE
 

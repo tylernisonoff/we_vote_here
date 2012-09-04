@@ -18,7 +18,8 @@ WeVoteHere::Application.routes.draw do
       post :confirm, on: :collection
     end
     member do
-      get :candidates
+      get :choices #might be useless
+      get :export_mov_to_csv
     end
   end
 
@@ -28,14 +29,18 @@ WeVoteHere::Application.routes.draw do
     post :sort, on: :collection
   end
 
-  resources :candidates
+  resources :choices #might be useless
 
   resources :votes do
     member do
       get :display
-      get :status
-      get :activate
       get :clear
+    end
+  end
+
+  resources :active_votes do
+    member do
+      get :status
     end
   end
 
@@ -62,6 +67,8 @@ WeVoteHere::Application.routes.draw do
   get "static_pages/terms"
   get "static_pages/privacy"
 
+  match 'vote/:id', to: 'vote#show', as: :vote
+  match 'active_votes/:id/activate/:bsn', to: 'active_votes#activate', as: :activate
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

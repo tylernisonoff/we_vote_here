@@ -1,48 +1,11 @@
 class VotesController < ApplicationController
   respond_to :html, :json
 
-  def activate
-    bsn = params[:id]
-    @vote_to_activate = Vote.find_by_bsn(bsn)
-    @vote_to_activate.activate_vote
-
-    @activated_vote = Vote.find_by_bsn(bsn)
-    @active_preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
-  end
-
-  def show
-    svc = params[:id]
-    if @vote
-      # Just chill, show as usual.
-    elsif ValidSvc.exists?(svc: svc)
-      @valid_svc = ValidSvc.find_by_svc(svc)
-      @question = @valid_svc.question
-      @vote = @question.votes.build
-      @vote.assign_svc(svc)
-      @vote.assign_bsn
-      unless @vote.save
-        flash[:error] = "We were unable to save your vote"
-        redirect_to @question
-      end
-    else
-      redirect_back_or root_path
-      flash[:error] = "This is an invalid SVC."
-    end
-  end
-
   def display
     bsn = params[:id]
    	@vote = Vote.find_by_bsn(bsn)
-    @preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
-  end
-
-  def status
-    svc = params[:id]
-    @valid_svc = ValidSvc.find_by_svc(svc)
-    @votes = Vote.find(:all, conditions: {svc: svc})
-    @active_bsn = active_bsn(svc)
-    @active_vote = Vote.find_by_bsn(@active_bsn)
-    @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    @preferences = Preference.find(:all, conditions: {bsn: bsn})
+    @preferences.sort! { |a, b| a.position <=> b.position }
   end
 
   def clear
