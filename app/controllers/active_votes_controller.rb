@@ -2,10 +2,10 @@ class ActiveVotesController < ApplicationController
 	
 	def activate
 	    # make sure you can only activate a vote knowing an SVC
-	    puts "\n\n\n\n\n\n#{params}\n\n\n\n\n"
+	    
 	    svc = params[:id]
 	    bsn = params[:bsn]
-	    
+
 	    @vote_to_activate = Vote.find_by_bsn(bsn)
 	    @vote_to_activate.activate_vote
 
