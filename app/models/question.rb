@@ -100,7 +100,10 @@ class Question < ActiveRecord::Base
 
     @active_votes.each_with_index do |vote, index|
       @formatted_votes[index] = Hash.new
-      vote.active_preferences.each do |preference|
+      # Using vote.active_preferences does NOT work
+      # This has to do with foreign key stuff, watch out.
+      @active_preferences = ActivePreference.find(:all, conditions: {svc: vote.svc})
+      @active_preferences.each do |preference|
         @formatted_votes[index][preference.choice_id] = preference.position
       end
     end
