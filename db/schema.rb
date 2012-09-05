@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120905015556) do
+ActiveRecord::Schema.define(:version => 20120905130255) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",  :null => false
@@ -22,7 +22,9 @@ ActiveRecord::Schema.define(:version => 20120905015556) do
     t.string   "bsn",        :null => false
   end
 
+  add_index "active_preferences", ["bsn"], :name => "index_active_preferences_on_bsn"
   add_index "active_preferences", ["svc", "choice_id"], :name => "index_active_preferences_on_svc_and_choice_id", :unique => true
+  add_index "active_preferences", ["svc"], :name => "index_active_preferences_on_svc"
 
   create_table "active_votes", :force => true do |t|
     t.integer  "question_id", :null => false
@@ -32,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20120905015556) do
     t.datetime "updated_at",  :null => false
   end
 
+  add_index "active_votes", ["question_id"], :name => "index_active_votes_on_question_id"
   add_index "active_votes", ["svc"], :name => "index_active_votes_on_svc", :unique => true
 
   create_table "choices", :force => true do |t|
@@ -64,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20120905015556) do
   end
 
   add_index "preferences", ["bsn", "choice_id"], :name => "index_preferences_on_bsn_and_choice_id", :unique => true
+  add_index "preferences", ["bsn"], :name => "index_preferences_on_bsn"
 
   create_table "questions", :force => true do |t|
     t.string   "name",        :null => false
