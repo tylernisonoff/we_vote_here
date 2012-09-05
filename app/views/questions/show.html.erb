@@ -48,5 +48,5 @@ Voting instructions:
 <% @question.votes.each_with_index do |vote, index| %>
 	BSN #<%=index+1%>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %><br>
 <% end %>
-
+<br><br><br>
 <%= link_to 'Export MOV to CSV', export_mov_to_csv_question_path(@question) %>
