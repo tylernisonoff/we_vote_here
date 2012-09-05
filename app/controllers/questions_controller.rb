@@ -47,7 +47,7 @@ class QuestionsController < ApplicationController
   end
 
   def index
-    @elections = Election.all
+    @questions = Question.find(:all, conditions: {election_id: params[:election_id]})
   end
 
   def update
