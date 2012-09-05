@@ -69,7 +69,6 @@ WeVoteHere::Application.routes.draw do
 
   match 'vote/:id', to: 'vote#show', as: :vote
   match 'active_votes/:id/activate/:bsn', to: 'active_votes#activate', as: :activate
-
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

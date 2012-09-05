@@ -40,7 +40,6 @@ class ValidSvcsController < ApplicationController
   end
 
   def exit
-    puts "\n\n\n\n\n\n\n\n\n#{params}\n\n\n\n\n\n\n\n"
   end
 
 end

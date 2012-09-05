@@ -14,8 +14,6 @@ class Preference < ActiveRecord::Base
 
             @vote = Vote.find_by_bsn(bsn)
             svc = @vote.svc
-
-            puts "\n\n\n\n\n\n#{svc}\n\n\n\n\n\n"
             
             @active_preference.svc = svc
             @active_preference.bsn = bsn
@@ -23,9 +21,7 @@ class Preference < ActiveRecord::Base
             @active_preference.position = position
             @active_preference.created_at = self.created_at
 
-            if @active_preference.save
-                  # puts "\n\n\n\n\nSAVES\n\n\n\n"
-            end
+            @active_preference.save
   	end
 
 

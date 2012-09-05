@@ -39,8 +39,7 @@ class Vote < ActiveRecord::Base
       		@active_vote.question_id = question_id
       	end
       	@active_vote.bsn = bsn
-      	if @active_vote.save
-      	puts "\n\n\n\n\nSAVES\n\n\n\n\n"	
+      	if @active_vote.save	
 			@current_preferences = ActivePreference.find(:all, conditions: {svc: svc})
 	    	@current_preferences.each do |current_preference|
 	      		current_preference.delete
