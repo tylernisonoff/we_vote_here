@@ -12,6 +12,8 @@
 		<%= active_preference.position %>) <%= active_preference.choice.name %>
 		<br>
 	<% end %>
+<% elsif @active_preferences.blank? %>
+	This vote is active, but has no recorded preferences.
 <% else %>
 <h3> There is no active vote for this SVC </h3>
 <% end %>
