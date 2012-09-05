@@ -22,7 +22,12 @@
 List of Associated BSNs:
 <br>
 <% @votes.each_with_index do |vote, index| %>
-	BSN #<%= index %>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %> - <%= link_to "Activate", activate_path(id: vote.svc, bsn: vote.bsn) %>
+	BSN #<%= index %>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %> - 
+	<% if @active_vote.bsn == vote.bsn %>
+	Active
+	<% else %>
+	<%= link_to "Activate", activate_path(id: vote.svc, bsn: vote.bsn) %>
+	<% end %>
 	<br>
 <% end %>
 

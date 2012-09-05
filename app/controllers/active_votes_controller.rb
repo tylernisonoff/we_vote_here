@@ -12,13 +12,17 @@ class ActiveVotesController < ApplicationController
 	    @active_vote = ActiveVote.find_by_svc(svc)
 	    @active_preferences = ActivePreference.find(:all, conditions: {bsn: bsn})
   		@active_preferences.sort! { |a, b| a.position <=> b.position }
+  		
+  		redirect_to status_active_vote_path(@svc)
+
   	end
 
   	def status
 	    svc = params[:id]
 	    @valid_svc = ValidSvc.find_by_svc(svc)
 	    @votes = Vote.find(:all, conditions: {svc: svc})
-	    
+	    @votes.sort! { |a, b| a.created_at <=> b.created_at}
+
 	    if ActiveVote.exists?(svc: svc)
 	    	@active_vote = ActiveVote.find_by_svc(svc)
 	    	@active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
