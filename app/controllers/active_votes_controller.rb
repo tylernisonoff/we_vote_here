@@ -29,5 +29,4 @@ class ActiveVotesController < ApplicationController
   			@active_preferences.sort! { |a, b| a.position <=> b.position }
   		end
   	end
-
 end
