@@ -20,6 +20,7 @@ WeVoteHere::Application.routes.draw do
     member do
       get :choices #might be useless
       get :export_mov_to_csv
+      get :export_votes_to_csv
     end
   end
 

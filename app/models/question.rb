@@ -22,27 +22,67 @@ class Question < ActiveRecord::Base
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  def choice_name_array
-  # Returns choice names sorted by choice id
-    choice_names = Array.new
-    @sorted_choices = self.choices.sort { |a, b| a.id <=> b.id }
-    @sorted_choices.each do |choice|
-      choice_names.push(choice.name)
-    end
-    return choice_names
+  # with probability 1/2, returns a random number between min and max
+  # with probability 1/2, returns a random number between -min and -max
+  def new_random (min, max)
+    return (rand * (max-min) + min)
   end
 
-  def choice_id_array
-    # Returns choice ids sorted by choice id
-    choice_array = self.choices
+
+  def complete(winner_hash, n)
+    num_comparisons = 0
+    winner_hash.each do |choice_id, defeated|
+        num_comparisons = num_comparisons + defeated.size()
+    end
+
+    if num_comparisons == ((n-1)*n)/2
+      return true
+    else
+      return false
+    end
+  end
+
+  def choice_name_array(sort_by_results = false)
+    @sorted_choices = get_sorted_choices(sort_by_results)
+
+    @choice_names = Array.new
+    @sorted_choices.each do |choice|
+      @choice_names.push(choice.name)
+    end
+    return @choice_names
+  end
+
+  def choice_id_array(sort_by_results = false)
+    # If sort_by_results is true, returns choice ids sorted by choice id
+    @sorted_choices = get_sorted_choices(sort_by_results)
+
+    # If sort_by_results is false or blank, returns choice ids sorted by choice id
     @choice_ids = Array.new
-    choice_array.each do |choice|
+    @sorted_choices.each do |choice|
       @choice_ids.push(choice.id)
     end
-    choice_ids.sort!
-    return choice_ids
+    return @choice_ids
   end
 
+  def get_sorted_choices(sort_by_results = false)
+
+    # in the future, modify this to check the DB
+    # for times when we have already ran ranked pairs
+    # so we don't call it again
+
+    if sort_by_results
+    # If true, returns array of choices sorted by ranked pairs results
+      @results_hash = ranked_pairs
+      @sorted_choices = self.choices.sort { |a, b| @results_hash[a.id] <=> @results_hash[b.id] }
+    else
+    # If false or empty, returns array of choices sorted by choice id
+      @sorted_choices = self.choices.sort { |a, b| a.id <=> b.id }
+    end
+
+    return @sorted_choices
+  end
+
+# This should be recoded.
   def choices_check
   	self.choices.each do |choice1|
   		count = 0
@@ -77,6 +117,25 @@ class Question < ActiveRecord::Base
     end
   end
 
+  def get_votes_hash
+    # returns hash where keys are bsns of active votes and
+    # and values are hashes (with keys as choice ids and values as positions
+
+    @votes_hash = Hash.new
+
+    @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
+    @active_votes.each do |vote|
+      @votes_hash[vote.bsn] = Hash.new
+      # Using vote.active_preferences does NOT work
+      # This has to do with foreign key stuff, watch out.
+      @active_preferences = ActivePreference.find(:all, conditions: {svc: vote.svc})
+      @active_preferences.each do |preference|
+        @votes_hash[vote.bsn][preference.choice_id] = preference.position
+      end
+    end
+    return @votes_hash
+  end
+
   def get_mov # doesn't work sending data to controller
     
     # Initialize margin-of-victory hash-of-hashes
@@ -92,30 +151,28 @@ class Question < ActiveRecord::Base
       end
     end
 
+    @formatted_votes = get_votes_hash
 
-    @formatted_votes = Array.new
+    # @formatted_votes = Array.new
+    # @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
+    # @active_votes.each_with_index do |vote, index|
+    #   @formatted_votes[index] = Hash.new
+    #   # Using vote.active_preferences does NOT work
+    #   # This has to do with foreign key stuff, watch out.
+    #   @active_preferences = ActivePreference.find(:all, conditions: {svc: vote.svc})
+    #   @active_preferences.each do |preference|
+    #     @formatted_votes[index][preference.choice_id] = preference.position
+    #   end
+    # end
 
-    @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
-    # puts "\n\n\n\n\n\nACTIVE VOTES: #{@active_votes} \n\n\n\n\n\n\n"
-
-    @active_votes.each_with_index do |vote, index|
-      @formatted_votes[index] = Hash.new
-      # Using vote.active_preferences does NOT work
-      # This has to do with foreign key stuff, watch out.
-      @active_preferences = ActivePreference.find(:all, conditions: {svc: vote.svc})
-      @active_preferences.each do |preference|
-        @formatted_votes[index][preference.choice_id] = preference.position
-      end
-    end
-
-    @formatted_votes.each do |vote|
-      vote.each do |choice1, position1|
-        vote.each do |choice2, position2|
+    @formatted_votes.each_value do |vote_hash|
+      vote_hash.each do |choice1, position1|
+        vote_hash.each do |choice2, position2|
           if choice1 > choice2
             if position1 < position2 # choice 1 is ranked higher (lower number)
               @mov[choice1][choice2] = @mov[choice1][choice2] + 1
               @mov[choice2][choice1] = @mov[choice2][choice1] - 1
-            elsif position1 > position2
+            elsif position1 > position2 # choice 2 is ranked higher (lower number)
               @mov[choice2][choice1] = @mov[choice2][choice1] + 1
               @mov[choice1][choice2] = @mov[choice1][choice2] - 1
             end
@@ -123,17 +180,18 @@ class Question < ActiveRecord::Base
         end
       end
     end
-
-    # puts "\n\n\n\n\nMODEL: #{@mov} \n\n\n\n\n"
   
     return @mov
   end
 
-  def ranked_pairs
+  def ranked_pairs(save = false)
+    # returns hash where keys are choice_ids and values are positions
 
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over 
     @mov = self.get_mov
+    n = self.choices.size
+    printer = 0
 
     ### ALGO TEST STARTS HERE
 
@@ -281,29 +339,57 @@ class Question < ActiveRecord::Base
       end
     end
 
-    result_array = Array.new
-    # the winner is the choice who beats the most others
+    amount_defeated_hash = Hash.new
+    # amount_defeated_hash stores keys: amount_defeated and value: choice_id
 
     winner_hash.each do |choice, set|
       if choice > 0
-        result_array.push([choice, set.size()])
+        unless amount_defeated_hash[set.size]
+          amount_defeated_hash[set.size] = Set.new
+        end
+        amount_defeated_hash[set.size].add(choice)
       end
     end
 
-    # find out who's on top
-    result_array.sort! { |a,b| b[1] <=> a[1] }
+    amount_defeated_array = amount_defeated_hash.keys
+    # make an array out of keys of amount_defeated_hash
+
+    amount_defeated_array.sort! { |a, b| b <=> a}
+    puts "This should print once."
+    # sort the amount_defeated_array from highest to lowest
+
+    result_hash = Hash.new
+    # result_hash stores keys: choice_id and value: final_position
+
+    index = 1
+    tie_index = 0
+    amount_defeated_array.each do |amount|
+      tie_index = 0
+      amount_defeated_hash[amount].each do |choice|
+        result_hash[choice] = index
+        tie_index = tie_index + 1
+      end
+      index = index + tie_index
+    end
+
+    if save
+      save_ranked_pairs_results(result_hash)
+    end
+
+    return result_hash
     
+  end
 
-    ### ALGO TEST ENDS HERE
-
-
-    # insert this into the database
-    result_array.each_with_index do |result, index|
-      @result = Result.new
-      @result.question_id = self.id
-      @result.position = index + 1
-      @result.choice_id = result[0]
-      @result.save
+  def save_ranked_pairs_results(result_hash = false)
+    if result_hash
+      Result.delete_all(question_id: self.id)
+      result_hash.each do |choice_id, position|
+        @result = Result.new
+        @result.question_id = self.id
+        @result.position = position
+        @result.choice_id = choice_id
+        @result.save
+      end
     end
   end
 

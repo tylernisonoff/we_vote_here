@@ -64,26 +64,57 @@ class QuestionsController < ApplicationController
 
   def export_mov_to_csv
     @question = Question.find(params[:id])
-    @choice_names = @question.choice_name_array
-    @adj_choice_names = [0] + @choice_names
-    
-    @choice_ids = @question.choice_id_array
     @mov = @question.get_mov
 
-    filename ="election_#{@question.election.name}_question_#{@question.name}"
+    filename ="regular_mov_for_#{@question.name}"
+
+    if params[:adjusted] && @question.election.dynamic
+      sorted = params[:adjusted]
+    else
+      sorted = false
+    end
+
+    @choice_names = @question.choice_name_array(sorted)
+    @choice_ids = @question.choice_id_array(sorted)
+      
+    if sorted
+      filename ="sorted_mov_for_#{@question.name}"
+    else
+      filename ="regular_mov_for_#{@question.name}"
+    end
     
     csv_data = CSV.generate do |csv|
-      @adj_choice_names.each_with_index do |choice_name, index|
-        if index == 0
-          csv << @adj_choice_names
-        else  
-          add_to_csv = [choice_name]
-          @choice_ids.each do |choice_id|
-            # puts "\n\n\n\n\n\n#{@mov[@choice_ids[index]][choice_id]}\n\n\n\n\n"
-            add_to_csv.push(@mov[@choice_ids[index-1]][choice_id])
-          end
-          csv << add_to_csv
+      csv << (["Question name: #{@question.name}"] + @choice_names)
+      @choice_names.each_with_index do |choice_name, index|
+        add_to_csv = [choice_name]
+        @choice_ids.each do |choice_id|
+          add_to_csv.push(@mov[@choice_ids[index]][choice_id])
         end
+        csv << add_to_csv
+      end
+    end
+
+    send_data csv_data,
+      type: 'text/csv; charset=iso-8859-1; header=present',
+      disposition: "attachment; filename=#{filename}.csv"
+  end
+
+  def export_votes_to_csv
+    @question = Question.find(params[:id])
+    @votes_hash = @question.get_votes_hash
+
+    @choice_names = @question.choice_name_array
+    @choice_ids = @question.choice_id_array
+    filename ="active_votes_for_#{@question.name}"
+
+    csv_data = CSV.generate do |csv|
+      csv << ([0] + @choice_names)
+      @votes_hash.each do |bsn, vote_hash|  
+        add_to_csv = [bsn]
+        @choice_ids.each do |choice_id|
+          add_to_csv.push(vote_hash[choice_id])
+        end
+        csv << add_to_csv
       end
     end
 

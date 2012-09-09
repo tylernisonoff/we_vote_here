@@ -49,4 +49,8 @@ Voting instructions:
 	BSN #<%=index+1%>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %><br>
 <% end %>
 <br><br><br>
-<%= link_to 'Export MOV to CSV', export_mov_to_csv_question_path(@question) %>
+<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_question_path(@question, {adjusted: false}) %>
+<br>
+<%= link_to 'Export Sorted MOV to CSV', export_mov_to_csv_question_path(@question, {adjusted: true}) %>
+<br>
+<%= link_to 'Export Votes to CSV', export_votes_to_csv_question_path(@question) %>

@@ -6,10 +6,11 @@
 
 <h3>Active Vote</h3>
 <br>
-<% if @active_vote && @active_preferences.blank? %>
-	This vote is active, but has no recorded preferences.
-<% elsif @active_vote%>
-	BSN: <%= link_to @active_vote.bsn, display_vote_path(@active_vote.bsn) %> <br>
+<% if @active_vote%>
+BSN: <%= link_to @active_vote.bsn, display_vote_path(@active_vote.bsn) %> <br>
+	<% if @active_preferences.blank? %>
+		This vote is active, but has no recorded preferences.
+	<% else %>
 	<% @active_preferences.each do |active_preference| %>
 		<%= active_preference.position %>) <%= active_preference.choice.name %>
 		<br>
