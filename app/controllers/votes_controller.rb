@@ -23,7 +23,11 @@ class VotesController < ApplicationController
     end
     @active_preferences = ActivePreference.find(:all, conditions: {bsn: @vote.bsn})
     redirect_to @vote.question
-  end    
+  end
+
+  def show
+    redirect_to vote_path(@vote.svc)
+  end
 
 	private
 

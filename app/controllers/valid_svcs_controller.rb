@@ -11,7 +11,7 @@ class ValidSvcsController < ApplicationController
       @vote.assign_svc
       @vote.assign_bsn
       @vote.save
-      redirect_to vote_path(@vote)
+      redirect_to vote_path(@vote.svc)
     else
       redirect_to @question
     end

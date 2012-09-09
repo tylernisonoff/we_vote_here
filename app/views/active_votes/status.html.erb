@@ -6,14 +6,15 @@
 
 <h3>Active Vote</h3>
 <br>
-<% if @active_vote%>
+<% if @active_vote %>
 BSN: <%= link_to @active_vote.bsn, display_vote_path(@active_vote.bsn) %> <br>
 	<% if @active_preferences.blank? %>
 		This vote is active, but has no recorded preferences.
 	<% else %>
-	<% @active_preferences.each do |active_preference| %>
-		<%= active_preference.position %>) <%= active_preference.choice.name %>
-		<br>
+		<% @active_preferences.each do |active_preference| %>
+			<%= active_preference.position %>) <%= active_preference.choice.name %>
+			<br>
+		<% end %>
 	<% end %>
 <% else %>
 <h3> There is no active vote for this SVC </h3>
@@ -27,9 +28,9 @@ List of Associated BSNs:
 <% @votes.each_with_index do |vote, index| %>
 	BSN #<%= index %>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %> - 
 	<% if @active_vote.bsn == vote.bsn %>
-	Active
+		This vote is active
 	<% else %>
-	<%= link_to "Activate", activate_path(id: vote.svc, bsn: vote.bsn) %>
+		<%= link_to "Activate", activate_path(id: vote.svc, bsn: vote.bsn) %>
 	<% end %>
 	<br>
 <% end %>

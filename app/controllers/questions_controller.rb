@@ -84,7 +84,7 @@ class QuestionsController < ApplicationController
     end
     
     csv_data = CSV.generate do |csv|
-      csv << (["Question name: #{@question.name}"] + @choice_names)
+      csv << (["Choice"] + @choice_names)
       @choice_names.each_with_index do |choice_name, index|
         add_to_csv = [choice_name]
         @choice_ids.each do |choice_id|
@@ -108,7 +108,7 @@ class QuestionsController < ApplicationController
     filename ="active_votes_for_#{@question.name}"
 
     csv_data = CSV.generate do |csv|
-      csv << ([0] + @choice_names)
+      csv << (["BSN"] + @choice_names)
       @votes_hash.each do |bsn, vote_hash|  
         add_to_csv = [bsn]
         @choice_ids.each do |choice_id|
