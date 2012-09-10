@@ -102,13 +102,13 @@ class Question < ActiveRecord::Base
   def create_svcs
     if self.election.privacy
       self.election.voters.each do |voter|
-        svc = SecureRandom.urlsafe_base64
-        @valid_svc = ValidSvc.new
-        @valid_svc.svc = svc
-        @valid_svc.question = self
+        @valid_svc = self.valid_svcs.build
+        @valid_svc.assign_svc
+        # puts "\n\n\n\n@valid_svc.svc = #{@valid_svc.svc}\n\n\n\n"
+        # @valid_svc.question = self
         if @valid_svc.save
           voter.valid_emails.each do |valid_email|
-            UserMailer.question_email(valid_email.email, self, svc).deliver
+            UserMailer.question_email(valid_email.email, self, @valid_svc.svc).deliver
           end
         else
           flash[:error] = "We were unable to save an SVC. This is not good :("

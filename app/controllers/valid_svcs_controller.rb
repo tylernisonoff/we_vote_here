@@ -26,15 +26,15 @@ class ValidSvcsController < ApplicationController
 
   def confirm
   # PRIVATE ELECTIONS PT 2
+    @question = Question.find(params[:question_id])
     if ValidSvc.exists?(svc: params[:valid_svc][:svc])
-      @question = Question.find(params[:question_id])
       @vote = @question.votes.build
       @vote.assign_svc(params[:valid_svc][:svc])
       @vote.assign_bsn
       @vote.save
-      redirect_to vote_path(@vote)
+      redirect_to vote_path(@vote.svc)
     else
-      flash[:error] = "This is an invalid SVC"
+      flash[:error] = "That was not a valid SVC for this election. Try again"
       redirect_to enter_question_valid_svcs_path(@question)
     end
   end

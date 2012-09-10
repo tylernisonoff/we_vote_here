@@ -65,7 +65,6 @@ class QuestionsController < ApplicationController
   def export_mov_to_csv
     # future: only allow certain calls when dynamic is on
     
-
     @question = Question.find(params[:id])
     @mov = @question.get_mov
 
@@ -74,8 +73,6 @@ class QuestionsController < ApplicationController
     else
       sorted = false
     end
-
-    puts "\n\n\n\nsorted = #{sorted}\n\n\n\n\n"
 
     if sorted
       filename ="adjusted_mov_for_#{@question.name}"

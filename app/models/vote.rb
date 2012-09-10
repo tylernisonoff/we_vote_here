@@ -1,4 +1,6 @@
 class Vote < ActiveRecord::Base
+	# require 'random'
+
 	attr_accessible :question_id, :svc, :bsn
 
 	has_many :preferences, foreign_key: :bsn
@@ -12,7 +14,7 @@ class Vote < ActiveRecord::Base
 	  unless svc
 	  	@question = self.question
 	  	@valid_svc = @question.valid_svcs.build
-      	@valid_svc.svc = SecureRandom.urlsafe_base64
+      	@valid_svc.assign_svc
       	@valid_svc.save
       else
       	if ValidSvc.exists?(svc: svc)
@@ -27,7 +29,19 @@ class Vote < ActiveRecord::Base
     end
 
    	def assign_bsn
-   		self.bsn = SecureRandom.urlsafe_base64
+   		self.bsn = return_random_bsn
+    end
+
+    def return_random_bsn
+    	# returns a random, key of integers in
+    	# BSN or SVC format that was not used before
+
+    	@random_bsn = rand(1000000000000)
+    	while Vote.exists?(bsn: @random_key) # !|| Vote.exists?(svc: @random_key) 
+    		@random_bsn = rand(1000000000000)
+    	end
+
+    	return @random_bsn
     end
 
 	def activate_vote
