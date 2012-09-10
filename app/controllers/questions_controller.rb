@@ -63,25 +63,28 @@ class QuestionsController < ApplicationController
   end
 
   def export_mov_to_csv
+    # future: only allow certain calls when dynamic is on
+    
+
     @question = Question.find(params[:id])
     @mov = @question.get_mov
 
-    filename ="regular_mov_for_#{@question.name}"
-
-    if params[:adjusted] && @question.election.dynamic
-      sorted = params[:adjusted]
+    if params[:adjusted] == "1"
+      sorted = true
     else
       sorted = false
     end
 
-    @choice_names = @question.choice_name_array(sorted)
-    @choice_ids = @question.choice_id_array(sorted)
-      
+    puts "\n\n\n\nsorted = #{sorted}\n\n\n\n\n"
+
     if sorted
-      filename ="sorted_mov_for_#{@question.name}"
+      filename ="adjusted_mov_for_#{@question.name}"
     else
       filename ="regular_mov_for_#{@question.name}"
     end
+
+    @choice_names = @question.choice_name_array(sorted)
+    @choice_ids = @question.choice_id_array(sorted)
     
     csv_data = CSV.generate do |csv|
       csv << (["Choice"] + @choice_names)
