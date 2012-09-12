@@ -1,0 +1,28 @@
+<% provide(:title, @question.name) %>
+<div>
+
+Owner:
+  <%= link_to @question.election.user.pretty_name, @question.election.user %>
+  <br>
+Election:
+  <%= link_to @question.election.name, @question.election %>
+  <br><br>
+Question:
+  <%= best_in_place_if edit_election_condition(current_user, @question.election), @question.election, :name %>
+  <br><br><br>
+
+
+<% if @question.election.start_time > Time.now %>
+	<h3> This election has not yet started. </h3>
+<% else %>
+	<% if @question.election.finish_time > Time.now %>
+		<h3> This election is in progress. Current results: </h3>
+	<% else %>
+		<h3> This election has ended. Results: </h3>
+	<% end %>
+	<br><br>
+	<% @results_array.each_with_index do |result, index| %>
+		<%= index+1 %>) <%= result %>
+		<br>
+	<% end %>
+<% end %>

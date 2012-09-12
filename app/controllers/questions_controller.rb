@@ -62,6 +62,11 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def results
+    @question = Question.find(params[:id])
+    @results_array = @question.choice_name_array(true)
+  end
+
   def export_mov_to_csv
     # future: only allow certain calls when dynamic is on
     

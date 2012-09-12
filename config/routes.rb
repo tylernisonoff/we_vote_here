@@ -18,9 +18,10 @@ WeVoteHere::Application.routes.draw do
       post :confirm, on: :collection
     end
     member do
-      get :choices #might be useless
+      get :choices # might be useless
       get :export_mov_to_csv
       get :export_votes_to_csv
+      get :results
     end
   end
 
