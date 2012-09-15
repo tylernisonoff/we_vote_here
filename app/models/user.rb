@@ -27,6 +27,8 @@ class User < ActiveRecord::Base
   before_save { |user| user.handle = handle.downcase }
   before_save :create_remember_token
 
+  after_create :deliver_signup_notification
+
   validates :nickname, length: { maximum: 50 }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -38,6 +40,10 @@ class User < ActiveRecord::Base
             uniqueness: { case_sensitive: false }, length: { within: 2..20 }          
   validates :password, length: { within: 6..50 }, on: :create
   validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
+
+  def deliver_signup_notification
+    UserMailer.welcome_email(self)
+  end
 
   def pretty_name
     if !nickname.blank? && !nickname.nil?

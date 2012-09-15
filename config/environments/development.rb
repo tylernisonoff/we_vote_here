@@ -41,4 +41,14 @@ WeVoteHere::Application.configure do
   # Make sure Rails raises errors on mail delivery:
   config.action_mailer.raise_delivery_errors = true
 
+  config.action_mailer.smtp_settings = {
+      address: "smtp.gmail.com",
+      port: 587,
+      domain: "wevotehere.herokuapp.com",
+      authentication: "plain",
+      enable_starttls_auto: true,
+      user_name: "wevotehere@gmail.com",
+      password: "condorcet89S"
+    }
+
 end
