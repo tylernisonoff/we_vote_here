@@ -11,25 +11,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120910191303) do
+ActiveRecord::Schema.define(:version => 20120916133833) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",                 :null => false
     t.integer  "position",                  :null => false
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
-    t.integer  "svc",        :limit => 255, :null => false
-    t.integer  "bsn",        :limit => 255, :null => false
+    t.string   "svc",                       :null => false
+    t.integer  "vote_id",    :limit => 255, :null => false
   end
 
-  add_index "active_preferences", ["bsn"], :name => "index_active_preferences_on_bsn"
   add_index "active_preferences", ["svc", "choice_id"], :name => "index_active_preferences_on_svc_and_choice_id", :unique => true
   add_index "active_preferences", ["svc"], :name => "index_active_preferences_on_svc"
+  add_index "active_preferences", ["vote_id"], :name => "index_active_preferences_on_vote_id"
 
   create_table "active_votes", :force => true do |t|
     t.integer  "question_id",                :null => false
-    t.integer  "svc",         :limit => 255, :null => false
-    t.integer  "bsn",         :limit => 255, :null => false
+    t.string   "svc",                        :null => false
+    t.integer  "vote_id",     :limit => 255, :null => false
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
   end
@@ -61,13 +61,15 @@ ActiveRecord::Schema.define(:version => 20120910191303) do
   create_table "preferences", :force => true do |t|
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
-    t.integer  "bsn",        :limit => 255, :null => false
+    t.integer  "vote_id",    :limit => 255, :null => false
     t.integer  "position",                  :null => false
     t.integer  "choice_id",                 :null => false
+    t.string   "svc"
   end
 
-  add_index "preferences", ["bsn", "choice_id"], :name => "index_preferences_on_bsn_and_choice_id", :unique => true
-  add_index "preferences", ["bsn"], :name => "index_preferences_on_bsn"
+  add_index "preferences", ["svc"], :name => "index_preferences_on_svc"
+  add_index "preferences", ["vote_id", "choice_id"], :name => "index_preferences_on_vote_id_and_choice_id", :unique => true
+  add_index "preferences", ["vote_id"], :name => "index_preferences_on_vote_id"
 
   create_table "questions", :force => true do |t|
     t.string   "name",        :null => false
@@ -114,10 +116,10 @@ ActiveRecord::Schema.define(:version => 20120910191303) do
   add_index "valid_emails", ["election_id", "email"], :name => "index_valid_emails_on_election_id_and_email", :unique => true
 
   create_table "valid_svcs", :force => true do |t|
-    t.integer  "svc",         :limit => 255, :null => false
-    t.integer  "question_id",                :null => false
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.string   "svc",         :null => false
+    t.integer  "question_id", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "valid_svcs", ["svc"], :name => "index_valid_svcs_on_svc", :unique => true
@@ -133,10 +135,8 @@ ActiveRecord::Schema.define(:version => 20120910191303) do
     t.datetime "updated_at",  :null => false
     t.integer  "question_id", :null => false
     t.string   "svc",         :null => false
-    t.string   "bsn",         :null => false
   end
 
-  add_index "votes", ["bsn"], :name => "index_votes_on_bsn", :unique => true
   add_index "votes", ["svc"], :name => "index_votes_on_svc"
 
 end
