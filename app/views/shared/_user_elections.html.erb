@@ -5,10 +5,10 @@
       <section>
         <div class="row">
           <aside class="span4">
-              <ul>
-                <%= render user %>
-              </ul>
-            </aside>
+            <ul>
+              <%= render user %>
+            </ul>
+          </aside>
           <div class="span8">
             <% if user.elections.any? %>
                 <h3>Elections (<%= user.elections.count %>)</h3>
