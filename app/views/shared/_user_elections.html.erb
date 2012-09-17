@@ -3,14 +3,14 @@
       <section>
         <div class="row">
           <aside class="span4">
-            <ul class="lists">
+            <ul>
               <%= render user %>
-            </ul class="lists">
+            </ul>
           </aside>
           <div class="span8">
             <% if user.elections.any? %>
                 <h3>Elections (<%= user.elections.count %>)</h3>
-                <ul class="lists">
+                <ul>
                   <%= render user.elections %>
                 </ul>
             <% end %>

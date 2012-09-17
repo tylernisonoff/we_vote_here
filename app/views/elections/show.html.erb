@@ -4,9 +4,11 @@
     <aside class="span4">
       <section>
         <h3>Owner</h3>
-        <ul class="lists">
-          <%= render @election.user %>
-        </ul>
+        <p>
+          <ul>
+            <%= render @election.user %>
+          </ul>
+        </p>
       </section>
       <section>
         <h3>Election</h3>
@@ -16,9 +18,11 @@
     <aside class="span7">
       <% if @election.questions.any? %>
         <h3>Questions (<%= @election.questions.count %>)</h3>
-          <ul class="lists">
-            <%= render @election.questions %>
-          </ul>
+          <p>
+            <ul>
+              <%= render @election.questions %>
+            </ul>
+          </p>
       <% end %>
     </aside>
 </div>
