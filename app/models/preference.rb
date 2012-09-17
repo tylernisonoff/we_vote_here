@@ -19,6 +19,7 @@ class Preference < ActiveRecord::Base
             @active_preference.vote_id = self.vote_id
             @active_preference.choice_id = self.choice_id
             @active_preference.position = self.position
+            @active_preference.preference_id = self.id
             @active_preference.created_at = self.created_at
 
             @active_preference.save
