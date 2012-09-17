@@ -2,7 +2,7 @@ class Preference < ActiveRecord::Base
   
 	attr_accessible :position, :choice_id, :vote_id, :svc
 
-      has_one :active_preference, foreign_key: [:vote_id, :choice_id], dependent: :destroy
+      has_one :active_preference, dependent: :destroy #, foreign_key: [:vote_id, :choice_id]
 
       belongs_to :vote
 	belongs_to :choice
