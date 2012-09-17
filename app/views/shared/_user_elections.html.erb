@@ -1,20 +1,18 @@
-
-
 <div class="row">
     <aside class="span12">
       <section>
         <div class="row">
           <aside class="span4">
-            <ul>
+            <ul class="lists">
               <%= render user %>
-            </ul>
+            </ul class="lists">
           </aside>
           <div class="span8">
             <% if user.elections.any? %>
                 <h3>Elections (<%= user.elections.count %>)</h3>
-                <ol class="lists">
+                <ul class="lists">
                   <%= render user.elections %>
-                </ol>
+                </ul>
             <% end %>
           </div>
         </div>

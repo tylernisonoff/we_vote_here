@@ -3,13 +3,13 @@
 <div class="row">
     <aside class="span4">
       <section>
-        <h4>Owner</h4>
+        <h3>Owner</h3>
         <ul class="lists">
           <%= render @election.user %>
         </ul>
       </section>
       <section>
-        <h4>Election</h4>
+        <h3>Election</h3>
         <p><%= render partial: "election_info", locals: {:election => @election} %></p>
       </section>
     </aside>

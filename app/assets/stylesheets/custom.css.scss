@@ -223,7 +223,6 @@ select, .tester_class {
   list-style: none;
   margin: 0;
   li {
-    list-style-type: none;
     overflow: auto;
     padding: 10px 0;
     border-top: 1px solid $grayLighter;
@@ -238,9 +237,10 @@ select, .tester_class {
 .lists {
   list-style: none;
   margin: 10px 0 0 0;
-
-  li {
+  ul {
     list-style-type: none;
+  }
+  li {
     padding: 10px 0;
     border-top: 1px solid #e8e8e8;
   }
