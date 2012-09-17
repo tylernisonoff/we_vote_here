@@ -3,7 +3,7 @@ class Result < ActiveRecord::Base
 
   belongs_to :question
   belongs_to :choice
-
+  
   validates :question_id, presence: true
   validates :choice_id, presence: true
   validates :position, presence: true

@@ -1,0 +1,9 @@
+<li>
+  <span class="content"><%= link_to question.name, question %></span>
+  <span class="timestamp">
+    Created <%= time_ago_in_words(question.created_at) %> ago.
+  </span>
+  <% if current_user?(question.election.user) %>
+    <%= link_to "edit", edit_question_path(question) %>
+  <% end %>
+</li>

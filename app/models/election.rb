@@ -6,12 +6,12 @@ class Election < ActiveRecord::Base
   has_many :voters, dependent: :destroy
   has_many :valid_emails, dependent: :destroy
 
+  belongs_to :user # the owner of the election
+
   accepts_nested_attributes_for :questions, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
   
   accepts_nested_attributes_for :valid_emails, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
-
-  belongs_to :user # the owner of the election
   validates_presence_of :user
 
   validates :start_time, presence: true
@@ -24,7 +24,7 @@ class Election < ActiveRecord::Base
 
 
   def check_start_time
-    errors.add(:start_time, "^Election cannot start before now.") unless self.start_time >= 10.minutes.ago
+    errors.add(:start_time, "^Election cannot start before now.") unless self.start_time + 30.minutes >= Time.now
   end
 
   def check_finish_time
@@ -42,17 +42,30 @@ class Election < ActiveRecord::Base
   end
 
   def emails=(emails_text)
-    voter_array = emails_text.split(",")
-    voter_array.each do |voter|
-      @voters_emails = voter.split(" ")
+    voter_array = get_split_voters(emails_text)
+    voter_array.each do |voters_emails|
       @voter = self.voters.build
-      @voters_emails.each do |valid_email|
+      voters_emails.each do |valid_email|
         @email = self.valid_emails.build
         @email.voter = @voter
         @email.email = valid_email
       end
     end
   end
+
+  def get_split_voters(emails_text)
+    voter_array = Array.new
+    split_voter_array = emails_text.split(",")
+    split_voter_array.each_with_index do |voters_emails, index|
+      voter_array[index] = Array.new
+      split_emails_array = voters_emails.split(" ")
+      split_emails_array.each do |email|
+        voter_array[index].push(email)
+      end
+    end
+    return voter_array
+  end
+
 
 
 

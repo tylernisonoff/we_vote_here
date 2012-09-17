@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120916133833) do
+ActiveRecord::Schema.define(:version => 20120916235904) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",                 :null => false
@@ -112,8 +112,6 @@ ActiveRecord::Schema.define(:version => 20120916133833) do
     t.datetime "updated_at",  :null => false
     t.integer  "election_id", :null => false
   end
-
-  add_index "valid_emails", ["election_id", "email"], :name => "index_valid_emails_on_election_id_and_email", :unique => true
 
   create_table "valid_svcs", :force => true do |t|
     t.string   "svc",         :null => false

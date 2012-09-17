@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>You have been invited by <%= @question.election.user.pretty_name %> to vote in an election at WeVoteHere.com!</h1>
+
+    <p><%= link_to "Click here to vote", make_question_valid_svcs_path(@question) %></p>
+
+    <h2>Question Information</h2>
+    Owner:
+  	<%= link_to @question.election.user.pretty_name, @question.election.user %>
+  	<br>
+	Election:
+  	<%= link_to @question.election.name, @question.election %>
+  	<br>
+	Question:
+  	<%= link_to @question.name, @question %>
+ 	<br>
+ 	<br>
+
+	<% unless @question.election.info.blank? %>
+	Voting instructions: <%= @question.election.info %>
+  	<% end %>
+
+	<br>
+	
+	<h3>Choices</h3>
+	<br>
+	<% @question.choices.each do |choice| %>
+		<%= choice.name %>
+		<br>
+	<% end %>
+  </body>
+</html>

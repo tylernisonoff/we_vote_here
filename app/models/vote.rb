@@ -1,47 +1,20 @@
 class Vote < ActiveRecord::Base
 	# require 'random'
 
-	attr_accessible :question_id, :svc, :bsn
+	attr_accessible :question_id, :svc, :id
+	
+	has_one :active_vote, dependent: :destroy
+	has_many :preferences, dependent: :destroy
 
-	has_many :preferences, foreign_key: :bsn
 	belongs_to :question
 
-	def to_param
-		bsn
-	end
-	
-	def assign_svc(svc = false)
-	  unless svc
-	  	@question = self.question
-	  	@valid_svc = @question.valid_svcs.build
-      	@valid_svc.assign_svc
-      	@valid_svc.save
-      else
-      	if ValidSvc.exists?(svc: svc)
-      		@valid_svc = ValidSvc.find_by_svc(svc)
-      	else
-      		return false
-      		# We passed through an SVC that doesn't exist
-      		# This would mean there is an error where this is called
-      	end
-      end
-      self.svc = @valid_svc.svc
-    end
-
-   	def assign_bsn
-   		self.bsn = return_random_bsn
-    end
-
-    def return_random_bsn
-    	# returns a random, key of integers in
-    	# BSN or SVC format that was not used before
-
-    	@random_bsn = rand(1000000000000)
-    	while Vote.exists?(bsn: @random_key) # !|| Vote.exists?(svc: @random_key) 
-    		@random_bsn = rand(1000000000000)
-    	end
-
-    	return @random_bsn
+	def assign_vote_svc(svc)
+	    if ValidSvc.exists?(svc: svc)
+	      @valid_svc = ValidSvc.find_by_svc(svc)
+	      self.svc = @valid_svc.svc
+	    else
+	      return false    
+	    end
     end
 
 	def activate_vote
@@ -52,14 +25,14 @@ class Vote < ActiveRecord::Base
       		@active_vote.svc = svc
       		@active_vote.question_id = question_id
       	end
-      	@active_vote.bsn = bsn
+      	@active_vote.vote_id = self.id
       	if @active_vote.save	
 			@current_preferences = ActivePreference.find(:all, conditions: {svc: svc})
 	    	@current_preferences.each do |current_preference|
 	      		current_preference.delete
 	      	end
 
-	      	@new_preferences = Preference.find(:all, conditions: {bsn: bsn})
+	      	@new_preferences = Preference.find(:all, conditions: {vote_id: self.id})
 	    	@new_preferences.each do |new_preference|
 	    		new_preference.make_active
 	    	end
@@ -68,22 +41,10 @@ class Vote < ActiveRecord::Base
 		end
 	end
 
-	# Goal: try to make this function obsolete
-	def check_last_bsn(bsn)
-		svc = self.svc
-		@last_vote = Vote.find(:last, conditions: {svc: svc})
-		if bsn == @last_vote.bsn
-			return true
-		else
-			return false
-		end
-	end
-
-	def forget_vote(bsn)
-		@vote = Vote.find_by_bsn(bsn)
-		@vote.delete
-		if ActiveVote.exists?(bsn: bsn)
-			@active_vote = ActiveVote.find_by_bsn(bsn)
+	def destroy_vote
+		self.destroy
+		if ActiveVote.exists?(vote_id: self.id)
+			@active_vote = ActiveVote.find_by_vote_id(self.id)
 			@active_vote.delete
 		end
 	end

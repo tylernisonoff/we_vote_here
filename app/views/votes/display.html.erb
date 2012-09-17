@@ -2,17 +2,16 @@
 <h1>View vote</h1>
 <h2> Election: <%= link_to @vote.question.election.name, @vote.question.election %> </h2>
 <h2> Question: <%= link_to @vote.question.name, @vote.question %> </h2>
-<h2> BSN: <%= link_to @vote.bsn, display_vote_path(@vote.bsn) %> </h2>
 
 <br><br>
 
 <h3>Choices</h3>
 <br>
-<% if @preferences.any? %>
+<% if @preferences && @preferences.any? %>
 	<% @preferences.each do |pref| %>
 		<%= pref.position %>) <%= pref.choice.name %>
 		<br>
 	<% end %>
 <% else %>
-	<h3> This ballot has no choices <h3>
+	<p> This ballot has no choices </p>
 <% end %>

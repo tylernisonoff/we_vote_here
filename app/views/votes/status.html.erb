@@ -1,0 +1,42 @@
+<h2> Election: <%= link_to @valid_svc.question.election.name, @valid_svc.question.election %> </h2>
+<h2> Question: <%= link_to @valid_svc.question.name, @valid_svc.question %> </h2>
+<h2> SVC: <%= @valid_svc.svc %> </h2>
+<h2> <%= link_to "Change your vote!", vote_path(@valid_svc.svc) %> </h2>
+
+<br><br>
+
+<h3>Active Vote:</h3>
+<br>
+<% if @active_vote %>
+	BSN: <%=display_vote(@active_vote.vote, @active_vote.vote_id)%> <br>
+	<% if @active_preferences.blank? %>
+		This vote is active, but has no recorded preferences.
+	<% else %>
+		<% @active_preferences.each do |active_preference| %>
+			<%= active_preference.position %>) <%= active_preference.choice.name %>
+			<br>
+		<% end %>
+	<% end %>
+<% else %>
+<p> There is no active vote for this SVC </p>
+<% end %>
+
+<br><br>
+
+
+<h3>BSNs associated with this SVC:</h3>
+<br>
+<% if @votes.any? %>
+	<% @votes.each_with_index do |vote, index| %>
+		BSN #<%= index+1 %>: <%= display_vote(vote, vote.id) %> - 
+		<% if @active_vote && @active_vote.vote_id == vote.id %>
+			This vote is active
+		<% else %>
+			<%= link_to "Activate", activate_vote_path(svc: vote.svc, id: vote.id) %>
+			- <%= link_to "Destroy", destroy_vote_path(svc: vote.svc, id: vote.id) %>
+		<% end %>
+		<br>
+	<% end %>
+<% else %>
+	<p> There are no BSNs associated with this SVC. <%= link_to "Cast a vote!", vote_path(@valid_svc.svc) %> </p>
+<% end %>

@@ -1,3 +1,10 @@
-<li>
-	<%= link_to user.pretty_name, user %>
+<li class="lists">
+	<%= gravatar_for user, size: 52 %>
+	<div>
+		Nickname: <%= user.pretty_name %>
+		<br>
+		Handle: <%= link_to user.handle, user %>
+		<br>
+		Email: <%= user.email %>
+	</div>
 </li>

@@ -6,7 +6,7 @@ gem 'bcrypt-ruby', '3.0.1'
 gem 'will_paginate', '3.0.3'
 gem 'bootstrap-will_paginate', '0.0.5'
 gem 'faker', '1.0.1'
-gem 'nested_form', :git => "git://github.com/ryanb/nested_form.git"
+gem "nested_form", :git => 'https://github.com/ryanb/nested_form.git'
 gem 'activerecord-postgresql-adapter'
 
 # Bundle edge Rails instead:
@@ -24,16 +24,14 @@ end
 group :assets do
   gem 'jquery-ui-rails'
   gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+  # gem 'coffee-rails', '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platform => :ruby
 
   gem 'uglifier', '>= 1.0.3'
 end
 
 gem 'jquery-rails'
-gem 'best_in_place'
 gem 'custom_error_message'
 
 group :test do
@@ -43,9 +41,6 @@ end
 # group :production do
 #   gem 'pg'
 # end
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'

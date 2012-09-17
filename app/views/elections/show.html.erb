@@ -1,77 +1,22 @@
 <% provide(:title, @election.name) %>
-<div>
 
-Owner:
-  <%= link_to @election.user.pretty_name, @election.user %>
-  <br><br>
-Name:
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :name %>
-  <br>
-
-Extra information:
-  <%= best_in_place_if edit_election_condition(current_user, @election), @election, :info, type: :textarea, ok_button: "Save", cancel_button: "Cancel", nil: "Click here to add information" %>
-
-
-<br><br>
-
-
-  Questions:
-  <br>
-  <% @election.questions.each do |question| %>
-    <%= link_to question.name, question %>
-    <br>
-  <% end %>
-
-  <br>
-  Start time: <%= @election.start_time %>
-  <br>
-  End time: <%= @election.finish_time %>
-  <br>
-  <br>
-
-
-  Privacy:
-  <% if edit_election_condition(current_user, @election) %>
-    <%= best_in_place @election, :privacy, type: :select, collection: [[false, "public"], [true, "private"]] %>
-  <% else %>
-    <% if @election.privacy %>
-      private
-    <% else %>
-      public
-    <% end %>
-  <% end %>
-  <br>
-
-  Dynamic voting:
-  <% if edit_election_condition(current_user, @election) %>
-    <%= best_in_place @election, :dynamic, type: :select, collection: [[false, "Off"], [true, "On"]] %>
-  <% else %>
-    <% if @election.dynamic %>
-      On
-    <% else %>
-      Off
-    <% end %>
-  <% end %>
-
-  <br>
-  
-  <br><br>
-  Voters:
-  <br><br>
-  <% @election.voters.each_with_index do |voter, voter_index| %>
-    Voter #<%= voter_index + 1%>:
-    <br> 
-    <% voter.valid_emails.each_with_index do |valid_email, email_index| %>
-      Email #<%= email_index + 1 %>: <%= valid_email.email %>
-      <br>
-    <% end %>
-    <br><br>
-  <% end %>
-
-  <br><br>
-
-  <% if edit_election_condition(current_user, @election) %>
-    <%= link_to "Add another question", new_election_question_path(@election), class: "btn btn-large btn-primary" %>
-  <% end %>
-
+<div class="row">
+    <aside class="span4">
+        <h4>Owner</h4>
+        <ul class="lists">
+          <%= render @election.user %>
+        </ul>
+      <section>
+        <h4>Election</h4>
+        <p><%= render partial: "election_info", locals: {:election => @election} %></p>
+      </section>
+    </aside>
+    <aside class="span7">
+      <% if @election.questions.any? %>
+        <h3>Questions (<%= @election.questions.count %>)</h3>
+          <ul class="lists">
+            <%= render @election.questions %>
+          </ul>
+      <% end %>
+    </aside>
 </div>

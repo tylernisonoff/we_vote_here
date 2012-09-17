@@ -1,18 +1,23 @@
 WeVoteHere::Application.routes.draw do
   
   resources :elections do
-    resources :questions
+    resources :questions, only: [:index, :new, :create]
+    member do
+      get :add_voters
+    end
   end
 
   resources :users do
     member do
       get :elections
+      get :edit_password
+      put :change_password
     end
   end
 
   resources :questions do
-    resources :votes
-    resources :valid_svcs do
+    # resources :votes
+    resources :valid_svcs, only: [] do
       get :enter, on: :collection
       get :make, on: :collection
       post :confirm, on: :collection
@@ -25,26 +30,13 @@ WeVoteHere::Application.routes.draw do
     end
   end
 
-  resources :valid_svcs
+  # resources :valid_svcs
 
-  resources :preferences do
+  resources :preferences, only: [] do
     post :sort, on: :collection
   end
 
-  resources :choices #might be useless
-
-  resources :votes do
-    member do
-      get :display
-      get :clear
-    end
-  end
-
-  resources :active_votes do
-    member do
-      get :status
-    end
-  end
+  resources :choices, only: [:update] # might be useless
 
   resources :sessions, only: [:new, :create, :destroy]
 
@@ -61,16 +53,35 @@ WeVoteHere::Application.routes.draw do
 
   match '/new_election', to: 'elections#new'
   match '/new_question', to: 'questions#new'
-  
-  match 'votes/save_preferences', to: 'votes#save_preferences'
 
   get "static_pages/home"
   get "static_pages/about"
   get "static_pages/terms"
   get "static_pages/privacy"
 
-  match 'vote/:id', to: 'vote#show', as: :vote
-  match 'active_votes/:id/activate/:bsn', to: 'active_votes#activate', as: :activate
+  # Votes custom routes
+  match 'vote/:svc', to: 'votes#vote', as: :vote
+  match 'votes/:svc', to: 'votes#vote'
+  match 'votes/:svc/activate/:id', to: 'votes#activate', as: :activate_vote
+  match 'votes/:svc/destroy/:id', to: 'votes#destroy', as: :destroy_vote
+  match 'votes/:svc/status', to: 'votes#status', as: :status_vote
+  match 'votes/:svc/display/:id', to: 'votes#display', as: :display_private_vote
+  match 'votes/display/:id', to: 'votes#display', as: :display_public_vote
+
+# -----------------------------------------------------------------------
+
+  # special cases where we need to make then enter their SVC, perhaps as a cookie
+
+  # match 'questions/:id/:svc/export_mov_to_csv', to: 'questions#export_mov_to_csv', as: :export_mov_to_csv_question
+  # match 'questions/:id/:svc/export_votes_to_csv', to: 'questions#export_votes_to_csv', as: :export_votes_to_csv_question
+  # match 'questions/:id/:svc/results', to: 'questions#results', as: :results_question
+  # match 'questions/:id/:svc', to: 'questions#show', as: :question
+  # match 'questions/:svc', to: 'questions#index', as: :index_question
+
+
+# -----------------------------------------------------------------------
+
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

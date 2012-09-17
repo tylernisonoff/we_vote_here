@@ -1,0 +1,12 @@
+<% provide(:title, "Edit your question") %>
+<h1>Edit your question</h1>
+
+<%= form_for(@question) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+	<%= f.text_field :name, placeholder: "question name" %>
+
+	<%= f.text_area :info, placeholder: "question instructions" %>
+
+<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+<% end %>

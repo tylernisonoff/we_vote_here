@@ -1,22 +1,19 @@
 <% provide(:title, 'Create an election') %>
 <h1>Create an election</h1>
 
-<%= nested_form_for @election do |f| %>
+<%= form_for @election do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.label :name %>
 	<%= f.text_field :name, placeholder: "election name" %>
 
-	<%= f.label :info, "Voting instructions:" %>
-	<%= f.text_area :info, placeholder: "voting instructions" %>
+	<%= f.text_area :info, placeholder: "enter voting instructions here" %>
 
-	<%= f.label :emails, "Valid email addresses:" %>
-	<%= f.text_area :emails, value: "christian@drappi.com christiandrappi@gmail.com, christian.drappi@duke.edu cld22@duke.edu" %>
+	<%= f.text_area :emails, value: "", placeholder: "enter email addresses here. please separate emails by commas" %>
 
 	<br><br>
 
 	<%= f.label :start_time, "Start time:" %>
-	<%= f.datetime_select :start_time%>
+	<%= f.datetime_select :start_time, default: Time.now %>
 
 	<%= f.label :finish_time, "Finish time:" %>
 	<%= f.datetime_select :finish_time, default: Time.now + 1.week %>
@@ -34,11 +31,11 @@
 
 	Dynamic voting:
 	<br>
-	<%= f.radio_button :dynamic, 1, checked: true %>
-	<%= f.label :dynamic, "On", style: "display:inline" %>
-	<br>
 	<%= f.radio_button :display_votes_as_created, 0, checked: false %>
 	<%= f.label :display_votes_as_created, "Off", style: "display:inline" %>
+	<br>
+	<%= f.radio_button :dynamic, 1, checked: true %>
+	<%= f.label :dynamic, "On", style: "display:inline" %>
 
 	<br><br>
 

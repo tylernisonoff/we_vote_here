@@ -5,18 +5,16 @@
 <%= nested_form_for(@question, url: election_questions_path(@election)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.label :name %>
 	<%= f.text_field :name, placeholder: "question name" %>
 
-	<%= f.label :info, "Question instructions:" %>
 	<%= f.text_area :info, placeholder: "question instructions" %>
 
 	<br><br>
 
 	<script>
 	$(document).ready(function(){
-		$("form").keypress(function(event){ // change to ".enter_question_name"
-    		if(event.keyCode == 13){ // clicked enter
+		$(document).keypress(function(event){ // change to ".enter_question_name"
+    		if(event.keyCode == 13){ // clicked enter, which is key number 13.
         		$('#add_new_choice').click();
         		return false;
     		}

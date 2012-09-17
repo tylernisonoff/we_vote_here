@@ -2,6 +2,11 @@ class QuestionsController < ApplicationController
   require 'csv'
   respond_to :html, :json
 
+  before_filter :election_owner, only: [:new, :create, :edit, :update, :destroy]
+
+  # eventually use this after I figure out how to make sessions with CSVs
+  # before_filter :can_view, only: [:export_mov_to_csv, :export_votes_to_csv, :results, :show, :index]
+  
 	def new
     @election = Election.find_by_id(params[:election_id])
     @question = @election.questions.build
@@ -28,13 +33,15 @@ class QuestionsController < ApplicationController
 
     # If the election is private, then create SVCs
     # This also sends an email to every valid email with their SVC
-    if @election.privacy  
-      @question.create_svcs
+    if @election.privacy
+      @question.create_svcs_for_private
+    else
+      @question.send_emails_for_public
     end
 	end
 
 	def edit
-		@question = Question.find(params[:id])
+		# @question = Question.find(params[:id])
 	end
 
 	def show
@@ -47,18 +54,20 @@ class QuestionsController < ApplicationController
   end
 
   def index
-    @questions = Question.find(:all, conditions: {election_id: params[:election_id]})
+    if params[:election_id]
+      @election_id = params[:election_id]
+      @questions = Question.find(:all, conditions: {election_id: params[:election_id]})
+    else
+      @questions = Question.all
+    end
   end
 
   def update
-    respond_to do |format|
-      if @question.update_attributes(params[:question])
-        #format.html { redirect_to(@question, notice: 'Question was successfully updated.') }
-        format.json { respond_with_bip(@question) }
-      else
-        #format.html { render action: "edit" }
-        format.json { respond_with_bip(@question) }
-      end
+    if @question.update_attributes(params[:question])
+      flash[:success] = "Question updated"
+      redirect_to @question
+    else
+      render 'edit'
     end
   end
 
@@ -106,7 +115,7 @@ class QuestionsController < ApplicationController
 
   def export_votes_to_csv
     @question = Question.find(params[:id])
-    @votes_hash = @question.get_votes_hash
+    @votes_hash = @question.get_active_votes_hash
 
     @choice_names = @question.choice_name_array
     @choice_ids = @question.choice_id_array
@@ -114,8 +123,8 @@ class QuestionsController < ApplicationController
 
     csv_data = CSV.generate do |csv|
       csv << (["BSN"] + @choice_names)
-      @votes_hash.each do |bsn, vote_hash|  
-        add_to_csv = [bsn]
+      @votes_hash.each do |vote_id, vote_hash|  
+        add_to_csv = [vote_id]
         @choice_ids.each do |choice_id|
           add_to_csv.push(vote_hash[choice_id])
         end
@@ -130,8 +139,45 @@ class QuestionsController < ApplicationController
 
    private
 
-    def question_owner
-      @user = User.find(params[:id])
-      redirect_to(root_path) unless @user == Question.user_id
+    def election_owner
+      if params[:election_id]
+        if Election.exists?(params[:election_id])
+          @election = Election.find(params[:election_id])
+          if current_user == @election.user
+            return true
+          else
+            flash[:error] = "You cannot edit this question because you don't own it :/"
+            redirect_back_or root_path
+          end
+        else
+          flash[:error] = "Sorry, that election doesn't exist"
+        end
+      elsif params[:id]
+        if Question.exists?(params[:id])
+          @question = Question.find(params[:id])
+          if current_user == @question.election.user
+            return true 
+          else
+            flash[:error] = "You cannot edit this question because you don't own it :/"
+            redirect_back_or root_path
+          end
+        else
+          flash[:error] = "Sorry, that question doesn't exist"
+        end
+      else
+        flash[:error] = "You cannot edit this question because we're not sure if you own it :/"
+        redirect_back_or root_path
+      end
+    end
+
+    def can_view
+      question = Question.find(params[:id])
+      if !question.election.privacy || ValidSvc.exists?(svc: params[:svc])
+        return true
+      else
+        flash[:error] = "You need a valid SVC to do this."
+        redirect_back_or root_path
+        return false
+      end
     end
 end

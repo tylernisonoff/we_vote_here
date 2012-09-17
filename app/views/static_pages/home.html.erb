@@ -1,13 +1,5 @@
 <% if signed_in? %>
-  <div class="row">
-    <aside class="span4">
-      <section>
-      	<%= render 'shared/user_info' %>
-      </section>
-      <%= link_to "Create an election", new_election_path, 
-                                class: "btn btn-large btn-primary" %>
-    </aside>
-  </div>  
+  <%= render partial: 'shared/user_elections', locals: {user: current_user} %>  
 <% else %>
   <div class="center hero-unit">
     <h1>Welcome to WeVoteHere</h1>
@@ -15,4 +7,4 @@
     <%= link_to "Sign up now!", signup_path, 
                                 class: "btn btn-large btn-primary" %>
   </div>
-<% end %> 
+<% end %>

@@ -1,24 +1,24 @@
 class Preference < ActiveRecord::Base
   
-	attr_accessible :position, :choice_id, :bsn
+	attr_accessible :position, :choice_id, :vote_id, :svc
 
-	belongs_to :vote, dependent: :destroy, foreign_key: :bsn
+      has_one :active_preference, foreign_key: [:vote_id, :choice_id], dependent: :destroy
+
+      belongs_to :vote
 	belongs_to :choice
 
-	validates :bsn, presence: true
+	validates :vote_id, presence: true
+      validates :svc, presence: true
 	validates :choice_id, presence: true
 	validates :position, presence: true
 
 	def make_active
             @active_preference = ActivePreference.new
-
-            @vote = Vote.find_by_bsn(bsn)
-            svc = @vote.svc
             
-            @active_preference.svc = svc
-            @active_preference.bsn = bsn
-            @active_preference.choice_id = choice_id
-            @active_preference.position = position
+            @active_preference.svc = self.svc
+            @active_preference.vote_id = self.vote_id
+            @active_preference.choice_id = self.choice_id
+            @active_preference.position = self.position
             @active_preference.created_at = self.created_at
 
             @active_preference.save

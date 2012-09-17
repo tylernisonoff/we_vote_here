@@ -9,11 +9,12 @@ class Question < ActiveRecord::Base
   has_many :preferences, dependent: :destroy
   has_many :choices, dependent: :destroy
 
+  belongs_to :election
+
   accepts_nested_attributes_for :valid_svcs, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
   accepts_nested_attributes_for :choices, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
-  belongs_to :election
-  # validates_presence_of :election
+  validates_presence_of :election
 
   validates :name, presence: true, length: { within: 2..255 }
 
@@ -99,16 +100,31 @@ class Question < ActiveRecord::Base
   	return true
   end
 
-  def create_svcs
+  def get_voter_array
+    voter_array = Array.new
+    self.election.voters.each_with_index do |voter, index|
+      voter_array[index] = Array.new
+      voter.valid_emails.each do |valid_email|
+        voter_array[index].push(valid_email.email)
+      end
+    end
+    return voter_array
+  end
+
+
+  def create_svcs_for_private(voter_array=false)
     if self.election.privacy
-      self.election.voters.each do |voter|
-        @valid_svc = self.valid_svcs.build
-        @valid_svc.assign_svc
-        # puts "\n\n\n\n@valid_svc.svc = #{@valid_svc.svc}\n\n\n\n"
-        # @valid_svc.question = self
+      unless voter_array
+        # populate voter_array if there's no argument
+        voter_array = get_voter_array
+      end
+      voter_array.each do |voters_email|
+        @valid_svc = ValidSvc.new
+        @valid_svc.question = self
+        @valid_svc.assign_valid_svc
         if @valid_svc.save
-          voter.valid_emails.each do |valid_email|
-            UserMailer.question_email(valid_email.email, self, @valid_svc.svc).deliver
+          voters_email.each do |email|
+            UserMailer.private_question_email(email, self, @valid_svc.svc).deliver
           end
         else
           flash[:error] = "We were unable to save an SVC. This is not good :("
@@ -117,20 +133,35 @@ class Question < ActiveRecord::Base
     end
   end
 
-  def get_votes_hash
-    # returns hash where keys are bsns of active votes and
+  def send_emails_for_public(voter_array=false)
+    unless self.election.privacy
+      unless voter_array
+        # populate voter_array if there's no argument
+        voter_array = get_voter_array
+      end
+      voter_array.each do |voters_emails|
+        voters_emails.each do |email|
+          UserMailer.public_question_email(email, self).deliver
+        end
+      end
+    end
+  end
+
+
+  def get_active_votes_hash
+    # returns hash where keys are vote_id's of active votes and
     # and values are hashes (with keys as choice ids and values as positions
 
     @votes_hash = Hash.new
 
     @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
-    @active_votes.each do |vote|
-      @votes_hash[vote.bsn] = Hash.new
+    @active_votes.each do |active_vote|
+      @votes_hash[active_vote.vote_id] = Hash.new
       # Using vote.active_preferences does NOT work
       # This has to do with foreign key stuff, watch out.
-      @active_preferences = ActivePreference.find(:all, conditions: {svc: vote.svc})
-      @active_preferences.each do |preference|
-        @votes_hash[vote.bsn][preference.choice_id] = preference.position
+      @active_preferences = ActivePreference.find(:all, conditions: {svc: active_vote.svc})
+      @active_preferences.each do |active_preference|
+        @votes_hash[active_vote.vote_id][active_preference.choice_id] = active_preference.position
       end
     end
     return @votes_hash
@@ -151,21 +182,9 @@ class Question < ActiveRecord::Base
       end
     end
 
-    @formatted_votes = get_votes_hash
+    @formatted_active_votes = get_active_votes_hash
 
-    # @formatted_votes = Array.new
-    # @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
-    # @active_votes.each_with_index do |vote, index|
-    #   @formatted_votes[index] = Hash.new
-    #   # Using vote.active_preferences does NOT work
-    #   # This has to do with foreign key stuff, watch out.
-    #   @active_preferences = ActivePreference.find(:all, conditions: {svc: vote.svc})
-    #   @active_preferences.each do |preference|
-    #     @formatted_votes[index][preference.choice_id] = preference.position
-    #   end
-    # end
-
-    @formatted_votes.each_value do |vote_hash|
+    @formatted_active_votes.each_value do |vote_hash|
       vote_hash.each do |choice1, position1|
         vote_hash.each do |choice2, position2|
           if choice1 > choice2

@@ -8,14 +8,16 @@ Election:
   <%= link_to @question.election.name, @question.election %>
   <br><br>
 Question:
-  <%= best_in_place_if edit_election_condition(current_user, @question.election), @question.election, :name %>
+  <%= @question.name %>
   <br>
 
 Voting instructions:
-  <%= best_in_place_if edit_election_condition(current_user, @question.election), @question.election, :info, type: :textarea, ok_button: "Save", cancel_button: "Cancel", nil: "Click here to add information" %>
+  <p><%= @question.info %></p>
 
 <br>
-<br>
+<% if current_user == @question.election.user %>
+	<h3><%= link_to "edit question", edit_question_path(@question) %></h3>
+<% end %>
 <br>
 <% if @question.election.privacy %>
 	<%= link_to "Vote", enter_question_valid_svcs_path(@question), class: "btn btn-large btn-primary" %>
@@ -37,7 +39,7 @@ Voting instructions:
 <h3>SVCs</h3>
 <br>
 <% @question.valid_svcs.each_with_index do |valid_svc, index| %>
-	SVC #<%= index + 1 %>: <%= link_to "Status", status_active_vote_path(valid_svc) %> --- <%= link_to valid_svc.svc, vote_path(id: valid_svc.svc) %><br>
+	SVC #<%= index + 1 %>: <%= link_to "Status", status_vote_path(svc: valid_svc.svc) %> --- <%= link_to valid_svc.svc, vote_path(svc: valid_svc.svc) %><br>
 <% end %>
 
 
@@ -46,8 +48,14 @@ Voting instructions:
 
 <h3>BSNs</h3>
 	<br>
-<% @question.votes.each_with_index do |vote, index| %>
-	BSN #<%=index+1%>: <%= link_to vote.bsn, display_vote_path(vote.bsn) %><br>
+<% if @question.election.privacy %>
+	<% @question.votes.each_with_index do |vote, index| %>
+		BSN #<%=index+1%>: <%= link_to vote.id, display_private_vote_path(id: vote.id, svc: vote.svc) %><br>
+	<% end %>
+<% else %>
+	<% @question.votes.each_with_index do |vote, index| %>
+		BSN #<%=index+1%>: <%= link_to vote.id, display_public_vote_path(id: vote.id) %><br>
+	<% end %>
 <% end %>
 <br><br>
 

@@ -10,7 +10,7 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :nickname, :email, :handle, :password, :password_confirmation, :pretty_name, :handle_or_email
+  attr_accessible :nickname, :email, :handle, :old_password, :password, :password_confirmation, :pretty_name, :handle_or_email
   has_secure_password
 
   has_many :elections, dependent: :destroy
@@ -42,7 +42,8 @@ class User < ActiveRecord::Base
   validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
 
   def deliver_signup_notification
-    UserMailer.welcome_email(self)
+    # Tell the UserMailer to send a welcome Email after save
+    UserMailer.welcome_email(self).deliver
   end
 
   def pretty_name

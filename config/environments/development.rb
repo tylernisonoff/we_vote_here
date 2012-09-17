@@ -38,9 +38,6 @@ WeVoteHere::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  # Make sure Rails raises errors on mail delivery:
-  config.action_mailer.raise_delivery_errors = true
-
   config.action_mailer.smtp_settings = {
       address: "smtp.gmail.com",
       port: 587,
@@ -50,5 +47,8 @@ WeVoteHere::Application.configure do
       user_name: "wevotehere@gmail.com",
       password: "condorcet89S"
     }
+
+  # Make sure Rails raises errors on mail delivery:
+  config.action_mailer.raise_delivery_errors = true
 
 end

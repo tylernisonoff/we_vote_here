@@ -3,11 +3,12 @@ class UsersController < ApplicationController
 
   before_filter :signed_in_user, 
                 only: [:index, :edit, :update, :destroy]
-  before_filter :correct_user,   only: [:edit, :update, :change_password]
+  before_filter :correct_user,   only: [:edit, :update, :edit_password, :change_password]
   before_filter :admin_user,     only: :destroy
   
   def show
   	@user = User.find(params[:id])
+    @elections = Election.find(:all, conditions: {user_id: params[:id]})
   end
 
   def new
@@ -19,9 +20,6 @@ class UsersController < ApplicationController
     if @user.save
       sign_in @user
       flash[:success] = "Welcome to WeVoteHere!"
-
-      # Tell the UserMailer to send a welcome Email after save
-      UserMailer.welcome_email(@user).deliver
   
       redirect_to root_path
     
@@ -31,7 +29,6 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
   end
 
   def elections
@@ -52,6 +49,33 @@ class UsersController < ApplicationController
       redirect_to @user
     else
       render 'edit'
+    end
+  end
+
+  def edit_password
+    @user = User.find(params[:id])
+  end
+
+  def change_password
+    @user = User.find(params[:id])
+
+    if @user && @user.authenticate(params[:user][:old_password]) 
+      @user.password = params[:user][:password]
+      @user.password_confirmation = params[:user][:password_confirmation]
+      if @user.save 
+        flash[:success] = "Your password has been successfully changed!"
+        sign_in @user
+        redirect_to @user
+      elsif params[:user][:password] != params[:user][:password_confirmation]
+        flash[:notice] = "Your new password did not match the confirmation! You'll get it this time."
+        redirect_to edit_password_user_path(@user)
+      else
+        flash[:error] = "Sorry, we were unable to change your password :("
+        redirect_to edit_password_user_path(@user)
+      end
+    else 
+      flash[:error] = "The old password you entered was invalid."
+      redirect_to edit_password_user_path(@user)
     end
   end
 
