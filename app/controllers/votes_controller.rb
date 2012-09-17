@@ -4,15 +4,14 @@ class VotesController < ApplicationController
   def display
    	vote_id = params[:id]
     if Vote.exists?(vote_id)
+      # if @vote.question.election.privacy
+      #   svc = params[:svc]
+      #   if !match(vote_id, svc)
+      #     redirect_back_or root_path
+      #     return false
+      #   end
+      # end
       @vote = Vote.find(vote_id)
-      if @vote.question.election.privacy
-        svc = params[:svc]
-        if !match(vote_id, svc)
-          redirect_back_or root_path
-          return false
-        end
-      end
-      @vote
       @preferences = Preference.find(:all, conditions: {vote_id: vote_id})
       @preferences.sort! { |a, b| a.position <=> b.position }
     else
