@@ -50,14 +50,14 @@
   </script>
 
 <div class = "demo">
-  <ul id="sortable1" class = "connectedSortable">
-    <h3>Ballot</h3><br>
+  <h3>Ballot</h3><br>
+  <ol id="sortable1" class = "connectedSortable">
     
-  </ul>
+    
+  </ol>
 
-
+  <h3>Unsorted Choices</h3><br>
   <ul id="sortable2" class = "connectedSortable">
-    <h3>Unsorted Choices</h3><br>
     <% @vote.question.choices.each do |choice| %>
     <li id="choice_<%= choice.id %>
     " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>

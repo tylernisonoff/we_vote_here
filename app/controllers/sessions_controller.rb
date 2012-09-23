@@ -4,12 +4,8 @@ class SessionsController < ApplicationController
 	end
 
 	def create
-		login = params[:session][:handle_or_email]
-		if contains_at(login)
-			user = User.find_by_email(login)
-		else
-			user = User.find_by_handle(login)
-		end
+		email = UserEmail.find_by_email(params[:session][:email])
+		user = email.user
 
 		if user && user.authenticate(params[:session][:password])
 			sign_in user
@@ -18,7 +14,7 @@ class SessionsController < ApplicationController
 			flash.now[:error] = 'Invalid login/password combination'
 			render 'new'
 		else
-			flash.now[:error] = 'Invalid email or handle'
+			flash.now[:error] = 'Invalid email'
 			render 'new'
 		end
 	end

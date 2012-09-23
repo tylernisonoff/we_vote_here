@@ -17,13 +17,9 @@
   	<br>
 	Question:
   	<%= link_to @question.name, @question %>
- 	<br>
- 	<br>
+ 	
 
-	<% unless @question.election.info.blank? %>
-	Voting instructions: <%= @question.election.info %>
-  	<% end %>
-
+  <br>
 	<br>
 	
 	<h3>Choices</h3>

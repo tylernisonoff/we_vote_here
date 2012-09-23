@@ -4,8 +4,8 @@
 <%= form_for @user, html: { autocomplete: :off } do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.label :handle %>
-	<%= f.text_field :handle, placeholder: "handle" %>
+	<%= f.label "Nickname (optional)" %>
+    <%= f.text_field :nickname, placeholder: "what would you like everyone to call you?" %>
 
 	<%= f.label :email %>
 	<%= f.text_field :email, placeholder: "email" %>

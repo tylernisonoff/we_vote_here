@@ -1,5 +1,5 @@
 class Election < ActiveRecord::Base
-  attr_accessible :dynamic, :finish_time, :info, :name, :privacy, :start_time, :questions_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
+  attr_accessible :finish_time, :name, :privacy, :start_time, :questions_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
   
   has_many :questions, dependent: :destroy
 

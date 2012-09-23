@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120917084037) do
+ActiveRecord::Schema.define(:version => 20120923000603) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",                    :null => false
@@ -50,15 +50,13 @@ ActiveRecord::Schema.define(:version => 20120917084037) do
   add_index "choices", ["question_id", "name"], :name => "index_choices_on_question_id_and_name", :unique => true
 
   create_table "elections", :force => true do |t|
-    t.datetime "finish_time",                    :null => false
-    t.text     "info"
-    t.string   "name",                           :null => false
-    t.datetime "start_time",                     :null => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-    t.integer  "user_id",                        :null => false
-    t.boolean  "dynamic",     :default => false, :null => false
-    t.boolean  "privacy",     :default => true,  :null => false
+    t.datetime "finish_time",                   :null => false
+    t.string   "name",                          :null => false
+    t.datetime "start_time",                    :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.integer  "user_id",                       :null => false
+    t.boolean  "privacy",     :default => true, :null => false
   end
 
   create_table "preferences", :force => true do |t|
@@ -94,18 +92,26 @@ ActiveRecord::Schema.define(:version => 20120917084037) do
 
   add_index "results", ["question_id", "choice_id"], :name => "index_results_on_question_id_and_choice_id", :unique => true
 
+  create_table "user_emails", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "email",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "user_emails", ["email"], :name => "index_user_emails_on_email", :unique => true
+  add_index "user_emails", ["user_id"], :name => "index_user_emails_on_user_id"
+
   create_table "users", :force => true do |t|
     t.string   "email",           :null => false
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
     t.string   "password_digest", :null => false
     t.string   "remember_token"
-    t.string   "handle",          :null => false
     t.string   "nickname"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["handle"], :name => "index_users_on_handle", :unique => true
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
   create_table "valid_emails", :force => true do |t|

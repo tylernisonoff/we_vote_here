@@ -5,6 +5,6 @@ module ElectionsHelper
 	end
 
 	def pretty_name(user)
-		user.nickname || user.handle
+		user.nickname || user.email
 	end
 end

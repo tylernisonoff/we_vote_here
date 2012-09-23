@@ -42,14 +42,6 @@ module SessionsHelper
     session[:return_to] = request.fullpath
   end
 
-  def contains_at(handle_or_email)
-    if handle_or_email.include? "@"
-      return true
-    else
-      return false
-    end
-  end
-
   private
 
   	def user_from_remember_token

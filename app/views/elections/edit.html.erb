@@ -4,9 +4,6 @@
 	<%= f.label :name %>
 	<%= f.text_field :name, value: @election.name %>
 
-	<%= f.label :info, "Voting instructions:" %>
-	<%= f.text_area :info, value: @election.info %>
-
 	<br><br>
 
 	<%= f.label :start_time, "Start time:" %>
@@ -30,9 +27,7 @@
 	<br>
 	<%= f.radio_button :display_votes_as_created, 0, checked: !@election.dynamic %>
 	<%= f.label :display_votes_as_created, "Off", style: "display:inline" %>
-	<br>
-	<%= f.radio_button :dynamic, 1, checked: @election.dynamic %>
-	<%= f.label :dynamic, "On", style: "display:inline" %>
+
 
 	<br><br>
 

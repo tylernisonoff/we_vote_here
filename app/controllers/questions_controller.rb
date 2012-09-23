@@ -77,8 +77,6 @@ class QuestionsController < ApplicationController
   end
 
   def export_mov_to_csv
-    # future: only allow certain calls when dynamic is on
-    
     @question = Question.find(params[:id])
     @mov = @question.get_mov
 
@@ -89,9 +87,9 @@ class QuestionsController < ApplicationController
     end
 
     if sorted
-      filename ="adjusted_mov_for_#{@question.name}"
+      filename ="adjusted_mov_for_#{adjusted_filename(@question)}"
     else
-      filename ="regular_mov_for_#{@question.name}"
+      filename ="regular_mov_for_#{adjusted_filename(@question)}"
     end
 
     @choice_names = @question.choice_name_array(sorted)
@@ -119,7 +117,7 @@ class QuestionsController < ApplicationController
 
     @choice_names = @question.choice_name_array
     @choice_ids = @question.choice_id_array
-    filename ="active_votes_for_#{@question.name}"
+    filename ="active_votes_for_#{adjusted_filename(@question)}"
 
     csv_data = CSV.generate do |csv|
       csv << (["BSN"] + @choice_names)
@@ -179,5 +177,13 @@ class QuestionsController < ApplicationController
         redirect_back_or root_path
         return false
       end
+    end
+
+    def adjusted_filename(question)
+      split_name_array = Array.new
+      split_name_array.append(question.id)
+      split_name_array = split_name_array + question.name.split(" ")
+      new_name = split_name_array.join('_')
+      return new_name
     end
 end

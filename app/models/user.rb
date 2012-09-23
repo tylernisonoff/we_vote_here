@@ -10,9 +10,10 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :nickname, :email, :handle, :old_password, :password, :password_confirmation, :pretty_name, :handle_or_email
+  attr_accessible :nickname, :email, :old_password, :password, :password_confirmation, :pretty_name
   has_secure_password
 
+  has_many :user_emails, dependent: :destroy
   has_many :elections, dependent: :destroy
   has_many :preferences, dependent: :destroy
   # has_many :microposts, dependent: :destroy
@@ -24,7 +25,6 @@ class User < ActiveRecord::Base
   # has_many :followers, through: :reverse_relationships, source: :follower
 
   before_save { |user| user.email = email.downcase }
-  before_save { |user| user.handle = handle.downcase }
   before_save :create_remember_token
 
   after_create :deliver_signup_notification
@@ -36,8 +36,6 @@ class User < ActiveRecord::Base
 
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
   					uniqueness: { case_sensitive: false }
-  validates :handle, presence: true, format: { with: VALID_HANDLE_REGEX, message: "cannot contain spaces or the '@' character" },
-            uniqueness: { case_sensitive: false }, length: { within: 2..20 }          
   validates :password, length: { within: 6..50 }, on: :create
   validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
 
@@ -50,22 +48,7 @@ class User < ActiveRecord::Base
     if !nickname.blank? && !nickname.nil?
       return nickname
     else
-      return handle
-    end
-  end
-
-  # I believe this function doesn't do anything but is necessary
-  def handle_or_email
-    # Handle chosen somewhat arbitrarily, the main plus is privacy
-    self.handle
-  end
-
-  # I believe this function doesn't do anything but is necessary
-  def handle_or_email=(login)
-    if login.include? "@"
-      self.email
-    else
-      self.handle
+      return email
     end
   end
 

@@ -62,10 +62,8 @@ Voting instructions:
 <%= link_to 'Show results', results_question_path(@question), class: "btn btn-large btn-primary" %>
 <br><br><br>
 
-<% if @question.election.dynamic %>
-	<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_question_path(@question, {adjusted: 0}) %>
+<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_question_path(@question, {adjusted: 0}) %>
 	<br>
-	<%= link_to 'Export Adjusted MOV to CSV', export_mov_to_csv_question_path(@question, {adjusted: 1}) %>
+<%= link_to 'Export Adjusted MOV to CSV', export_mov_to_csv_question_path(@question, {adjusted: 1}) %>
 	<br>
-	<%= link_to 'Export Votes to CSV', export_votes_to_csv_question_path(@question) %>
-<% end %>
+<%= link_to 'Export Votes to CSV', export_votes_to_csv_question_path(@question) %>
