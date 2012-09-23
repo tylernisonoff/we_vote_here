@@ -1,6 +1,6 @@
 <% provide(:title, "View vote") %>
 <h1>View vote</h1>
-<h2> Election: <%= link_to @vote.question.election.name, @vote.question.election %> </h2>
+<h2> Election: <%= link_to @vote.question.group.name, @vote.question.group %> </h2>
 <h2> Question: <%= link_to @vote.question.name, @vote.question %> </h2>
 
 <br><br>

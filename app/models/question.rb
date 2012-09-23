@@ -1,7 +1,7 @@
 class Question < ActiveRecord::Base
   require 'set'
   
-  attr_accessible :name, :info, :choices_attributes, :election_id, :votes_attributes # :display_votes_as_created, :finish_time, :privacy, :start_time
+  attr_accessible :name, :info, :choices_attributes, :group_id, :votes_attributes, :start_time, :finish_time
   
   has_many :votes, dependent: :destroy
   has_many :valid_svcs, dependent: :destroy
@@ -9,12 +9,12 @@ class Question < ActiveRecord::Base
   has_many :preferences, dependent: :destroy
   has_many :choices, dependent: :destroy
 
-  belongs_to :election
+  belongs_to :group
 
   accepts_nested_attributes_for :valid_svcs, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
   accepts_nested_attributes_for :choices, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
-  validates_presence_of :election
+  validates_presence_of :group
 
   validates :name, presence: true, length: { within: 2..255 }
 
@@ -23,14 +23,37 @@ class Question < ActiveRecord::Base
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
+  validates :start_time, presence: true
+  validates :finish_time, presence: true
+
+  validate :check_start_time, on: :create
+  validate :check_finish_time, on: :create
+
   # with probability 1/2, returns a random number between min and max
   # with probability 1/2, returns a random number between -min and -max
+  
+  def check_start_time
+    errors.add(:start_time, "^Group cannot start before now.") unless self.start_time + 30.minutes >= Time.now
+  end
+
+  def check_finish_time
+    if self.start_time == self.finish_time
+      errors.add(:finish_time, "^Group cannot end when it begins.")
+    elsif self.start_time > self.finish_time
+      errors.add(:finish_time, "^Group cannot end before it begins.")
+    else
+      true
+    end
+  end
+
+
   def new_random (min, max)
     return (rand * (max-min) + min)
   end
 
 
-  def complete(winner_hash, n)
+  def complete(winner_hash)
+    n = self.choices.size
     num_comparisons = 0
     winner_hash.each do |choice_id, defeated|
         num_comparisons = num_comparisons + defeated.size()
@@ -102,7 +125,7 @@ class Question < ActiveRecord::Base
 
   def get_voter_array
     voter_array = Array.new
-    self.election.voters.each_with_index do |voter, index|
+    self.group.voters.each_with_index do |voter, index|
       voter_array[index] = Array.new
       voter.valid_emails.each do |valid_email|
         voter_array[index].push(valid_email.email)
@@ -113,7 +136,7 @@ class Question < ActiveRecord::Base
 
 
   def create_svcs_for_private(voter_array=false)
-    if self.election.privacy
+    if self.group.privacy
       unless voter_array
         # populate voter_array if there's no argument
         voter_array = get_voter_array
@@ -134,7 +157,7 @@ class Question < ActiveRecord::Base
   end
 
   def send_emails_for_public(voter_array=false)
-    unless self.election.privacy
+    unless self.group.privacy
       unless voter_array
         # populate voter_array if there's no argument
         voter_array = get_voter_array
@@ -209,7 +232,7 @@ class Question < ActiveRecord::Base
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over 
     @mov = self.get_mov
-    n = self.choices.size
+    # n = self.choices.size
     printer = 0
 
     ### ALGO TEST STARTS HERE
@@ -237,7 +260,7 @@ class Question < ActiveRecord::Base
     # for choice id "i",
     # loser_hash[i] stores the set of choices who defeated i
 
-    until complete(winner_hash, n)
+    until complete(winner_hash)
       if @mov_list.size == 0
         break
       end

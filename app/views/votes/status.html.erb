@@ -1,4 +1,4 @@
-<h2> Election: <%= link_to @valid_svc.question.election.name, @valid_svc.question.election %> </h2>
+<h2> Election: <%= link_to @valid_svc.question.group.name, @valid_svc.question.group %> </h2>
 <h2> Question: <%= link_to @valid_svc.question.name, @valid_svc.question %> </h2>
 <h2> SVC: <%= @valid_svc.svc %> </h2>
 <h2> <%= link_to "Change your vote!", vote_path(@valid_svc.svc) %> </h2>

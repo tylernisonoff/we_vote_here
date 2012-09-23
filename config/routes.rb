@@ -1,6 +1,6 @@
 WeVoteHere::Application.routes.draw do
   
-  resources :elections do
+  resources :groups do
     resources :questions, only: [:index, :new, :create]
     member do
       get :add_voters
@@ -9,12 +9,15 @@ WeVoteHere::Application.routes.draw do
 
   resources :users do
     member do
-      get :elections
+      get :groups
       get :edit_password
       put :change_password
+      get :add_emails
+      put :save_emails
+      get :emails
     end
   end
-
+  
   resources :questions do
     # resources :votes
     resources :valid_svcs, only: [] do
@@ -51,13 +54,15 @@ WeVoteHere::Application.routes.draw do
   match '/terms', to: 'static_pages#terms'
   match '/privacy', to: 'static_pages#privacy'
 
-  match '/new_election', to: 'elections#new'
+  match '/new_group', to: 'groups#new'
   match '/new_question', to: 'questions#new'
 
   get "static_pages/home"
   get "static_pages/about"
   get "static_pages/terms"
   get "static_pages/privacy"
+
+  match 'users/:id/make_primary_email/:user_email_id', to: 'users#make_primary_email', as: :make_primary_email_user
 
   # Votes custom routes
   match 'vote/:svc', to: 'votes#vote', as: :vote

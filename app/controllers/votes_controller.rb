@@ -4,13 +4,6 @@ class VotesController < ApplicationController
   def display
    	vote_id = params[:id]
     if Vote.exists?(vote_id)
-      # if @vote.question.election.privacy
-      #   svc = params[:svc]
-      #   if !match(vote_id, svc)
-      #     redirect_back_or root_path
-      #     return false
-      #   end
-      # end
       @vote = Vote.find(vote_id)
       @preferences = Preference.find(:all, conditions: {vote_id: vote_id})
       @preferences.sort! { |a, b| a.position <=> b.position }
@@ -98,7 +91,7 @@ class VotesController < ApplicationController
 		def correct_user
 	  		@user = User.find(params[:id])
 	  		redirect_to root_path unless @vote.user_id == current_user.id 
-        # redirect to election page
+        # redirect to group page
 		end
 
     def match(vote_id, svc)

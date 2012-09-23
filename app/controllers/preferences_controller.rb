@@ -18,16 +18,6 @@ class PreferencesController < ApplicationController
 				@preference.position = i + 1
 				@preference.save
 			end
-			unless ActivePreference.exists?(svc: params[:svc])
-				params["choice"].each_with_index do |choice_id, i|
-					@active_preference = ActivePreference.new
-					@active_preference.svc = params[:svc]
-					@active_preference.vote_id = params[:vote_id]
-					@active_preference.choice_id = choice_id
-					@active_preference.position = i + 1
-					@active_preference.save
-				end
-			end
 		end
 		render nothing: true
 	end

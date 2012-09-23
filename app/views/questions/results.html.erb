@@ -2,23 +2,23 @@
 <div>
 
 Owner:
-  <%= link_to @question.election.user.pretty_name, @question.election.user %>
+  <%= link_to @question.group.user.pretty_name, @question.group.user %>
   <br>
-Election:
-  <%= link_to @question.election.name, @question.election %>
+Group:
+  <%= link_to @question.group.name, @question.group %>
   <br><br>
 Question:
-  <%= best_in_place_if edit_election_condition(current_user, @question.election), @question.election, :name %>
+  <%= best_in_place_if edit_group_condition(current_user, @question.group), @question.group, :name %>
   <br><br><br>
 
 
-<% if @question.election.start_time > Time.now %>
-	<h3> This election has not yet started. </h3>
+<% if @question.group.start_time > Time.now %>
+	<h3> This group has not yet started. </h3>
 <% else %>
-	<% if @question.election.finish_time > Time.now %>
-		<h3> This election is in progress. Current results: </h3>
+	<% if @question.group.finish_time > Time.now %>
+		<h3> This group is in progress. Current results: </h3>
 	<% else %>
-		<h3> This election has ended. Results: </h3>
+		<h3> This group has ended. Results: </h3>
 	<% end %>
 	<br><br>
 	<% @results_array.each_with_index do |result, index| %>

@@ -6,7 +6,16 @@
 
 	<%= f.text_field :name, placeholder: "question name" %>
 
-	<%= f.text_area :info, placeholder: "question instructions" %>
+	<%= f.text_area :info, placeholder: "question instructions (optional)" %>
+
+	<br><br>
+
+	<%= f.label :start_time, "Start time:" %>
+	<%= f.datetime_select :start_time, value: @group.start_time %>
+
+	<%= f.label :finish_time, "Finish time:" %>
+	<%= f.datetime_select :finish_time, value: @group.finish_time %>
+	<br><br>
 
 <%= f.submit "Save", class: "btn btn-large btn-primary" %>
 <% end %>

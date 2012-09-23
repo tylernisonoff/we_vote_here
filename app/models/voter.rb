@@ -3,6 +3,6 @@ class Voter < ActiveRecord::Base
 
   has_many :valid_emails, dependent: :destroy
 
-  belongs_to :election
+  belongs_to :group
 
 end

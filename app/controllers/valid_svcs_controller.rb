@@ -5,8 +5,8 @@ class ValidSvcsController < ApplicationController
   # PUBLIC ELECTIONS
     @question = Question.find(params[:question_id])
 
-    # for public elections
-    unless @question.election.privacy
+    # for public groups
+    unless @question.group.privacy
       @valid_svc = ValidSvc.new
       @valid_svc.question = @question
       @valid_svc.assign_valid_svc

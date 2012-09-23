@@ -1,8 +1,5 @@
 <% provide(:title, "Edit user") %> 
 <h1>Update your profile</h1>
-<% if @user == current_user %>
-	<h2><%= link_to "edit password", edit_password_user_path(@user) %></h2>
-<% end %>
 
 <%= form_for(@user) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
@@ -13,12 +10,15 @@
     <%= f.label :email %>
     <%= f.text_field :email %>
 
-    <%= f.label :handle %>
-    <%= f.text_field :handle %>
-
 	<br><br>
     <%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
 <% end %>
 
-<%= gravatar_for (@user) %>
-<a href="http://gravatar.com/emails">change</a>
+<% if @user == current_user %>
+    <%= gravatar_for (@user) %>
+    <h6><a href="http://gravatar.com/emails">change your gravatar</a></h6>
+    
+    <h6><%= link_to "edit your password", edit_password_user_path(@user) %></h6>
+    <h6><%= link_to "link other email addresses", add_emails_user_path(@user) %></h6>
+    <h6><%= link_to "view my email addresses", emails_user_path(@user) %></h6>
+<% end %>

@@ -2,14 +2,14 @@ class QuestionsController < ApplicationController
   require 'csv'
   respond_to :html, :json
 
-  before_filter :election_owner, only: [:new, :create, :edit, :update, :destroy]
+  before_filter :group_owner, only: [:new, :create, :edit, :update, :destroy]
 
   # eventually use this after I figure out how to make sessions with CSVs
   # before_filter :can_view, only: [:export_mov_to_csv, :export_votes_to_csv, :results, :show, :index]
   
 	def new
-    @election = Election.find_by_id(params[:election_id])
-    @question = @election.questions.build
+    @group = Group.find_by_id(params[:group_id])
+    @question = @group.questions.build
     @question.choices.build
     @question.choices.each do |choice|
       choice.question_id = @question.id
@@ -18,22 +18,22 @@ class QuestionsController < ApplicationController
 	end
 
 	def create
-    @election = Election.find(params[:election_id])
-		@question = @election.questions.build(params[:question])
+    @group = Group.find(params[:group_id])
+		@question = @group.questions.build(params[:question])
 		if @question.save
 			flash[:success] = "Question saved"
       if params[:commit] == "Save"
-			  redirect_to @election
+			  redirect_to @group
       elsif params[:commit] == "Add another question"
-        redirect_to new_election_question_path(@question.election)
+        redirect_to new_group_question_path(@question.group)
 		  end
     else
 			flash[:failure] = "Failed to save question"
 		end
 
-    # If the election is private, then create SVCs
+    # If the group is private, then create SVCs
     # This also sends an email to every valid email with their SVC
-    if @election.privacy
+    if @group.privacy
       @question.create_svcs_for_private
     else
       @question.send_emails_for_public
@@ -54,9 +54,9 @@ class QuestionsController < ApplicationController
   end
 
   def index
-    if params[:election_id]
-      @election_id = params[:election_id]
-      @questions = Question.find(:all, conditions: {election_id: params[:election_id]})
+    if params[:group_id]
+      @group_id = params[:group_id]
+      @questions = Question.find(:all, conditions: {group_id: params[:group_id]})
     else
       @questions = Question.all
     end
@@ -137,23 +137,23 @@ class QuestionsController < ApplicationController
 
    private
 
-    def election_owner
-      if params[:election_id]
-        if Election.exists?(params[:election_id])
-          @election = Election.find(params[:election_id])
-          if current_user == @election.user
+    def group_owner
+      if params[:group_id]
+        if Group.exists?(params[:group_id])
+          @group = Group.find(params[:group_id])
+          if current_user == @group.user
             return true
           else
             flash[:error] = "You cannot edit this question because you don't own it :/"
             redirect_back_or root_path
           end
         else
-          flash[:error] = "Sorry, that election doesn't exist"
+          flash[:error] = "Sorry, that group doesn't exist"
         end
       elsif params[:id]
         if Question.exists?(params[:id])
           @question = Question.find(params[:id])
-          if current_user == @question.election.user
+          if current_user == @question.group.user
             return true 
           else
             flash[:error] = "You cannot edit this question because you don't own it :/"
@@ -170,7 +170,7 @@ class QuestionsController < ApplicationController
 
     def can_view
       question = Question.find(params[:id])
-      if !question.election.privacy || ValidSvc.exists?(svc: params[:svc])
+      if !question.group.privacy || ValidSvc.exists?(svc: params[:svc])
         return true
       else
         flash[:error] = "You need a valid SVC to do this."

@@ -1,14 +1,22 @@
 <% provide(:title, "Create a question") %>
 <h1>Create a question</h1>
-<h2> Election: <%= @election.name %> </h2>
+<h2> Group: <%= @group.name %> </h2>
 
-<%= nested_form_for(@question, url: election_questions_path(@election)) do |f| %>
+<%= nested_form_for(@question, url: group_questions_path(@group)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
 	<%= f.text_field :name, placeholder: "question name" %>
 
 	<%= f.text_area :info, placeholder: "question instructions (optional)" %>
 
+	<br><br>
+
+	<%= f.label :start_time, "Start time:" %>
+	<%= f.datetime_select :start_time, default: Time.now %>
+
+	<%= f.label :finish_time, "Finish time:" %>
+	<%= f.datetime_select :finish_time, default: Time.now + 1.week %>
+	
 	<br><br>
 
 	<script>

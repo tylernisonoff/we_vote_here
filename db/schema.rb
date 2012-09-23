@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120923000603) do
+ActiveRecord::Schema.define(:version => 20120923093709) do
 
   create_table "active_preferences", :force => true do |t|
     t.integer  "choice_id",                    :null => false
@@ -49,14 +49,12 @@ ActiveRecord::Schema.define(:version => 20120923000603) do
 
   add_index "choices", ["question_id", "name"], :name => "index_choices_on_question_id_and_name", :unique => true
 
-  create_table "elections", :force => true do |t|
-    t.datetime "finish_time",                   :null => false
-    t.string   "name",                          :null => false
-    t.datetime "start_time",                    :null => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-    t.integer  "user_id",                       :null => false
-    t.boolean  "privacy",     :default => true, :null => false
+  create_table "groups", :force => true do |t|
+    t.string   "name",                         :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.integer  "user_id",                      :null => false
+    t.boolean  "privacy",    :default => true, :null => false
   end
 
   create_table "preferences", :force => true do |t|
@@ -77,10 +75,12 @@ ActiveRecord::Schema.define(:version => 20120923000603) do
     t.text     "info"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
-    t.integer  "election_id", :null => false
+    t.integer  "group_id",    :null => false
+    t.datetime "start_time",  :null => false
+    t.datetime "finish_time", :null => false
   end
 
-  add_index "questions", ["election_id"], :name => "index_questions_on_election_id"
+  add_index "questions", ["group_id"], :name => "index_questions_on_group_id"
 
   create_table "results", :force => true do |t|
     t.integer  "question_id"
@@ -115,11 +115,11 @@ ActiveRecord::Schema.define(:version => 20120923000603) do
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
   create_table "valid_emails", :force => true do |t|
-    t.string   "email",       :null => false
-    t.integer  "voter_id",    :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.integer  "election_id", :null => false
+    t.string   "email",      :null => false
+    t.integer  "voter_id",   :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "group_id",   :null => false
   end
 
   create_table "valid_svcs", :force => true do |t|
@@ -132,9 +132,9 @@ ActiveRecord::Schema.define(:version => 20120923000603) do
   add_index "valid_svcs", ["svc"], :name => "index_valid_svcs_on_svc", :unique => true
 
   create_table "voters", :force => true do |t|
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.integer  "election_id", :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "group_id",   :null => false
   end
 
   create_table "votes", :force => true do |t|

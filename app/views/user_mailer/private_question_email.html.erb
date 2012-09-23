@@ -4,7 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>You have been invited by <%= @question.election.user.pretty_name %> to vote in an election at WeVoteHere.com!</h1>
+    <h1>You have been invited by <%= @question.group.user.pretty_name %> to vote in an group at WeVoteHere.com!</h1>
 
     <p>You will use your Secret Voting Code (SVC) to securely vote on this question. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
 
@@ -14,10 +14,10 @@
 
     <h2>Question Information</h2>
     Owner:
-  	<%= link_to @question.election.user.pretty_name, @question.election.user %>
+  	<%= link_to @question.group.user.pretty_name, @question.group.user %>
   	<br>
-	Election:
-  	<%= link_to @question.election.name, @question.election %>
+	Group:
+  	<%= link_to @question.group.name, @question.group %>
   	<br>
 	Question:
   	<%= link_to @question.name, @question %>
