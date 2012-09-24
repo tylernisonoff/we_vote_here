@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
 	end
 
 	def create
-		if UserEmail.find_by_email(params[:session][:email])
+		if UserEmail.exists?(email: params[:session][:email])
 			email = UserEmail.find_by_email(params[:session][:email])
 			user = email.user
 		else
