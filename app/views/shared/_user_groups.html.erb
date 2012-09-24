@@ -1,0 +1,37 @@
+<div class="row">
+    <aside class="span12">
+      <section>
+        <div class="row">
+          <aside class="span4">
+            <ul>
+              <%= render user %>
+            </ul>
+          </aside>
+          <div class="span8">
+            <p>
+              <% if user.groups.any? %>
+                  <h3>Groups I own (<%= user.groups.count %>)</h3>
+                  <ul>
+                    <%= render user.groups %>
+                  </ul>
+              <% end %>
+            </p>
+            <br>
+            <p>
+              <% if user.followed_groups.any? %>
+                <h3>Groups I follow (<%= user.followed_groups.count %>)</h3>
+                <ul>
+                  <%= render user.followed_groups %>
+                </ul>
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </section>
+      <section>
+        <% if user == current_user %>
+          <%= link_to "Create a group", new_group_path, class: "btn btn-large btn-primary" %>
+        <% end %>
+      </section>
+    </aside>
+  </div>

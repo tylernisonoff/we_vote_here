@@ -1,0 +1,7 @@
+<h1><%= @user.pretty_name%>'s emails</h1>
+
+<ul class="lists">
+	<% @user_emails.each do |user_email| %>
+		<%= render partial: "user_email", locals: {user: @user, user_email: user_email} %>
+	<% end %>
+</ul>

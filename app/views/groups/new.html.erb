@@ -1,0 +1,30 @@
+<% provide(:title, 'Create a group') %>
+<h1>Create a group</h1>
+
+<%= form_for @group do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+	<%= f.text_field :name, placeholder: "group name" %>
+
+	<br><br>
+
+	<%= f.label :emails, "Enter the emails of the members for this group!" %>
+	<%= f.text_area :emails, value: "", placeholder: "enter email addresses here. please separate emails by commas" %>
+
+	<br><br>
+	
+	Group Privacy:
+	<br>
+	<%= f.radio_button :privacy, 0, checked: false %>
+	<%= f.label :privacy, "Public", style: "display:inline" %>
+	<br>
+	<%= f.radio_button :privacy, 1, checked: true %>
+	<%= f.label :privacy, "Private", style: "display:inline" %>
+
+	<br><br>
+
+
+<br><br><br>
+
+	<%= f.submit "Next step", class: "btn btn-large btn-primary" %>
+<% end %>

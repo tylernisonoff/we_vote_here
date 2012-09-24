@@ -1,0 +1,24 @@
+<div>
+	<span class="content">
+	  	<p><%= link_to group.name, group %>
+	  	<% if edit_group_condition(current_user, group) %>
+	    	- <%= link_to "edit", edit_group_path(group) %>
+	  	<% end %></p>
+  	</span>
+  	<span class="label label-success">
+  		<% if @group.privacy %>
+	      private
+	    <% else %>
+	      public
+		<% end %>
+	</span>
+  	<span class="timestamp">
+  		<p>Created <%= time_ago_in_words(group.created_at) %> ago.</p>
+	</span>
+	<div class="span3">
+		<br>
+		<% if edit_group_condition(current_user, @group) %>
+			<%= link_to "Add another question", new_group_question_path(@group), class: "btn btn-large btn-primary" %>
+		<% end %>
+  	</div>
+</div>

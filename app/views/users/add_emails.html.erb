@@ -1,0 +1,11 @@
+<% provide(:title, "Add emails") %> 
+<h1>Add emails</h1>
+
+<%= form_for(@user, url: save_emails_user_path) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+    <%= f.label :user_emails %>
+    <%= f.text_area :user_emails, value: "", placeholder: "please separate emails with a space" %>
+
+    <%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
+<% end %>

@@ -1,0 +1,10 @@
+<li class="lists">
+  <span class="content">
+  		<%= email %>
+  		<% if user.email == email %>
+  			(primary)
+  		<% else %>
+  			<%= link_to "make primary", make_primary_email_user_path(id: user.id, email: email) %>
+  		<% end %>
+  </span>
+</li>

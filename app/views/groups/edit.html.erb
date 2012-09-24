@@ -1,0 +1,23 @@
+<%= form_for @group do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+	<%= f.label :name %>
+	<%= f.text_field :name, value: @group.name %>
+
+	<br><br>
+	
+	Group Privacy:
+	<br>
+	<%= f.radio_button :privacy, 0, checked: !@group.privacy %>
+	<%= f.label :privacy, "Public", style: "display:inline" %>
+	<br>
+	<%= f.radio_button :privacy, 1, checked: @group.privacy %>
+	<%= f.label :privacy, "Private", style: "display:inline" %>
+
+
+<br><br>
+
+	<%= f.submit "Submit", class: "btn btn-large btn-primary" %>
+<% end %>
+
+<h6><%= link_to "add voters", add_voters_group_path(@group) %></h6>

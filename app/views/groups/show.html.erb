@@ -1,0 +1,29 @@
+<% provide(:title, @group.name) %>
+<h1>Group: <%= @group.name %></h1>
+
+<div class="row">
+    <aside class="span4">
+      <section>
+        <h3>Owner</h3>
+        <p>
+          <ul class="lists">
+            <%= render @group.user %>
+          </ul>
+        </p>
+      </section>
+      <section>
+        <h3>Group</h3>
+        <p><%= render partial: "group_info", locals: {:group => @group} %></p>
+      </section>
+    </aside>
+    <aside class="span7">
+      <% if @group.questions.any? %>
+        <h3>Questions (<%= @group.questions.count %>)</h3>
+          <p>
+            <ul class="lists">
+              <%= render @group.questions %>
+            </ul>
+          </p>
+      <% end %>
+    </aside>
+</div>

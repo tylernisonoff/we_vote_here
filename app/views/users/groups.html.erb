@@ -1,0 +1,18 @@
+<% provide(:title, @user.pretty_name) %>
+<div class="row">
+	<aside class="span4">
+    	<section>
+      		<h1>
+        		<%= @user.pretty_name %>
+      		</h1>
+    	</section>
+  	</aside>
+	<div class="span8">
+  	<% if @groups.any? %>
+    		<% @groups.each do |group| %>
+          <%= link_to group.name, group %>
+          <br>
+        <% end %>
+  	<% end %>
+	</div>
+</div>
