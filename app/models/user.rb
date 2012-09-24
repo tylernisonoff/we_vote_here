@@ -12,6 +12,7 @@
 class User < ActiveRecord::Base
   attr_accessible :nickname, :email, :user_emails, :old_password, :password, :password_confirmation, :pretty_name
   has_secure_password
+  require 'set'
 
   has_many :user_emails, dependent: :destroy
   has_many :groups, dependent: :destroy
@@ -55,6 +56,25 @@ class User < ActiveRecord::Base
     else
       return true
     end
+  end
+
+  def followed_groups
+    user_emails = UserEmail.find(:all, conditions: {user_id: self.id})
+    valid_emails = Array.new
+    user_emails.each do |user_email|
+      if ValidEmail.exists?(email: user_email.email)
+        valid_emails = valid_emails + ValidEmail.find(:all, conditions: {email: user_email.email})
+      end
+    end
+    total_groups = Set.new
+    if valid_emails.any?
+      valid_emails.each do |valid_email|
+        total_groups.add(Group.find(valid_email.group_id))
+      end
+    end
+    followed_groups_set = total_groups - self.groups.to_set
+    followed_groups = followed_groups_set.to_a
+    followed_groups.sort! { |a, b| a.created_at <=> b.created_at }
   end
 
   def add_to_user_emails

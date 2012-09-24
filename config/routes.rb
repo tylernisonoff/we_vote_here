@@ -33,8 +33,6 @@ WeVoteHere::Application.routes.draw do
     end
   end
 
-  # resources :valid_svcs
-
   resources :preferences, only: [] do
     post :sort, on: :collection
   end
@@ -63,6 +61,7 @@ WeVoteHere::Application.routes.draw do
   get "static_pages/privacy"
 
   match 'users/:id/make_primary_email/:user_email_id', to: 'users#make_primary_email', as: :make_primary_email_user
+  match 'users/:id/unfollow_group/:group_id', to: 'users#unfollow_group', as: :unfollow_group_user
 
   # Votes custom routes
   match 'vote/:svc', to: 'votes#vote', as: :vote

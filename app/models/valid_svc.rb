@@ -10,13 +10,16 @@ class ValidSvc < ActiveRecord::Base
   def assign_valid_svc
     # returns a random, key of integers in
     # BSN or SVC format that was not used before
-    @random_svc = ""
-    (1..18).each do |n|
-      @rando = rand(10)
-      @random_svc << @rando.to_s
-    end
-
-    @random_svc << self.question_id.to_s
+    begin
+      @random_svc = ""
+      (1..18).each do |n|
+        @rando = rand(10)
+        @random_svc << @rando.to_s
+      end
+      @random_svc << self.question_id.to_s
+      
+      # ensure there are no collisions
+    end while ValidSvc.exists?(svc: @random_svc)
 
     self.svc = @random_svc
   end

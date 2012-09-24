@@ -1,14 +1,17 @@
 class UsersController < ApplicationController
   respond_to :html, :json
 
+
   before_filter :signed_in_user, 
                 only: [:index, :edit, :update, :destroy]
   before_filter :correct_user,   only: [:edit, :update, :edit_password, :change_password, :edit_password, :add_emails, :save_emails]
   before_filter :admin_user,     only: :destroy
+  before_filter :group_follower, only: [:unfollow_group]
+
+
   
   def show
   	@user = User.find(params[:id])
-    @elections = Group.find(:all, conditions: {user_id: params[:id]})
   end
 
   def new
@@ -20,9 +23,7 @@ class UsersController < ApplicationController
     if @user.save
       sign_in @user
       flash[:success] = "Welcome to WeVoteHere!"
-  
       redirect_to root_path
-    
     else
       render 'new'
     end
@@ -31,9 +32,9 @@ class UsersController < ApplicationController
   def edit
   end
 
-  def elections
+  def groups
     @user = User.find(params[:id])
-    @elections = @user.elections
+    @groups = @user.groups
   end
 
   def destroy
@@ -115,6 +116,27 @@ class UsersController < ApplicationController
     redirect_to emails_user_path(@user)
   end
 
+  def unfollow_group
+    @user = User.find(params[:id])
+    @group = Group.find(params[:group_id])
+    success = true
+    @user.user_emails.each do |user_email|
+      if ValidEmail.exists?(group_id: @group.id, email: user_email.email)
+        @valid_email = ValidEmail.find(:first, conditions: {group_id: @group.id, email: user_email.email})
+        @voter = @valid_email.voter
+        unless @voter.destroy
+          success = false
+        end
+      end
+    end
+    if success
+      flash[:success] = "We successfully removed you from this group!"
+    else
+      flash[:error] = "We were unable to unfollow this group."
+    end
+    redirect_back_or root_path
+  end
+
   def emails
     @user = User.find(params[:id])
     @user_emails = UserEmail.find(:all, conditions: {user_id: @user.id})
@@ -134,4 +156,11 @@ class UsersController < ApplicationController
     def admin_user
       redirect_to(root_path) unless current_user.admin?
     end
+
+    def group_follower
+      @user = User.find(params[:id])
+      @group = Group.find(params[:group_id])
+      return @user.followed_groups.member?(@group)
+    end
+
 end
