@@ -1,0 +1,8 @@
+<li class="lists">
+  <span class="content">
+  	<p> Group: <%= link_to valid_svc.election.group.name, valid_svc.election.group %> </p>
+	<p> Election: <%= link_to valid_svc.election.name, valid_svc.election %> </p>
+	<p> SVC: <%= valid_svc.svc %> </p>
+	<p> <%= link_to "Change your vote!", vote_path(valid_svc.svc) %> </p>
+  </span>
+</li>

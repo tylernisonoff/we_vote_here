@@ -1,7 +1,7 @@
 <% provide(:title, 'Enter your SVC') %>
 <h1>Enter your SVC</h1>
 
-<%= form_for :valid_svc, url:confirm_question_valid_svcs_path(@question), html: { autocomplete: :off } do |f| %>
+<%= form_for :valid_svc, url: confirm_election_valid_svcs_path(@election), html: { autocomplete: :off } do |f| %>
 
 	<%= f.label :svc %>
 	<%= f.text_field :svc, placeholder: "SVC" %>

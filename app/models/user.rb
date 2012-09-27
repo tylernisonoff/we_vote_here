@@ -75,6 +75,7 @@ class User < ActiveRecord::Base
     followed_groups_set = total_groups - self.groups.to_set
     followed_groups = followed_groups_set.to_a
     followed_groups.sort! { |a, b| a.created_at <=> b.created_at }
+    return followed_groups
   end
 
   def add_to_user_emails
@@ -90,6 +91,11 @@ class User < ActiveRecord::Base
     else
       return email
     end
+  end
+
+  def trash_user
+    self.trashed = true
+    self.save
   end
 
   private

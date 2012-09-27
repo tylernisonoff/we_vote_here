@@ -7,17 +7,12 @@ class UserMailer < ActionMailer::Base
     mail(to: user.email, subject: "Welcome to WeVoteHere!")
   end
 
-  def private_question_email(email, question, svc)
-  	@question = question
-  	@svc = svc
+  def election_email(email, election, svc=false)
+  	@election = election
+  	if svc
+      @svc = svc
+    end
   	mail(to: email, subject: "You are invited to vote at WeVoteHere!")
   end
-
-  def public_question_email(email, question)
-    @question = question
-    mail(to: email, subject: "You are invited to vote at WeVoteHere!")
-  end
-
-
 
 end

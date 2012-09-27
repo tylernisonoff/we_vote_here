@@ -5,24 +5,22 @@ class VotesController < ApplicationController
    	vote_id = params[:id]
     if Vote.exists?(vote_id)
       @vote = Vote.find(vote_id)
-      @preferences = Preference.find(:all, conditions: {vote_id: vote_id})
+      @preferences = Preference.find(:all, conditions: {vote_id: vote_id, trashed: false})
       @preferences.sort! { |a, b| a.position <=> b.position }
     else
       flash[:error] = "Sorry, that is an invalid BSN."
       redirect_back_or root_path  
     end
   end
-    
+  
   def destroy
     svc = params[:svc]
     vote_id = params[:id]
     if match(vote_id, svc)
-      vote = Vote.find(vote_id)    
-      vote.destroy_vote
-      if ActivePreference.exists?(svc: svc)  
-        active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
-      else
-        flash[:warning] = "There are now no active preferences for your SVC."
+      @vote = Vote.find(vote_id)    
+      @vote.trash_vote
+      unless Preference.exists?(svc: svc, active: true, trashed: false)
+        flash[:warning] = "There are now no active preferences for your SVC. Change that!"
       end
       redirect_to status_vote_path(svc: svc)
     else
@@ -34,12 +32,12 @@ class VotesController < ApplicationController
   def status
     svc = params[:svc]
     @valid_svc = ValidSvc.find_by_svc(svc)
-    @votes = Vote.find(:all, conditions: {svc: svc})
+    @votes = Vote.find(:all, conditions: {svc: svc, trashed: false})
     @votes.sort! { |a, b| a.created_at <=> b.created_at}
 
-    if ActiveVote.exists?(svc: svc)
-      @active_vote = ActiveVote.find_by_svc(svc)
-      @active_preferences = ActivePreference.find(:all, conditions: {svc: svc})
+    if Vote.exists?(svc: svc, active: true)
+      @active_vote = Vote.find(:first, conditions: {svc: svc, active: true, trashed: false})
+      @active_preferences = Preference.find(:all, conditions: {svc: svc, active: true, trashed: false})
       @active_preferences.sort! { |a, b| a.position <=> b.position }
     end
   end
@@ -51,12 +49,12 @@ class VotesController < ApplicationController
       vote_id = params[:id]
 
       if match(vote_id, svc)
-        vote_to_activate = Vote.find(vote_id)
-        vote_to_activate.activate_vote
+        @vote_to_activate = Vote.find(vote_id)
+        @vote_to_activate.activate_vote
 
-        active_vote = ActiveVote.find_by_svc(svc)
-        active_preferences = ActivePreference.find(:all, conditions: {vote_id: vote_id})
-        active_preferences.sort! { |a, b| a.position <=> b.position }
+        @active_vote = Vote.find(:first, conditions: {svc: svc, active: true, trashed: false})
+        @active_preferences = Preference.find(:all, conditions: {vote_id: vote_id, active: true})
+        @active_preferences.sort! { |a, b| a.position <=> b.position }
       else
         flash[:error] = "You tried to activate a vote using the wrong SVC."
       end
@@ -71,13 +69,13 @@ class VotesController < ApplicationController
     puts "\n\n\n\n\n\n#{params}\n\n\n\n"
     if ValidSvc.exists?(svc: svc)
       @valid_svc = ValidSvc.find_by_svc(svc)
-      @question = @valid_svc.question
+      @election = @valid_svc.election
       @vote = Vote.new
-      @vote.question = @question
+      @vote.election = @election
       @vote.assign_vote_svc(svc)
       unless @vote.save
         flash[:error] = "We were unable to save your vote"
-        redirect_to @question
+        redirect_to @election
       end
     else
       flash[:error] = "This is an invalid SVC."

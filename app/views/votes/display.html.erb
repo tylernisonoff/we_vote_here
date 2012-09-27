@@ -1,17 +1,14 @@
 <% provide(:title, "View vote") %>
 <h1>View vote</h1>
-<h2> Election: <%= link_to @vote.question.group.name, @vote.question.group %> </h2>
-<h2> Question: <%= link_to @vote.question.name, @vote.question %> </h2>
+<h2> Group: <%= link_to @vote.election.group.name, @vote.election.group %> </h2>
+<h2> Election: <%= link_to @vote.election.name, @vote.election %> </h2>
 
 <br><br>
 
 <h3>Choices</h3>
 <br>
 <% if @preferences && @preferences.any? %>
-	<% @preferences.each do |pref| %>
-		<%= pref.position %>) <%= pref.choice.name %>
-		<br>
-	<% end %>
+	<%= render @preferences %>
 <% else %>
 	<p> This ballot has no choices </p>
 <% end %>

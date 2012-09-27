@@ -1,0 +1,11 @@
+<li class="lists">
+  <span class="content"><%= link_to election.name, election %></span>
+  <span class="timestamp">
+  	Start time: <%= election.start_time.to_s %>
+  	<br>
+    End time: <%= election.finish_time.to_s %>
+  </span>
+  <% if current_user?(election.group.user) %>
+    <%= link_to "edit", edit_election_path(election) %>
+  <% end %>
+</li>

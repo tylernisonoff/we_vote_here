@@ -1,13 +1,13 @@
-<% provide(:title, "Create a question") %>
-<h1>Create a question</h1>
+<% provide(:title, "Create an election") %>
+<h1>Create an election</h1>
 <h2> Group: <%= @group.name %> </h2>
 
-<%= nested_form_for(@question, url: group_questions_path(@group)) do |f| %>
+<%= nested_form_for(@election, url: group_elections_path(@group)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.text_field :name, placeholder: "question name" %>
+	<%= f.text_field :name, placeholder: "election name" %>
 
-	<%= f.text_area :info, placeholder: "question instructions (optional)" %>
+	<%= f.text_area :info, placeholder: "election instructions (optional)" %>
 
 	<br><br>
 
@@ -21,7 +21,7 @@
 
 	<script>
 	$(document).ready(function(){
-		$(document).keypress(function(event){ // change to ".enter_question_name"
+		$(document).keypress(function(event){ // change to ".enter_election_name"
     		if(event.keyCode == 13){ // clicked enter, which is key number 13.
         		$('#add_new_choice').click();
         		return false;
@@ -44,5 +44,5 @@
 	
 
 	<%= f.submit "Save", class: "btn btn-large btn-primary" %>
-	<%= f.submit "Add another question", class: "btn btn-large btn-primary" %>
+	<%= f.submit "Add another election", class: "btn btn-large btn-primary" %>
 <% end %>

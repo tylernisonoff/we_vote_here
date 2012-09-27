@@ -14,8 +14,8 @@ class GroupsController < ApplicationController
 	def create
   	@group = current_user.groups.build(params[:group])
     if @group.save
-			flash[:success] = "Group created! Now make questions"
-			redirect_to new_group_question_path(@group)
+			flash[:success] = "Group created! Now make elections"
+			redirect_to new_group_election_path(@group)
 		else
 			flash[:failure] = "Failure creating group :("
 			render 'new'
@@ -23,7 +23,7 @@ class GroupsController < ApplicationController
   end
 
   def destroy
-  	@group.destroy
+  	@group.trash_group
   	redirect_to root_path
   end
 
@@ -35,15 +35,15 @@ class GroupsController < ApplicationController
       render 'edit'
     end
 
-    unless params[:group][:emails].blank? || !@group.questions.any?
+    unless params[:group][:emails].blank? || !@group.elections.any?
       new_voters = @group.get_split_voters(params[:group][:emails])
       if @group.privacy
-        @group.questions.each do |question|
-          question.create_svcs_for_private(new_voters)
+        @group.elections.each do |election|
+          election.create_svcs_for_private(new_voters)
         end
       else
-        @group.questions.each do |question|
-          question.send_emails_for_public(new_voters)
+        @group.elections.each do |election|
+          election.send_emails_for_public(new_voters)
         end
       end
     end
@@ -51,7 +51,7 @@ class GroupsController < ApplicationController
 
 
   def index
-    @groups = Group.all
+    @groups = Group.find(:all, conditions: {trashed: false})
   end
 
   def edit

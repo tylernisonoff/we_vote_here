@@ -1,7 +1,7 @@
 WeVoteHere::Application.routes.draw do
   
   resources :groups do
-    resources :questions, only: [:index, :new, :create]
+    resources :elections, only: [:index, :new, :create]
     member do
       get :add_voters
     end
@@ -13,22 +13,14 @@ WeVoteHere::Application.routes.draw do
       get :edit_password
       put :change_password
       get :add_emails
-      put :save_emails
+      post :save_emails
       get :emails
     end
   end
   
-  resources :questions do
-    # resources :votes
-    resources :valid_svcs, only: [] do
-      get :enter, on: :collection
-      get :make, on: :collection
-      post :confirm, on: :collection
-    end
+  resources :elections do
     member do
       get :choices # might be useless
-      get :export_mov_to_csv
-      get :export_votes_to_csv
       get :results
     end
   end
@@ -53,7 +45,7 @@ WeVoteHere::Application.routes.draw do
   match '/privacy', to: 'static_pages#privacy'
 
   match '/new_group', to: 'groups#new'
-  match '/new_question', to: 'questions#new'
+  match '/new_election', to: 'elections#new'
 
   get "static_pages/home"
   get "static_pages/about"
@@ -69,18 +61,23 @@ WeVoteHere::Application.routes.draw do
   match 'votes/:svc/activate/:id', to: 'votes#activate', as: :activate_vote
   match 'votes/:svc/destroy/:id', to: 'votes#destroy', as: :destroy_vote
   match 'votes/:svc/status', to: 'votes#status', as: :status_vote
-  match 'votes/:svc/display/:id', to: 'votes#display', as: :display_private_vote
-  match 'votes/display/:id', to: 'votes#display', as: :display_public_vote
+  match 'votes/display/:id', to: 'votes#display', as: :display_vote
+  # match 'votes/:svc/display/:id', to: 'votes#display', as: :display_private_vote
+  # match 'votes/display/:id', to: 'votes#display', as: :display_public_vote
+
+  match 'elections/:election_id/valid_svcs/make', to: 'valid_svcs#make', as: :make_election_valid_svcs
+  match 'elections/:election_id/valid_svcs/enter', to: 'valid_svcs#enter', as: :enter_election_valid_svcs
+  match 'elections/:election_id/valid_svcs/confirm', to: 'valid_svcs#confirm', as: :confirm_election_valid_svcs
 
 # -----------------------------------------------------------------------
 
   # special cases where we need to make then enter their SVC, perhaps as a cookie
 
-  # match 'questions/:id/:svc/export_mov_to_csv', to: 'questions#export_mov_to_csv', as: :export_mov_to_csv_question
-  # match 'questions/:id/:svc/export_votes_to_csv', to: 'questions#export_votes_to_csv', as: :export_votes_to_csv_question
-  # match 'questions/:id/:svc/results', to: 'questions#results', as: :results_question
-  # match 'questions/:id/:svc', to: 'questions#show', as: :question
-  # match 'questions/:svc', to: 'questions#index', as: :index_question
+  # match 'elections/:id/:svc/export_mov_to_csv', to: 'elections#export_mov_to_csv', as: :export_mov_to_csv_election
+  # match 'elections/:id/:svc/export_votes_to_csv', to: 'elections#export_votes_to_csv', as: :export_votes_to_csv_election
+  # match 'elections/:id/:svc/results', to: 'elections#results', as: :results_election
+  # match 'elections/:id/:svc', to: 'elections#show', as: :election
+  # match 'elections/:svc', to: 'elections#index', as: :index_election
 
 
 # -----------------------------------------------------------------------

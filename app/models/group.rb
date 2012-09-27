@@ -1,14 +1,14 @@
 class Group < ActiveRecord::Base
-  attr_accessible :name, :privacy, :questions_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
+  attr_accessible :name, :privacy, :elections_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
   
-  has_many :questions, dependent: :destroy
+  has_many :elections, dependent: :destroy
 
   has_many :voters, dependent: :destroy
   has_many :valid_emails, dependent: :destroy
 
   belongs_to :user # the owner of the group
 
-  accepts_nested_attributes_for :questions, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
+  accepts_nested_attributes_for :elections, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
   
   accepts_nested_attributes_for :valid_emails, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
@@ -29,6 +29,10 @@ class Group < ActiveRecord::Base
         @email = self.valid_emails.build
         @email.voter = @voter
         @email.email = valid_email
+        if User.exists?(email: valid_email)
+          user = User.find_by_email(valid_email)
+          @voter.user_id = user.id
+        end
       end
     end
   end
@@ -44,6 +48,11 @@ class Group < ActiveRecord::Base
       end
     end
     return voter_array
+  end
+
+  def trash_group
+    self.trashed = true
+    self.save
   end
 
 

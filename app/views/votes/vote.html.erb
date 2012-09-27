@@ -1,14 +1,10 @@
 <% provide(:title, "Submit your vote") %>
 <h1>Submit your vote</h1>
-<h2> Election: <%= link_to @vote.question.group.name, @vote.question.group %> </h2>
-<h2> Question: <%= link_to @vote.question.name, @vote.question %> </h2>
-<h2> Your SVC: <%= link_to @vote.svc, status_vote_path(@vote.svc) %> </h2>
-<h2> Your BSN: <%= @vote.id %> </h2>
+<%= render @valid_svc %>
 
 
 
 <br><br><br>
-
 
   <style>
   #sortable1, #sortable2 { list-style-type: none; margin: 0; padding: 0 0 2.5em; float: center; margin-right: 10px; }
@@ -22,7 +18,6 @@
       cursor: 'crosshair',
       items: 'li',
       opacity: 0.4,
-      // placeholder: true,
       scroll: true,
       update: function(){
         $.ajax({
@@ -58,7 +53,7 @@
 
   <h3>Unsorted Choices</h3><br>
   <ul id="sortable2" class = "connectedSortable">
-    <% @vote.question.choices.each do |choice| %>
+    <% @vote.election.choices.each do |choice| %>
     <li id="choice_<%= choice.id %>
     " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
     <% end %>

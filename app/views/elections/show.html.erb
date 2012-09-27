@@ -1,0 +1,49 @@
+<% provide(:title, @election.name) %>
+<h1>Election: <%= @election.name %></h1>
+<div class="row">	
+	<div class="span4">
+		<div class="row">
+			<big><b>Owner info</b></big>
+			<%= render @election.group.user %>
+		</div>
+		<div class="row">
+		<hr>
+			<%= render partial: 'groups/group_info', locals: {group: @election.group} %>
+		</div>
+		<div class="row">
+		<hr>
+		<%= render partial: 'election_choices', locals: {choices: @election.choices} %>
+		</div>
+	</div>
+	<div class="offset1 span7">
+		<%= render partial: 'election_info', locals: {election: @election} %>
+		<div class="row">
+			<p><big><b>Ballot Serial Numbers</b></big></p>
+		</div>
+		<div class="row">
+			<%= render @election.votes %>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<h3>SVCs</h3>
+<br>
+<ul>
+	<%= render @election.valid_svcs %>
+</ul>
+
+<br><br>
+
+
+<h3>BSNs</h3>
+	<br>
+<br><br>
+
+<%= link_to 'Show results', results_election_path(@election), class: "btn btn-large btn-primary" %>

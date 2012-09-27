@@ -1,14 +1,11 @@
-<h2> Election: <%= link_to @valid_svc.question.group.name, @valid_svc.question.group %> </h2>
-<h2> Question: <%= link_to @valid_svc.question.name, @valid_svc.question %> </h2>
-<h2> SVC: <%= @valid_svc.svc %> </h2>
-<h2> <%= link_to "Change your vote!", vote_path(@valid_svc.svc) %> </h2>
+<%= render @valid_svc %>
 
 <br><br>
 
 <h3>Active Vote:</h3>
 <br>
 <% if @active_vote %>
-	BSN: <%=display_vote(@active_vote.vote, @active_vote.vote_id)%> <br>
+	BSN: <%=display_vote_helper(@active_vote, @active_vote.id)%> <br>
 	<% if @active_preferences.blank? %>
 		This vote is active, but has no recorded preferences.
 	<% else %>
@@ -28,8 +25,8 @@
 <br>
 <% if @votes.any? %>
 	<% @votes.each_with_index do |vote, index| %>
-		BSN #<%= index+1 %>: <%= display_vote(vote, vote.id) %> - 
-		<% if @active_vote && @active_vote.vote_id == vote.id %>
+		BSN #<%= index+1 %>: <%= display_vote_helper(vote, vote.id) %> - 
+		<% if @active_vote && @active_vote.id == vote.id %>
 			This vote is active
 		<% else %>
 			<%= link_to "Activate", activate_vote_path(svc: vote.svc, id: vote.id) %>

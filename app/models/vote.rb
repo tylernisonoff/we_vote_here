@@ -1,12 +1,11 @@
 class Vote < ActiveRecord::Base
 	# require 'random'
 
-	attr_accessible :question_id, :svc, :id
+	attr_accessible :election_id, :svc, :id, :active
 	
-	has_one :active_vote, dependent: :destroy
 	has_many :preferences, dependent: :destroy
 
-	belongs_to :question
+	belongs_to :election
 
 	def assign_vote_svc(svc)
 	    if ValidSvc.exists?(svc: svc)
@@ -18,34 +17,30 @@ class Vote < ActiveRecord::Base
     end
 
 	def activate_vote
-		if ActiveVote.exists?(svc: svc)
-			@active_vote = ActiveVote.find_by_svc(svc)
-      	else
-      		@active_vote = ActiveVote.new
-      		@active_vote.svc = svc
-      		@active_vote.question_id = question_id
-      	end
-      	@active_vote.vote_id = self.id
-      	if @active_vote.save	
-			@current_preferences = ActivePreference.find(:all, conditions: {svc: svc})
-	    	@current_preferences.each do |current_preference|
-	      		current_preference.delete
-	      	end
+		if Vote.exists?(svc: svc, active: true)
+			@active_vote = Vote.find(:first, conditions: {svc: svc, active: true})
+			@active_vote.active = false
+			@active_vote.save
 
-	      	@new_preferences = Preference.find(:all, conditions: {vote_id: self.id})
-	    	@new_preferences.each do |new_preference|
-	    		new_preference.make_active
+			@current_active_preferences = Preference.find(:all, conditions: {svc: svc, active: true})
+      		@current_active_preferences.each do |current_preference|
+      			current_preference.deactivate_preference
+      		end
+      	end
+      	self.active = true
+      	if self.save
+	      	@new_active_preferences = Preference.find(:all, conditions: {vote_id: self.id})
+	    	@new_active_preferences.each do |new_preference|
+	    		new_preference.activate_preference
 	    	end
-	    else
-	    	flash[:error] = "There was an error activating this vote :("
 		end
 	end
 
-	def destroy_vote
-		self.destroy
-		if ActiveVote.exists?(vote_id: self.id)
-			@active_vote = ActiveVote.find_by_vote_id(self.id)
-			@active_vote.delete
+	def trash_vote
+		self.trashed = true
+		self.save
+		self.preferences.each do |preference|
+			preference.trash_preference
 		end
 	end
 

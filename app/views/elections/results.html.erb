@@ -1,0 +1,36 @@
+<% provide(:title, @election.name) %>
+<div>
+
+Owner:
+  <%= link_to @election.group.user.pretty_name, @election.group.user %>
+  <br>
+Group:
+  <%= link_to @election.group.name, @election.group %>
+  <br><br>
+Election:
+  <%= render partial: 'election_info', locals: {election: @election} %>
+  <br><br><br>
+
+
+<% if @election.start_time > Time.now %>
+	<h3> This election has not yet started. </h3>
+<% else %>
+	<% if @election.finish_time > Time.now %>
+		<h3> This election is in progress. Current results: </h3>
+	<% else %>
+		<h3> This election has ended. Results: </h3>
+	<% end %>
+	<br><br>
+	<% @results_array.each_with_index do |result, index| %>
+		<%= index+1 %>) <%= result %>
+		<br>
+	<% end %>
+<% end %>
+
+<br><br>
+
+<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_election_path(@election, {adjusted: 0}) %>
+	<br>
+<%= link_to 'Export Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {adjusted: 1}) %>
+	<br>
+<%= link_to 'Export Votes to CSV', export_votes_to_csv_election_path(@election) %>

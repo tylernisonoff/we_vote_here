@@ -12,6 +12,10 @@ class ChoicesController < ApplicationController
   	end
   end
 
+  # eventually add the ability to trash a choice
+  # def destroy
+  # end
+
 
 
 end

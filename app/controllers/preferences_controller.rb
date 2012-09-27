@@ -8,7 +8,7 @@ class PreferencesController < ApplicationController
 
 	def sort
 		unless params["choice"].blank?
-			Preference.delete_all(vote_id: params[:vote_id]) 
+			Preference.delete_all(vote_id: params[:vote_id])
 			# delete all votes with this vote_id
 			params["choice"].each_with_index do |choice_id, i|
 				@preference = Preference.new

@@ -17,11 +17,11 @@
       </section>
     </aside>
     <aside class="span7">
-      <% if @group.questions.any? %>
-        <h3>Questions (<%= @group.questions.count %>)</h3>
+      <% if @group.elections.any? %>
+        <h3>Questions (<%= @group.elections.count %>)</h3>
           <p>
             <ul class="lists">
-              <%= render @group.questions %>
+              <%= render @group.elections %>
             </ul>
           </p>
       <% end %>

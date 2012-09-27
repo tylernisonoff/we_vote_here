@@ -1,0 +1,21 @@
+<% provide(:title, "Edit your election") %>
+<h1>Edit your election</h1>
+
+<%= form_for(@election) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+
+	<%= f.text_field :name, placeholder: "election name" %>
+
+	<%= f.text_area :info, placeholder: "election instructions (optional)" %>
+
+	<br><br>
+
+	<%= f.label :start_time, "Start time:" %>
+	<%= f.datetime_select :start_time, value: @election.start_time %>
+
+	<%= f.label :finish_time, "Finish time:" %>
+	<%= f.datetime_select :finish_time, value: @election.finish_time %>
+	<br><br>
+
+<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+<% end %>

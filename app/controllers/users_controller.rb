@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_filter :signed_in_user, 
                 only: [:index, :edit, :update, :destroy]
   before_filter :correct_user,   only: [:edit, :update, :edit_password, :change_password, :edit_password, :add_emails, :save_emails]
-  before_filter :admin_user,     only: :destroy
+  # before_filter :admin_user,     only: :destroy
   before_filter :group_follower, only: [:unfollow_group]
 
 
@@ -38,7 +38,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    User.find(params[:id]).destroy
+    User.find(params[:id]).trash_user
     flash[:success] = "User destroyed"
     redirect_to users_path
   end
@@ -119,12 +119,12 @@ class UsersController < ApplicationController
   def unfollow_group
     @user = User.find(params[:id])
     @group = Group.find(params[:group_id])
-    success = true
+    success = true  
     @user.user_emails.each do |user_email|
       if ValidEmail.exists?(group_id: @group.id, email: user_email.email)
         @valid_email = ValidEmail.find(:first, conditions: {group_id: @group.id, email: user_email.email})
         @voter = @valid_email.voter
-        unless @voter.destroy
+        unless @voter.trash_voter 
           success = false
         end
       end
@@ -143,7 +143,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.paginate(page: params[:page])
+    @users = User.find(:all, conditions: {trashed: false})
   end
 
   private
@@ -153,9 +153,9 @@ class UsersController < ApplicationController
       redirect_to(root_path) unless current_user?(@user)
     end
 
-    def admin_user
-      redirect_to(root_path) unless current_user.admin?
-    end
+    # def admin_user
+    #   redirect_to(root_path) unless current_user.admin?
+    # end
 
     def group_follower
       @user = User.find(params[:id])

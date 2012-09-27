@@ -1,4 +1,4 @@
-class Question < ActiveRecord::Base
+class Election < ActiveRecord::Base
   require 'set'
   
   attr_accessible :name, :info, :choices_attributes, :group_id, :votes_attributes, :start_time, :finish_time
@@ -18,7 +18,7 @@ class Question < ActiveRecord::Base
 
   validates :name, presence: true, length: { within: 2..255 }
 
-  # validates :choices, length: { minimum: 2, message: "^Question must have at least 2 choices" }
+  # validates :choices, length: { minimum: 2, message: "^Election must have at least 2 choices" }
   validate :choices_check
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -46,9 +46,17 @@ class Question < ActiveRecord::Base
     end
   end
 
-
   def new_random (min, max)
     return (rand * (max-min) + min)
+  end
+
+  def trash_election
+    self.trashed = true
+    if self.save
+      self.valid_svcs.each do |valid_svc|
+        valid_svc.trash_valid_svc
+      end
+    end
   end
 
 
@@ -143,11 +151,11 @@ class Question < ActiveRecord::Base
       end
       voter_array.each do |voters_email|
         @valid_svc = ValidSvc.new
-        @valid_svc.question = self
+        @valid_svc.election = self
         @valid_svc.assign_valid_svc
         if @valid_svc.save
           voters_email.each do |email|
-            UserMailer.private_question_email(email, self, @valid_svc.svc).deliver
+            UserMailer.private_election_email(email, self, @valid_svc.svc).deliver
           end
         else
           flash[:error] = "We were unable to save an SVC. This is not good :("
@@ -164,7 +172,7 @@ class Question < ActiveRecord::Base
       end
       voter_array.each do |voters_emails|
         voters_emails.each do |email|
-          UserMailer.public_question_email(email, self).deliver
+          UserMailer.public_election_email(email, self).deliver
         end
       end
     end
@@ -177,12 +185,12 @@ class Question < ActiveRecord::Base
 
     @votes_hash = Hash.new
 
-    @active_votes = ActiveVote.find(:all, conditions: {question_id: self.id})
+    @active_votes = Vote.find(:all, conditions: {election_id: self.id, active: true})
     @active_votes.each do |active_vote|
       @votes_hash[active_vote.vote_id] = Hash.new
       # Using vote.active_preferences does NOT work
       # This has to do with foreign key stuff, watch out.
-      @active_preferences = ActivePreference.find(:all, conditions: {svc: active_vote.svc})
+      @active_preferences = Preference.find(:all, conditions: {svc: active_vote.svc, active: true})
       @active_preferences.each do |active_preference|
         @votes_hash[active_vote.vote_id][active_preference.choice_id] = active_preference.position
       end
@@ -195,7 +203,7 @@ class Question < ActiveRecord::Base
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over 
     @mov = Hash.new
-    @choices = Choice.find(:all, conditions: {question_id: self.id})
+    @choices = Choice.find(:all, conditions: {election_id: self.id})
     
     # Initialize MOV as a hash of hashes with all 0 values.
     @choices.each do |choice_1|
@@ -424,10 +432,10 @@ class Question < ActiveRecord::Base
 
   def save_ranked_pairs_results(result_hash = false)
     if result_hash
-      Result.delete_all(question_id: self.id)
+      Result.delete_all(election_id: self.id)
       result_hash.each do |choice_id, position|
         @result = Result.new
-        @result.question_id = self.id
+        @result.election_id = self.id
         @result.position = position
         @result.choice_id = choice_id
         @result.save

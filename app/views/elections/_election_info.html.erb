@@ -1,0 +1,29 @@
+<div class="row">
+	<%= button_to "Vote", vote_path_helper(election), class: "btn btn-large btn-block btn-success" %>
+<hr>
+</div>
+<div class="row">
+	<p>
+  		<big><b>Information</b></big>
+	  	<% if edit_election_condition(current_user, election) %>
+	    	- <%= link_to "edit election", edit_election_path(election) %>
+	  	<% end %>
+	</p>
+</div>
+<div class="row">
+	  	<div class="timestamp">
+			<p>
+				Start time: <%= pretty_time(election.start_time) %>
+				<br>
+				Finish time: <%= pretty_time(election.finish_time) %>
+			</p>
+		</div>
+		<hr>
+</div>
+<% unless election.info.blank? %>
+	<div class="row">
+			<big><b>Voting instructions</b></big>
+			<p><%= @election.info %></p>
+			<hr>
+	</div>
+<% end %>

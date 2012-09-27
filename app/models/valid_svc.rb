@@ -1,7 +1,7 @@
 class ValidSvc < ActiveRecord::Base
-  attr_accessible :svc, :question_id
+  attr_accessible :svc, :election_id
 
-  belongs_to :question
+  belongs_to :election
 
   def to_param
   	svc
@@ -16,12 +16,17 @@ class ValidSvc < ActiveRecord::Base
         @rando = rand(10)
         @random_svc << @rando.to_s
       end
-      @random_svc << self.question_id.to_s
+      @random_svc << self.election_id.to_s
       
       # ensure there are no collisions
     end while ValidSvc.exists?(svc: @random_svc)
 
     self.svc = @random_svc
+  end
+
+  def destroy_valid_svc
+    self.trashed = true
+    self.save
   end
 
 end
