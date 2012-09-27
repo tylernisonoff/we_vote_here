@@ -16,14 +16,7 @@ class User < ActiveRecord::Base
 
   has_many :user_emails, dependent: :destroy
   has_many :groups, dependent: :destroy
-  has_many :preferences, dependent: :destroy
-  # has_many :microposts, dependent: :destroy
-  # has_many :relationships, foreign_key: "follower_id", dependent: :destroy
-  # has_many :followed_users, through: :relationships, source: :followed
-  # has_many :reverse_relationships, foreign_key: "followed_id",
-                                   # class_name:  "Relationship",
-                                   # dependent:   :destroy
-  # has_many :followers, through: :reverse_relationships, source: :follower
+  has_many :voters
 
   accepts_nested_attributes_for :user_emails, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 

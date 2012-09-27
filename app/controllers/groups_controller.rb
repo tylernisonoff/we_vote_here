@@ -37,14 +37,8 @@ class GroupsController < ApplicationController
 
     unless params[:group][:emails].blank? || !@group.elections.any?
       new_voters = @group.get_split_voters(params[:group][:emails])
-      if @group.privacy
-        @group.elections.each do |election|
-          election.create_svcs_for_private(new_voters)
-        end
-      else
-        @group.elections.each do |election|
-          election.send_emails_for_public(new_voters)
-        end
+      @group.elections.each do |election|
+        election.send_election_emails(new_voters)
       end
     end
   end

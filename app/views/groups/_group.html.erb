@@ -1,5 +1,5 @@
 <li class="lists">
-  <span class="content">
+  <div>
   	<%= link_to group.name, group %>
   	<% if edit_group_condition(current_user, group) %>
     	- <%= link_to "edit", edit_group_path(group) %>
@@ -7,8 +7,5 @@
   	<% if group_follower_condition(current_user, group) %>
   		- <%= link_to "unfollow", unfollow_group_user_path(id: current_user.id, group_id: group.id)%>
   	<% end %>
-  </span>
-  <span class="timestamp">
-    Created <%= time_ago_in_words(group.created_at) %> ago.
-  </span>
+  </div>
 </li>

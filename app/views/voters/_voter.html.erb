@@ -1,0 +1,9 @@
+<% if voter.user %>
+	<%= render voter.user %>
+<% else %>
+	<li class="lists">
+		<div>
+			Email: <%= voter.valid_emails.first.email %>
+		</div>
+	</li>
+<% end %>

@@ -1,19 +1,14 @@
 <div>
-	<big><b>Group info</b></big>
-	<div class="content">
-	  	<p><big><b>Name: <%= link_to group.name, group %></b><big>
-	  	<% if edit_group_condition(current_user, group) %>
-	    	- <%= link_to "edit", edit_group_path(group) %>
-	  	<% end %></p>
-  	</div>
-  	<div class="label label-success">
-  		<% if group.privacy %>
-	      private group
-	    <% else %>
-	      public group
-		<% end %>
-	</div>
-  	<div class="timestamp">
-  		<p>Created <%= time_ago_in_words(group.created_at) %> ago.</p>
-	</div>
+  	<p><big><b>Name: <%= link_to group.name, group %></b><big>
+  	<% if edit_group_condition(current_user, group) %>
+    	- <%= link_to "edit", edit_group_path(group) %>
+  	<% end %></p>
 </div>
+<div class="label label-success">
+	<% if group.privacy %>
+  		private group
+	<% else %>
+  		public group
+	<% end %>
+</div>
+<hr>

@@ -1,8 +1,9 @@
 class Voter < ActiveRecord::Base
-  attr_accessible :election_id, :valid_emails_attributes
+  attr_accessible :election_id, :valid_emails_attributes, :user_id
 
   has_many :valid_emails, dependent: :destroy
 
+  belongs_to :user
   belongs_to :group
 
   def trash_voter

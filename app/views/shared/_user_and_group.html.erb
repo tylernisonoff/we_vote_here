@@ -1,0 +1,9 @@
+<div class="row">
+	<big><b>Owner information</b></big>
+	<%= render group.user %>
+</div>
+<div class="row">
+	<hr>
+	<big><b>Group information</b></big>
+	<%= render partial: 'groups/group_info', locals: {group: group} %>
+</div>

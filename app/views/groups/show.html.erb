@@ -2,28 +2,37 @@
 <h1>Group: <%= @group.name %></h1>
 
 <div class="row">
-    <aside class="span4">
-      <section>
-        <h3>Owner</h3>
+  <div class="span4">
+    <%= render partial: 'shared/user_and_group', locals: {group: @group} %>
+  <% if edit_group_condition(current_user, @group) %>
+    <div class="row">
+      <%= link_to "Add a new election", new_group_election_path(@group), class: "btn btn-large btn-adjusted-block btn-primary" %>
+    </div>
+    <hr>
+  <% end %>
+  </div>
+  <div class="span4">
+    <% if @group.elections.any? %>
+      <big><b>Elections (<%= @group.elections.count %>)</b></big>
         <p>
           <ul class="lists">
-            <%= render @group.user %>
+            <%= render @group.elections %>
           </ul>
         </p>
-      </section>
-      <section>
-        <h3>Group</h3>
-        <p><%= render partial: "group_info", locals: {:group => @group} %></p>
-      </section>
-    </aside>
-    <aside class="span7">
-      <% if @group.elections.any? %>
-        <h3>Questions (<%= @group.elections.count %>)</h3>
-          <p>
-            <ul class="lists">
-              <%= render @group.elections %>
-            </ul>
-          </p>
-      <% end %>
-    </aside>
+    <% end %>
+  </div>
+  <div class="span4">
+    <% if @group.voters.any? %>
+      <div>
+        <big><b>Voters (<%= @group.voters.count %>)</b></big>
+        <ul class="lists">
+          <%= render @group.voters %>
+        </ul>
+      </div> 
+    <% end %>
+    <div>
+      <br>
+      <%= link_to "add voters", add_voters_group_path(@group), class: "btn btn-large btn-adjusted-block btn-primary" %>
+    </div>
+  </div>
 </div>

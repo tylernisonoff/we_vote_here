@@ -33,11 +33,7 @@ class ElectionsController < ApplicationController
 
     # If the group is private, then create SVCs
     # This also sends an email to every valid email with their SVC
-    if @group.privacy
-      @election.create_svcs_for_private
-    else
-      @election.send_emails_for_public
-    end
+    @election.send_election_emails
 	end
 
 	def edit
@@ -73,8 +69,10 @@ class ElectionsController < ApplicationController
 
   def results
     @election = Election.find(params[:id])
-    @sorted_mov = 
-    @results_array = @election.choice_name_array(true)
+    # @sorted_mov = 
+    if @election.start_time < Time.now
+      @results_array = @election.choice_name_array(true)
+    end
   end
 
   def export_mov_to_csv
@@ -88,7 +86,7 @@ class ElectionsController < ApplicationController
     end
 
     if sorted
-      filename ="adjusted_mov_for_#{adjusted_filename(@election)}"
+      filename ="sorted_mov_for_#{adjusted_filename(@election)}"
     else
       filename ="regular_mov_for_#{adjusted_filename(@election)}"
     end

@@ -76,11 +76,22 @@ p {
 }
 
 .btn.btn-block {
-  width: 100%; 
+  width: 100%;
 }
+
+.btn.btn-adjusted-block {
+  width: 91%;
+}
+
+/* ^^ I know this ruins the whole point of sass but I just couldn't get it right. */
 
 .label {
   text-align: center;
+}
+
+.radio_buttons { 
+  display:inline;
+  
 }
 
 

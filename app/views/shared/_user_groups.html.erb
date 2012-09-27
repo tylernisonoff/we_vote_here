@@ -11,7 +11,7 @@
             <p>
               <% if user.groups.any? %>
                   <h3>Groups I own (<%= user.groups.count %>)</h3>
-                  <ul>
+                  <ul class="lists">
                     <%= render user.groups %>
                   </ul>
               <% end %>

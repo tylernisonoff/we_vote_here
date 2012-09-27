@@ -6,7 +6,7 @@
   <body>
     <h1>You have been invited by <%= @election.group.user.pretty_name %> to vote in an group at WeVoteHere.com!</h1>
 
-    <% if @election.privacy %>
+    <% if @election.group.privacy %>
       <p>You will use your Secret Voting Code (SVC) to securely vote on this election. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
       <p>Your SVC is <%= link_to @svc, vote_path(@svc) %>. You can click it to vote.</p>
       <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_path(@svc) %></p>

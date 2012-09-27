@@ -142,37 +142,27 @@ class Election < ActiveRecord::Base
     return voter_array
   end
 
+  def send_election_emails(voter_array=false)
+    unless voter_array
+      # populate voter_array if there's no argument
+      voter_array = get_voter_array
+    end
 
-  def create_svcs_for_private(voter_array=false)
     if self.group.privacy
-      unless voter_array
-        # populate voter_array if there's no argument
-        voter_array = get_voter_array
-      end
       voter_array.each do |voters_email|
         @valid_svc = ValidSvc.new
         @valid_svc.election = self
         @valid_svc.assign_valid_svc
         if @valid_svc.save
           voters_email.each do |email|
-            UserMailer.private_election_email(email, self, @valid_svc.svc).deliver
+            UserMailer.election_email(email, self, @valid_svc.svc).deliver
           end
-        else
-          flash[:error] = "We were unable to save an SVC. This is not good :("
         end
       end
-    end
-  end
-
-  def send_emails_for_public(voter_array=false)
-    unless self.group.privacy
-      unless voter_array
-        # populate voter_array if there's no argument
-        voter_array = get_voter_array
-      end
+    else
       voter_array.each do |voters_emails|
         voters_emails.each do |email|
-          UserMailer.public_election_email(email, self).deliver
+          UserMailer.election_email(email, self).deliver
         end
       end
     end
@@ -187,12 +177,12 @@ class Election < ActiveRecord::Base
 
     @active_votes = Vote.find(:all, conditions: {election_id: self.id, active: true})
     @active_votes.each do |active_vote|
-      @votes_hash[active_vote.vote_id] = Hash.new
+      @votes_hash[active_vote.id] = Hash.new
       # Using vote.active_preferences does NOT work
       # This has to do with foreign key stuff, watch out.
       @active_preferences = Preference.find(:all, conditions: {svc: active_vote.svc, active: true})
       @active_preferences.each do |active_preference|
-        @votes_hash[active_vote.vote_id][active_preference.choice_id] = active_preference.position
+        @votes_hash[active_vote.id][active_preference.choice_id] = active_preference.position
       end
     end
     return @votes_hash
