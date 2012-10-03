@@ -64,7 +64,6 @@ class VotesController < ApplicationController
     end
 
   def vote
-
     svc = params[:svc]
     puts "\n\n\n\n\n\n#{params}\n\n\n\n"
     if ValidSvc.exists?(svc: svc)

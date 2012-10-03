@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120927083316) do
+ActiveRecord::Schema.define(:version => 20120930093328) do
 
   create_table "choices", :force => true do |t|
     t.string   "name",                           :null => false
@@ -46,14 +46,15 @@ ActiveRecord::Schema.define(:version => 20120927083316) do
   end
 
   create_table "preferences", :force => true do |t|
-    t.datetime "created_at",                                   :null => false
-    t.datetime "updated_at",                                   :null => false
-    t.integer  "vote_id",    :limit => 255,                    :null => false
-    t.integer  "position",                                     :null => false
-    t.integer  "choice_id",                                    :null => false
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
+    t.integer  "vote_id",      :limit => 255,                    :null => false
+    t.integer  "position",                                       :null => false
+    t.integer  "choice_id",                                      :null => false
     t.string   "svc"
-    t.boolean  "active",                    :default => true
-    t.boolean  "trashed",                   :default => false
+    t.boolean  "active",                      :default => true
+    t.boolean  "trashed",                     :default => false
+    t.boolean  "tie_breaking",                :default => false
   end
 
   add_index "preferences", ["svc"], :name => "index_preferences_on_svc"
@@ -122,12 +123,13 @@ ActiveRecord::Schema.define(:version => 20120927083316) do
   end
 
   create_table "votes", :force => true do |t|
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-    t.integer  "election_id",                    :null => false
-    t.string   "svc",                            :null => false
-    t.boolean  "active",      :default => false
-    t.boolean  "trashed",     :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.integer  "election_id",                     :null => false
+    t.string   "svc",                             :null => false
+    t.boolean  "active",       :default => false
+    t.boolean  "trashed",      :default => false
+    t.boolean  "tie_breaking", :default => false
   end
 
   add_index "votes", ["svc"], :name => "index_votes_on_svc"

@@ -74,6 +74,182 @@ class Election < ActiveRecord::Base
     end
   end
 
+  def create_tie_breaking_vote
+    choice_ids = choice_id_array(false)
+    n = choice_ids.size
+    sum_of_choice_ids = 0
+    choice_ids.each do |id|
+      sum_of_choice_ids += id
+    end
+
+
+    # tie breaking votes have SVCs equal to the election_id
+    unless Vote.exists?(svc: self.id.to_s)
+      tie_breaking_vote = Vote.new
+      tie_breaking_vote.election_id = self.id
+      tie_breaking_vote.svc = self.id.to_s
+      tie_breaking_vote.tie_breaking = true
+      tie_breaking_vote.save
+    else
+      tie_breaking_vote = Vote.find(:first, conditions: {svc: self.id.to_s})
+      Preference.delete_all(svc: tie_breaking_vote.svc)
+    end
+    # stores pos: set of ids, and is complete when there are:
+    # n positions, each with sets of exactly one element.
+    # Here, we initialize it.
+    tie_breaking_hash = Hash.new
+    (1..n).each do |pos|
+      tie_breaking_hash[pos] = Set.new
+    end
+
+    # keep track of union of values of tie_breaking_hash
+    added_to_hash = Set.new
+    active_votes = Vote.find(:all, conditions: {election_id: self.id, active: true})
+    randomly_chosen = false
+    until complete_tbv(tie_breaking_hash) || randomly_chosen
+
+      # in the case that we couldn't resolve this via picking votes,
+      # we make a random vote with fully filled out preferences.
+      if active_votes.size == 0
+        unless Vote.exists?(svc: (-1*self.id).to_s)
+          random_vote = Vote.new
+          random_vote.election_id = self.id
+          random_vote.svc = (-1*self.id).to_s # random votes have the svc of -1*election_id
+          random_vote.tie_breaking = true
+          random_vote.save
+        else
+          random_vote = Vote.find(:first, conditions: {svc: (-1*self.id).to_s})
+          Preference.delete_all(svc: random_vote.svc)
+        end
+        random_prefs = Hash.new
+        (1..n).each do |pos|
+          random_prefs[pos] = Set.new
+          c = choice_ids.sample
+          choice_ids.delete(c)
+          random_prefs[pos].add(c)
+        end
+        random_prefs.each do |pos, set|
+          random_prefs[pos] = set.to_a[0]
+        end
+        random_prefs.each do |pos, c_id|
+          pref = Preference.new
+          pref.tie_breaking = true
+          pref.svc = random_vote.svc
+          pref.vote_id = random_vote.id
+          pref.position = pos
+          pref.choice_id = c_id
+          pref.save  
+        end
+        active_votes.push(random_vote)
+        randomly_chosen = true
+      end
+      # picks a vote (deterministically but very neutrally) and deletes it
+      # from list of votes to consider in the future
+      v = active_votes.delete_at(sum_of_choice_ids % active_votes.size)
+      puts "\n\n\nv = #{v}\n\n\n"
+      save_v = Vote.new
+      save_v.election_id = v.election_id
+      save_v.svc = (-1*(v.svc.to_i)).to_s
+      save_v.tie_breaking = true
+      save_v.save
+
+      resolve_tbv_conflicts(tie_breaking_hash, v.svc)
+
+      preferences = Preference.find(:all, conditions: {svc: v.svc, active: true})
+      new_prefs = Hash.new
+      # populate new prefs
+      preferences.each do |pref|
+        unless new_prefs[pref.position]
+          new_prefs[pref.position] = Set.new
+        end
+        new_prefs[pref.position].add(pref.choice_id)
+      end
+
+      # make sure both of these are sorted by pos, 
+      # as it is critical for the algo to work
+      tie_breaking_hash.sort_by { |k,v| k }
+      new_prefs.sort_by { |k,v| k }
+
+      # fills out tie_breaking_hash as much as the vote 'v' can
+      
+      new_prefs.each do |v_pos, v_set|
+        temp = added_to_hash.size + 1
+        puts "thb = #{tie_breaking_hash}"
+        puts "temp = #{temp}"
+        v_set.each do |v_choice|
+          unless added_to_hash.include?(v_choice)
+            tie_breaking_hash[temp].add(v_choice)
+            added_to_hash.add(v_choice)
+          end
+        end
+      end
+    end
+
+    tie_breaking_hash.each do |pos, set|
+      tie_breaking_hash[pos] = set.to_a[0]
+    end
+    # puts "\n\n\n\n\nCALLS SAVE\n\n\n\n\n"
+    tie_breaking_hash.each do |pos, c_id|
+      pref = Preference.new
+      pref.tie_breaking = true
+      pref.svc = tie_breaking_vote.svc
+      pref.vote_id = tie_breaking_vote.id
+      pref.position = pos
+      pref.choice_id = c_id
+      unless pref.save
+        # print "doesn't save\n"
+      end
+    end
+  end
+
+  def resolve_tbv_conflicts(tie_breaking_hash, svc)
+    # stores map from pos --> id as expressed by the vote with svc: svc
+    # note that this function assumes that (for example) a pending-tie 
+    # for first place between 2 people means that the choice that is next  
+    # on the ballot ill be in 3rd place, NOT second place.
+    tie_breaking_hash.each do |pos, set|
+      if set.size > 1
+        temp = Hash.new
+        set.each do |choice_id|
+          new_pos = Preference.find(:first, conditions: {svc: svc, active: true, choice_id: choice_id}).position
+          unless temp[new_pos]
+            temp[new_pos] = Set.new
+          end
+          temp[new_pos].add(choice_id) 
+        end
+        # sort by new_pos's in ascending order
+        temp.sort_by { |k,v| k }
+        
+        # move sets of choice_ids to different pos in tie_breaking_hash
+        i = 0
+        temp.each do |new_pos, subset|
+          tie_breaking_hash[pos + i] = subset
+          i = i + 1
+        end
+      end
+    end
+  end
+
+  def complete_tbv(tie_breaking_hash)
+    n = self.choices.size
+    test_set = Set.new
+    tie_breaking_hash.each do |pos, set|
+      if pos <= n && pos >= 1
+        test_set.add(pos)
+      else
+        return false
+      end
+      unless set.size == 1
+        return false
+      end
+    end
+    if test_set.size == n
+      return true
+    else
+      return false
+    end
+  end
+
   def choice_name_array(sort_by_results = false)
     @sorted_choices = get_sorted_choices(sort_by_results)
 
@@ -104,11 +280,11 @@ class Election < ActiveRecord::Base
 
     if sort_by_results
     # If true, returns array of choices sorted by ranked pairs results
-      @results_hash = ranked_pairs
-      @sorted_choices = self.choices.sort { |a, b| @results_hash[a.id] <=> @results_hash[b.id] }
+      @results_hash = ranked_pairs(false, true)
+      @sorted_choices = self.choices.sort_by { |a| @results_hash[a.id] }
     else
     # If false or empty, returns array of choices sorted by choice id
-      @sorted_choices = self.choices.sort { |a, b| a.id <=> b.id }
+      @sorted_choices = self.choices.sort_by { |a| a.id }
     end
 
     return @sorted_choices
@@ -188,13 +364,14 @@ class Election < ActiveRecord::Base
     return @votes_hash
   end
 
-  def get_mov # doesn't work sending data to controller
+  def get_mov(tbv = false) # doesn't work sending data to controller
     
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over 
     @mov = Hash.new
     @choices = Choice.find(:all, conditions: {election_id: self.id})
-    
+    n = @choices.size
+
     # Initialize MOV as a hash of hashes with all 0 values.
     @choices.each do |choice_1|
       @mov[choice_1.id] = Hash.new
@@ -220,17 +397,49 @@ class Election < ActiveRecord::Base
         end
       end
     end
-  
+
+    if tbv
+      tbv_preferences = Preference.find(:all, conditions: {svc: self.id, tie_breaking: true}) 
+      tbv_preferences.each do |pref1|
+        pos1 = pref1.position
+        tbv_preferences.each do |pref2|
+          pos2 = pref2.position
+          add = (pos2 - pos1) + (pos2 - pos1)*n - (sum_from_1_to_i(pos2 - pos1))
+          @mov[pref1.choice_id][pref2.choice_id] += add
+          @mov[pref2.choice_id][pref1.choice_id] -= add
+        end
+      end
+    end
+    
     return @mov
   end
 
-  def ranked_pairs(save = false)
+  def sum_from_1_to_i(i)
+    if i == 0
+      return 0
+    end
+
+    ret = 0
+    (1..i.abs).each do |j|
+      ret += j
+    end
+    if i < 0
+      return -1*ret
+    else
+      return ret
+    end
+  end
+
+  def ranked_pairs(save = false, tbv = true)
     # returns hash where keys are choice_ids and values are positions
 
     # Initialize margin-of-victory hash-of-hashes
-    # @mov[i][j] stores the margin of victory of choice j over 
-    @mov = self.get_mov
-    # n = self.choices.size
+    # @mov[i][j] stores the margin of victory of choice j over
+    if tbv
+      create_tie_breaking_vote
+    end
+
+    @mov = self.get_mov(tbv)
     printer = 0
 
     ### ALGO TEST STARTS HERE

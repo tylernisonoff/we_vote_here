@@ -42,6 +42,7 @@ class ElectionsController < ApplicationController
 
 	def show
     @election = Election.find(params[:id])
+    @votes = Vote.find(:all, conditions: {election_id: @election.id, tie_breaking: false, active: true})
   end
 
   def destroy
@@ -72,6 +73,11 @@ class ElectionsController < ApplicationController
     # @sorted_mov = 
     if @election.start_time < Time.now
       @results_array = @election.choice_name_array(true)
+      @tie_breaking_vote = Vote.find(:first, conditions: {svc: @election.id.to_s, tie_breaking: true})
+      puts "TBV: #{@tie_breaking_vote}"
+      @tie_breaking_preferences = Preference.find(:all, conditions: {vote_id: @tie_breaking_vote.id, tie_breaking: true})
+      @tie_breaking_preferences.sort_by { |p| p.position }
+      puts "TBP: #{@tie_breaking_preferences}"
     end
   end
 

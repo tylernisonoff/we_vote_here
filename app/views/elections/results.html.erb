@@ -13,7 +13,7 @@
 		<p>
 		<%= link_to 'Export Votes to CSV', export_votes_to_csv_election_path(@election), class: "btn btn-large btn-adjusted-block btn-primary" %>
 		</p>
-		</div>	
+		</div>
 	</div>
 	<div class="offset1 span7">
 		<div class="row">
@@ -31,6 +31,13 @@
 						<%= render partial: 'result', locals: {index: index, result: result} %>	
 					<% end %>
 				</ul>
+				<div>
+					<br>
+					<p><b>Tie-breaking vote</b></p>
+					<ul class="lists">
+						<%= render @tie_breaking_preferences %>	
+					</ul>
+				</div>
 			<% end %>
 		</div>
 	</div>
