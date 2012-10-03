@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-  attr_accessible :name, :privacy, :elections_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
+  attr_accessible :name, :privacy, :trashed, :elections_attributes, :emails, :voter_attributes, :valid_emails, :valid_emails_attributes
   
   has_many :elections, dependent: :destroy
 

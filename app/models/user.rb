@@ -10,7 +10,7 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :nickname, :email, :user_emails, :old_password, :password, :password_confirmation, :pretty_name
+  attr_accessible :nickname, :email, :user_emails, :old_password, :password, :password_confirmation, :pretty_name, :trashed
   has_secure_password
   require 'set'
 

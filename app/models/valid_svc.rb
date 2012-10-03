@@ -1,5 +1,6 @@
 class ValidSvc < ActiveRecord::Base
-  attr_accessible :svc, :election_id
+  
+  attr_accessible :svc, :election_id, :trashed
 
   belongs_to :election
 

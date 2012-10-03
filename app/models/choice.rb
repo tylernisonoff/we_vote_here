@@ -1,5 +1,6 @@
 class Choice < ActiveRecord::Base
-  attr_accessible :name, :election_id
+
+  attr_accessible :name, :election_id, :trashed
 
   has_one :result, dependent: :destroy
   has_many :active_preferences, dependent: :destroy

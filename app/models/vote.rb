@@ -1,7 +1,7 @@
 class Vote < ActiveRecord::Base
 	# require 'random'
 
-	attr_accessible :election_id, :svc, :id, :active
+	attr_accessible :election_id, :svc, :id, :active, :trashed, :tie_breaking
 	
 	has_many :preferences, dependent: :destroy
 
