@@ -123,13 +123,9 @@ class Election < ActiveRecord::Base
         end
         random_prefs = Hash.new
         (1..n).each do |pos|
-          random_prefs[pos] = Set.new
           c = choice_ids.sample
           choice_ids.delete(c)
-          random_prefs[pos].add(c)
-        end
-        random_prefs.each do |pos, set|
-          random_prefs[pos] = set.to_a[0]
+          random_prefs[pos] = c
         end
         random_prefs.each do |pos, c_id|
           pref = Preference.new
@@ -138,7 +134,7 @@ class Election < ActiveRecord::Base
           pref.vote_id = random_vote.id
           pref.position = pos
           pref.choice_id = c_id
-          pref.save  
+          pref.save
         end
         active_votes.push(random_vote)
         randomly_chosen = true
@@ -146,7 +142,6 @@ class Election < ActiveRecord::Base
       # picks a vote (deterministically but very neutrally) and deletes it
       # from list of votes to consider in the future
       v = active_votes.delete_at(sum_of_choice_ids % active_votes.size)
-      puts "\n\n\nv = #{v}\n\n\n"
       save_v = Vote.new
       save_v.election_id = v.election_id
       save_v.svc = (-1*(v.svc.to_i)).to_s
@@ -174,8 +169,6 @@ class Election < ActiveRecord::Base
       
       new_prefs.each do |v_pos, v_set|
         temp = added_to_hash.size + 1
-        puts "thb = #{tie_breaking_hash}"
-        puts "temp = #{temp}"
         v_set.each do |v_choice|
           unless added_to_hash.include?(v_choice)
             tie_breaking_hash[temp].add(v_choice)
@@ -184,21 +177,14 @@ class Election < ActiveRecord::Base
         end
       end
     end
-
-    tie_breaking_hash.each do |pos, set|
-      tie_breaking_hash[pos] = set.to_a[0]
-    end
-    # puts "\n\n\n\n\nCALLS SAVE\n\n\n\n\n"
-    tie_breaking_hash.each do |pos, c_id|
+    tie_breaking_hash.each do |pos, s|
       pref = Preference.new
       pref.tie_breaking = true
       pref.svc = tie_breaking_vote.svc
       pref.vote_id = tie_breaking_vote.id
       pref.position = pos
-      pref.choice_id = c_id
-      unless pref.save
-        # print "doesn't save\n"
-      end
+      pref.choice_id = s.to_a[0]
+      pref.save
     end
   end
 
@@ -604,7 +590,6 @@ class Election < ActiveRecord::Base
     # make an array out of keys of amount_defeated_hash
 
     amount_defeated_array.sort! { |a, b| b <=> a}
-    puts "This should print once."
     # sort the amount_defeated_array from highest to lowest
 
     result_hash = Hash.new
