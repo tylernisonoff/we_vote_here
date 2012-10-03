@@ -399,7 +399,7 @@ class Election < ActiveRecord::Base
     end
 
     if tbv
-      tbv_preferences = Preference.find(:all, conditions: {svc: self.id, tie_breaking: true}) 
+      tbv_preferences = Preference.find(:all, conditions: {svc: self.id.to_s, tie_breaking: true}) 
       tbv_preferences.each do |pref1|
         pos1 = pref1.position
         tbv_preferences.each do |pref2|
