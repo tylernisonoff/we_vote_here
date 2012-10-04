@@ -8,10 +8,10 @@
 
     <% if @election.group.privacy %>
       <p>You will use your Secret Voting Code (SVC) to securely vote on this election. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
-      <p>Your SVC is <%= link_to @svc, vote_path(@svc) %>. You can click it to vote.</p>
-      <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_path(@svc) %></p>
+      <p>Your SVC is <%= link_to @svc, vote_url(@svc) %>. You can click it to vote.</p>
+      <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_url(@svc) %></p>
     <% else %>
-      <p><%= link_to "Click here to vote", make_election_valid_svcs_path(@election) %></p>
+      <p><%= link_to "Click here to vote", make_election_valid_svcs_url(@election) %></p>
     <% end %>
 
     <h2>Election Information</h2>
