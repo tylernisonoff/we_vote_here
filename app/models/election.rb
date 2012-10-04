@@ -400,7 +400,7 @@ class Election < ActiveRecord::Base
         pos1 = pref1.position
         tbv_preferences.each do |pref2|
           pos2 = pref2.position
-          add = ((pos2 - pos1) + (pos2 - pos1)*(n-1) - (sum_from_1_to_i(pos2 - pos1)).to_f)/(n*n).to_f
+          add = ((pos2-pos1)*(pos1-1).to_f)/((n*n).to_f)
           @mov[pref1.choice_id][pref2.choice_id] += add
           @mov[pref2.choice_id][pref1.choice_id] -= add
         end
