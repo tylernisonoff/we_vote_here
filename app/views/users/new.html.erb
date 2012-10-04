@@ -4,16 +4,12 @@
 <%= form_for @user, html: { autocomplete: :off } do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.label "Nickname (optional)" %>
     <%= f.text_field :nickname, placeholder: "what would you like everyone to call you?" %>
 
-	<%= f.label :email %>
 	<%= f.text_field :email, placeholder: "email" %>
 
-	<%= f.label :password %>
 	<%= f.password_field :password, placeholder: "password" %>
 
-	<%= f.label :password_confirmation, "Confirmation" %>
 	<%= f.password_field :password_confirmation, placeholder: "type password again" %>
 <br>
 
