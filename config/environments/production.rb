@@ -79,5 +79,7 @@ WeVoteHere::Application.configure do
 
   # Make sure Rails doesn't raise errors on mail delivery:
   config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.default_url_options = {  host: 'wevotehere.heroku.com' }
+
 
 end
