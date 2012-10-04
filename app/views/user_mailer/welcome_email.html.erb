@@ -4,12 +4,12 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>Welcome to WeVoteHere.com!</h1>
+    <h1>Welcome to <%= url_for "WeVoteHere.com!", root_url %></h1>
     <p>
       Dear <%= @user.pretty_name %>, 
     </p>
     
-    <p>You have successfully signed up to WeVoteHere.com. Your can find your profile at <%= link_to @user.email, @user %>.</p>
+    <p>You have successfully signed up to WeVoteHere.com. Your can find your profile at <%= url_for @user.email, @user %>.</p>
       
     <p>Happy Voting,
       <br>
