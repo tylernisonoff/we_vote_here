@@ -9,10 +9,10 @@
 	<% if @vote %>
 		<big><b><div class="center">BSN: <%= @vote.id %></div></b></big>
 		<ul class="lists">
-		<% if @preferences.any? %>
+		<% unless @preferences.any? %>
 			<li>This vote has no recorded preferences.</li>
 		<% else %>
-				<%= render @preferences %>
+			<%= render @preferences %>
 		<% end %>
 		</ul>
 	<% else %>
