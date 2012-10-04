@@ -56,7 +56,7 @@ class ElectionsController < ApplicationController
       @group_id = params[:group_id]
       @elections = Election.find(:all, conditions: {group_id: params[:group_id], trashed: false})
     else
-      @elections = Election.find(:all, conditions: {privacy: false, trashed: false})
+      @elections = Election.find(:all, conditions: {trashed: false})
     end
   end
 

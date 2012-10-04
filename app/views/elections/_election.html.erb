@@ -1,10 +1,12 @@
-<li>
-	<div style="float: left">
-		<big><%= link_to election.name, election %></big>
-	</div>
-	<div class="right">
-		<% if current_user?(election.group.user) %>
-			<%= link_to "edit", edit_election_path(election) %>
-	  	<% end %>
-	</div>
-</li>
+<% unless election.trashed %>
+	<li>
+		<div style="float: left">
+			<big><%= link_to election.name, election %></big>
+		</div>
+		<div class="right">
+			<% if current_user?(election.group.user) %>
+				<%= link_to "edit", edit_election_path(election) %>
+		  	<% end %>
+		</div>
+	</li>
+<% end %>
