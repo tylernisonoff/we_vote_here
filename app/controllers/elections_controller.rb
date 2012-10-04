@@ -42,10 +42,11 @@ class ElectionsController < ApplicationController
 
 	def show
     @election = Election.find(params[:id])
-    @votes = Vote.find(:all, conditions: {election_id: @election.id, tie_breaking: false, active: true})
+    @votes = Vote.find(:all, conditions: {election_id: @election.id, active: true, trashed: false})
   end
 
   def destroy
+    @election = Election.find(params[:id])
   	@election.trash_election
   	redirect_to root_path
   end

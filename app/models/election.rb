@@ -142,11 +142,6 @@ class Election < ActiveRecord::Base
       # picks a vote (deterministically but very neutrally) and deletes it
       # from list of votes to consider in the future
       v = active_votes.delete_at(sum_of_choice_ids % active_votes.size)
-      save_v = Vote.new
-      save_v.election_id = v.election_id
-      save_v.svc = (-1*(v.svc.to_i)).to_s
-      save_v.tie_breaking = true
-      save_v.save
 
       resolve_tbv_conflicts(tie_breaking_hash, v.svc)
 
@@ -400,7 +395,8 @@ class Election < ActiveRecord::Base
         pos1 = pref1.position
         tbv_preferences.each do |pref2|
           pos2 = pref2.position
-          add = ((pos2-pos1)*(pos1-1).to_f)/((n*n).to_f)
+          add = ((pos2-pos1)*(pos1-1).to_f)/((10*n*n).to_f)
+          add = (add*1000).round / 1000.0
           @mov[pref1.choice_id][pref2.choice_id] += add
           @mov[pref2.choice_id][pref1.choice_id] -= add
         end

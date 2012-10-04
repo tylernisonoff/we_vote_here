@@ -45,7 +45,7 @@ class GroupsController < ApplicationController
 
 
   def index
-    @groups = Group.find(:all, conditions: {trashed: false})
+    @groups = Group.find(:all, conditions: {privacy: false, trashed: false})
   end
 
   def edit

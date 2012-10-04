@@ -5,9 +5,9 @@
 <%= nested_form_for(@election, url: group_elections_path(@group)) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.text_field :name, placeholder: "election name" %>
+	<%= f.text_field :name, placeholder: "enter the question you would like to pose to the group" %>
 
-	<%= f.text_area :info, placeholder: "election instructions (optional)" %>
+	<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
 
 
 	<%= f.label :start_time, "Start time" %>

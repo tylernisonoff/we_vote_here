@@ -68,7 +68,7 @@ WeVoteHere::Application.routes.draw do
   match 'elections/:election_id/valid_svcs/enter', to: 'valid_svcs#enter', as: :enter_election_valid_svcs
   match 'elections/:election_id/valid_svcs/confirm', to: 'valid_svcs#confirm', as: :confirm_election_valid_svcs
 
-
+  match 'elections/:id/destroy', to: 'elections#destroy', as: :destroy_election
   match 'elections/:id/results', to: 'elections#results', as: :results_election
   match 'elections/:id/mov/export', to: 'elections#export_mov_to_csv', as: :export_mov_to_csv_election
   match 'elections/:id/votes/export', to: 'elections#export_votes_to_csv', as: :export_votes_to_csv_election

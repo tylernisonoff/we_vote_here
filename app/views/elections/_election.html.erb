@@ -1,6 +1,6 @@
 <li>
 	<div style="float: left">
-		<%= link_to election.name, election %>
+		<big><%= link_to election.name, election %></big>
 	</div>
 	<div class="right">
 		<% if current_user?(election.group.user) %>

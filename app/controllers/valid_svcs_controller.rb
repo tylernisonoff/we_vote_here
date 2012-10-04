@@ -23,8 +23,16 @@ class ValidSvcsController < ApplicationController
   # so the user can enter the SVC they received
   
     @election = Election.find(params[:election_id])
-    @valid_svc = ValidSvc.new
-    @valid_svc.election = @election
+    if @election.start_time > Time.now  
+      flash[:error] = "This election has not started yet."
+      redirect_to results_election_path(@election)
+    elsif @election.finish_time < Time.now
+      flash[:error] = "This election has already ended."
+      redirect_to results_election_path(@election)
+    else
+      @valid_svc = ValidSvc.new
+      @valid_svc.election = @election
+    end
   end
 
   def confirm

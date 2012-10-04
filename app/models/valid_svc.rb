@@ -25,7 +25,7 @@ class ValidSvc < ActiveRecord::Base
     self.svc = @random_svc
   end
 
-  def destroy_valid_svc
+  def trash_valid_svc
     self.trashed = true
     self.save
   end

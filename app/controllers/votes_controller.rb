@@ -20,7 +20,7 @@ class VotesController < ApplicationController
       @vote = Vote.find(vote_id)    
       @vote.trash_vote
       unless Preference.exists?(svc: svc, active: true, trashed: false)
-        flash[:warning] = "There are now no active preferences for your SVC. Change that!"
+        flash[:warning] = "There are now no active preferences for your SVC. Change that by clicking the 'Vote' button!"
       end
       redirect_to status_vote_path(svc: svc)
     else
@@ -49,12 +49,22 @@ class VotesController < ApplicationController
       vote_id = params[:id]
 
       if match(vote_id, svc)
-        @vote_to_activate = Vote.find(vote_id)
-        @vote_to_activate.activate_vote
 
-        @active_vote = Vote.find(:first, conditions: {svc: svc, active: true, trashed: false})
-        @active_preferences = Preference.find(:all, conditions: {vote_id: vote_id, active: true})
-        @active_preferences.sort! { |a, b| a.position <=> b.position }
+        @vote_to_activate = Vote.find(vote_id)
+        @election = @vote_to_activate.election
+        if @election.start_time > Time.now  
+          flash[:error] = "This election has not started yet."
+          redirect_to results_election_path(@election)
+        elsif @election.finish_time < Time.now
+          flash[:error] = "This election has already ended."
+          redirect_to results_election_path(@election)
+        else  
+          @vote_to_activate.activate_vote
+
+          @active_vote = Vote.find(:first, conditions: {svc: svc, active: true, trashed: false})
+          @active_preferences = Preference.find(:all, conditions: {vote_id: vote_id, active: true})
+          @active_preferences.sort! { |a, b| a.position <=> b.position }
+        end
       else
         flash[:error] = "You tried to activate a vote using the wrong SVC."
       end
@@ -69,13 +79,21 @@ class VotesController < ApplicationController
     if ValidSvc.exists?(svc: svc)
       @valid_svc = ValidSvc.find_by_svc(svc)
       @election = @valid_svc.election
-      @vote = Vote.new
-      @vote.election = @election
-      @vote.assign_vote_svc(svc)
-      unless @vote.save
-        flash[:error] = "We were unable to save your vote"
-        redirect_to @election
-      end
+      if @election.start_time > Time.now  
+        flash[:error] = "This election has not started yet."
+        redirect_to results_election_path(@election)
+      elsif @election.finish_time < Time.now
+        flash[:error] = "This election has already ended."
+        redirect_to results_election_path(@election)
+      else
+        @vote = Vote.new
+        @vote.election = @election
+        @vote.assign_vote_svc(svc)
+        unless @vote.save
+          flash[:error] = "We were unable to save your vote"
+          redirect_to @election
+        end
+      end 
     else
       flash[:error] = "This is an invalid SVC."
       redirect_back_or root_path

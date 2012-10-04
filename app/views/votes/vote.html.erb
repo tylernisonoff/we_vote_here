@@ -1,5 +1,14 @@
 <% provide(:title, "Submit your vote") %>
 <h1>Submit your vote</h1>
+<div class="center">
+  <big><b>Election: <%= @vote.election.name%></b></big>
+  <% unless @vote.election.info.blank? %>
+    <p>Voting instructions: <%= @vote.election.info %></p>
+  <% end %>
+  <hr>
+  <p>Drag and drop your preferences in your preferred order in the green region</p>
+  <hr>
+</div>
   <script>
   $(function() {
     $('#sortable1, #sortable2').sortable({
