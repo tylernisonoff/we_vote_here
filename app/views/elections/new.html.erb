@@ -9,15 +9,12 @@
 
 	<%= f.text_area :info, placeholder: "election instructions (optional)" %>
 
-	<br><br>
 
-	<%= f.label :start_time, "Start time:" %>
+	<%= f.label :start_time, "Start time" %>
 	<%= f.datetime_select :start_time, default: Time.now %>
 
-	<%= f.label :finish_time, "Finish time:" %>
+	<%= f.label :finish_time, "Finish time" %>
 	<%= f.datetime_select :finish_time, default: Time.now + 1.week %>
-	
-	<br><br>
 
 	<script>
 	$(document).ready(function(){
@@ -30,19 +27,20 @@
 	});
 	</script>
 
-	<h3>Choices:</h3>
-	<br>
-	<% f.fields_for :choices do |c| %>
-		<%= c.label :name %>
-		<%= c.text_field :name, placeholder: "choice", :class => "enter_choice_name" %>
-		<%= c.link_to_remove "Remove" %>
-	<% end %>
-	<p><%= f.link_to_add "Add new choice", :choices, id: "add_new_choice" %></p>
-	
-	<br>
-	<br>
-	
+	<hr>
 
-	<%= f.submit "Save", class: "btn btn-large btn-primary" %>
-	<%= f.submit "Add another election", class: "btn btn-large btn-primary" %>
+	<big><b>Choices</b></big>
+	<% f.fields_for :choices do |c| %>
+		<%= c.text_field :name, placeholder: "choice", class: "enter_choice_name", style: "width: 90%" %>
+		<%= c.link_to_remove "Remove", class: "btn btn-large btn-danger" %>
+	<% end %>
+
+	<hr>
+	
+	<%= f.link_to_add "Add new choice", :choices, id: "add_new_choice", class: "btn btn-large btn-success btn-adjusted3-block" %>
+	
+	<hr>
+
+	<%= f.submit "Save", class: "btn btn-large btn-primary btn-block" %>
+	<%= f.submit "Save and add another election", class: "btn btn-large btn-primary btn-block" %>
 <% end %>

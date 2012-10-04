@@ -3,12 +3,8 @@
 
 <%= form_for :valid_svc, url: confirm_election_valid_svcs_path(@election), html: { autocomplete: :off } do |f| %>
 
-	<%= f.label :svc %>
 	<%= f.text_field :svc, placeholder: "SVC" %>
 
-<br>
-
-	<%= f.submit "Enter", class: "btn btn-large btn-primary" %>
-
+	<%= f.submit "Enter", class: "btn btn-large btn-primary btn-block" %>
 <% end %>
 

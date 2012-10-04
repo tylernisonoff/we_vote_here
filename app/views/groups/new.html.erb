@@ -6,25 +6,16 @@
 
 	<%= f.text_field :name, placeholder: "group name" %>
 
-	<br><br>
-
-	<%= f.label :emails, "Enter the emails of the members for this group!" %>
+	<div class="center"><%= f.label :emails, "Enter the emails of the members for this group!" %></div>
 	<%= f.text_area :emails, value: "", placeholder: "enter email addresses here. please separate emails by commas" %>
 
-	<br><br>
-	
-	Group Privacy:
-	<br>
 	<%= f.radio_button :privacy, 0, checked: false %>
-	<%= f.label :privacy, "Public" %>
+	<%= f.label :privacy, "Public", style: "display:inline" %>
 	<br>
 	<%= f.radio_button :privacy, 1, checked: true %>
-	<%= f.label :privacy, "Private" %>
+	<%= f.label :privacy, "Private", style: "display:inline" %>
 
-	<br><br>
+	<hr>
 
-
-<br><br><br>
-
-	<%= f.submit "Next step", class: "btn btn-large btn-primary" %>
+	<%= f.submit "Next step", class: "btn btn-large btn-primary btn-block" %>
 <% end %>

@@ -1,11 +1,8 @@
+<h1>Add voters by their email addresses</h1>
 <%= form_for @group do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
-
-	<br><br>
-	<h3>Add voters by their email addresses:</h3>
-	<br>
 	
 	<%= f.text_area :emails, value: "", placeholder: "separate voters by commas, and voters by spaces. For example, the entry \"christiandrappi@gmail.com christian.drappi@duke.edu, bray@duke.edu\" would add two voters." %>
 
-	<%= f.submit "Submit", class: "btn btn-large btn-primary" %>
+	<%= f.submit "Submit", class: "btn btn-large btn-primary btn-block" %>
 <% end %>

@@ -8,14 +8,11 @@
 
 	<%= f.text_area :info, placeholder: "election instructions (optional)" %>
 
-	<br><br>
-
 	<%= f.label :start_time, "Start time:" %>
 	<%= f.datetime_select :start_time, value: @election.start_time %>
 
 	<%= f.label :finish_time, "Finish time:" %>
 	<%= f.datetime_select :finish_time, value: @election.finish_time %>
-	<br><br>
 
-<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+<%= f.submit "Save", class: "btn btn-large btn-primary btn-block" %>
 <% end %>

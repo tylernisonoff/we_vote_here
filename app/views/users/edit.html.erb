@@ -10,15 +10,14 @@
     <%= f.label :email %>
     <%= f.text_field :email %>
 
-	<br><br>
-    <%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
+    <%= f.submit "Save changes", class: "btn btn-large btn-primary btn-block" %>
 <% end %>
 
 <% if @user == current_user %>
-    <%= gravatar_for (@user) %>
-    <h6><a href="http://gravatar.com/emails">change your gravatar</a></h6>
-    
-    <h6><%= link_to "edit your password", edit_password_user_path(@user) %></h6>
-    <h6><%= link_to "link other email addresses", add_emails_user_path(@user) %></h6>
-    <h6><%= link_to "view my email addresses", emails_user_path(@user) %></h6>
+    <div class="center">
+        <%= link_to "change your password", edit_password_user_path(@user), class: "btn btn-large" %>
+        <%= link_to "link other email addresses", add_emails_user_path(@user), class: "btn btn-large btn-info" %>
+        <%= link_to "view my email addresses", emails_user_path(@user), class: "btn btn-large" %>
+        <%= link_to "change your gravatar", "http://gravatar.com/emails", class: "btn btn-large btn-info" %>
+    </div>
 <% end %>

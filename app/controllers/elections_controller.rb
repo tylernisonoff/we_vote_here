@@ -24,7 +24,7 @@ class ElectionsController < ApplicationController
 			flash[:success] = "Election saved"
       if params[:commit] == "Save"
 			  redirect_to @group
-      elsif params[:commit] == "Add another election"
+      elsif params[:commit] == "Save and add another election"
         redirect_to new_group_election_path(@election.group)
 		  end
     else

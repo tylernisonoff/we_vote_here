@@ -129,6 +129,10 @@ p {
   width: 96%;
 }
 
+.btn.btn-adjusted3-block {
+  width: 97%;
+}
+
 /* ^^ I know this ruins the whole point of sass but I just couldn't get it right. */
 
 .label {
@@ -137,7 +141,6 @@ p {
 
 .radio_buttons { 
   display:inline;
-  
 }
 
 
@@ -264,9 +267,10 @@ aside {
 
 input, .uneditable-input {
   border: 1px solid #bbb;
-  width: 80%;
+  width: 100%;
   padding: 10px;
   height: auto;
+  margin-top: 12px;
   margin-bottom: 15px;
   @include box_sizing;
 }
