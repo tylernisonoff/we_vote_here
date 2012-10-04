@@ -11,10 +11,10 @@
 
 
 	<%= f.label :start_time, "Start time" %>
-	<%= f.datetime_select :start_time, default: Time.now %>
+	<%= f.datetime_select :start_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") %>
 
 	<%= f.label :finish_time, "Finish time" %>
-	<%= f.datetime_select :finish_time, default: Time.now + 1.week %>
+	<%= f.datetime_select :finish_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") + 1.week %>
 
 	<script>
 	$(document).ready(function(){
