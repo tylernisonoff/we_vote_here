@@ -86,7 +86,7 @@ class UsersController < ApplicationController
 
   def save_emails
     @user = User.find(params[:id])
-    @user_emails = params[:user][:user_emails].split(" ,")
+    @user_emails = params[:user][:user_emails].split(" ")
     success = true
     @user_emails.each do |email|
       @user_email = UserEmail.new
