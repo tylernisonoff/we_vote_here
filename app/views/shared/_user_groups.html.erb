@@ -7,7 +7,7 @@
   <% if user.groups.any? %>
       <%= render user.groups %>
   <% else %>
-    <li>You don't own any groups yet!</li>
+    <li><%=you_dont(user, current_user, true)%> own any groups yet!</li>
   <% end %>
   <% if user == current_user %>
     <li>
@@ -19,13 +19,10 @@
   <big><b>Groups I'm in (<%= user.followed_groups.count %>)</b></big>
     <ul class="lists">
     <% if user.followed_groups.any? %>
-      <ul>
         <%= render user.followed_groups %>
-      </ul>
     <% else %>
-    <li>You aren't in any groups yet!</li>
+    <li><%=you_arent(user, current_user, true)%> in any groups yet!</li>
     <% end %>
     <li><%= link_to "View public groups", groups_path, class: "btn btn-large btn-adjusted-block btn-primary" %></li>
     </ul>
-  </p>
 </div>

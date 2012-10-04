@@ -9,13 +9,13 @@
 		<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0}), class: "btn btn-large btn-adjusted-block" %>
 		</p>
 		<p>
-		<%= link_to 'Export Regular Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
+		<%= link_to 'Export Regular Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0, adjusted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
 		</p>
 		<p>
-		<%= link_to 'Export Sorted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-adjusted-block" %>
+		<%= link_to 'Export Sorted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1, adjusted: 1}), class: "btn btn-large btn-adjusted-block" %>
 		</p>
 		<p>
-		<%= link_to 'Export Sorted Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
+		<%= link_to 'Export Sorted Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1, adjusted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
 		</p>
 		<p>
 		<%= link_to 'Export Votes to CSV', export_votes_to_csv_election_path(@election), class: "btn btn-large btn-adjusted-block" %>

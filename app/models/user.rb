@@ -62,7 +62,9 @@ class User < ActiveRecord::Base
     total_groups = Set.new
     if valid_emails.any?
       valid_emails.each do |valid_email|
-        total_groups.add(Group.find(valid_email.group_id))
+        unless valid_email.voter.trashed
+          total_groups.add(Group.find(valid_email.group_id))
+        end
       end
     end
     followed_groups_set = total_groups - self.groups.to_set

@@ -1,21 +1,10 @@
 <% provide(:title, "Submit your vote") %>
 <h1>Submit your vote</h1>
-<%= render @valid_svc %>
-
-
-
-<br><br><br>
-
-  <style>
-  #sortable1, #sortable2 { list-style-type: none; margin: 0; padding: 0 0 2.5em; float: center; margin-right: 10px; }
-  #sortable1 li, #sortable2 li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; width: 120px; }
-  </style>
-
   <script>
   $(function() {
     $('#sortable1, #sortable2').sortable({
       connectWith: ".connectedSortable",
-      cursor: 'crosshair',
+      cursor: 'move',
       items: 'li',
       opacity: 0.4,
       scroll: true,
@@ -25,7 +14,7 @@
           data: $('#sortable1').sortable('serialize') +"&svc=<%= @vote.svc %>"+"&vote_id=<%= @vote.id %>",
           dataType: 'script',
           complete: function(request){
-            $('#sortable1').effect('highlight');
+            // $('#sortable1').effect('highlight');
           },
           url: '/preferences/sort'
         })
@@ -40,28 +29,35 @@
   var forcePlaceholderSize = $( ".selector" ).sortable( "option", "forcePlaceholderSize" );
   //setter
   $( ".selector" ).sortable( "option", "forcePlaceholderSize", true );
-
-
   </script>
 
-<div class = "demo">
-  <h3>Ballot</h3><br>
-  <ol id="sortable1" class = "connectedSortable">
-    
-    
-  </ol>
 
-  <h3>Unsorted Choices</h3><br>
-  <ul id="sortable2" class = "connectedSortable">
-    <% @vote.election.choices.each do |choice| %>
-    <li id="choice_<%= choice.id %>
-    " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
-    <% end %>
-  </ul>
+<div>
+  <div class="span5">
+    <big><b><div class="center">Ballot</div></b></big><br>
+    <ol id="sortable1" class = "connectedSortable lists">
+    </ol>
+  </div>
+  <div class="offset1 span5">
+    <big><b><div class="center">Unsorted Choices</div></b></big><br>
+    <ul id="sortable2" class = "connectedSortable lists">
+      <% @vote.election.choices.each do |choice| %>
+      <li id="choice_<%= choice.id %>
+      " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <br><br><br><br><br>
+  <br><br><br><br><br>
+  <br><br><br><br><br>
+  <br><br><br><br><br>
+  <br><br>
+
+  <div class="span11">
+    <hr>
+    <p><%= link_to "Click here to VOTE", activate_vote_path(svc: @vote.svc, id: @vote.id), class: "btn btn-large btn-success btn-adjusted2-block" %></p>
+    <hr>
+    <p><%= link_to "DISCARD VOTE AND EXIT", destroy_vote_path(svc: @vote.svc, id: @vote.id), class: "btn btn-large btn-danger btn-adjusted2-block" %></p>
+  </div>
 </div>
-
-<br><br><br><br><br><br><br><br><br>
-
-<%= link_to "Click here to VOTE", activate_vote_path(svc: @vote.svc, id: @vote.id), class: "btn btn-large btn-primary" %>
-
-<%= link_to "DISCARD VOTE AND EXIT", destroy_vote_path(svc: @vote.svc, id: @vote.id), class: "btn btn-large btn-primary" %>

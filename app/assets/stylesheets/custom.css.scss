@@ -65,6 +65,31 @@ ol li {
     margin: 0 auto -142px; /* the bottom margin is the negative value of the footer's height */
 }
 
+
+  #sortable1, #sortable2 { 
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 2.5em;
+    float: center;
+    margin-right: 10px;
+    height: 400px;
+    border-style: none;
+  }
+
+  #sortable1 {
+    background-color: #ddffdd;
+  }
+
+  #sortable2 {
+    background-color: #ffddff;
+  } 
+  
+  #sortable1 li, #sortable2 li {
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+  }
+
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -98,6 +123,10 @@ p {
 
 .btn.btn-adjusted-block {
   width: 90%;
+}
+
+.btn.btn-adjusted2-block {
+  width: 96%;
 }
 
 /* ^^ I know this ruins the whole point of sass but I just couldn't get it right. */

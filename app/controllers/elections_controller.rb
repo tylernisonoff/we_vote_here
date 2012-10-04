@@ -83,7 +83,6 @@ class ElectionsController < ApplicationController
 
   def export_mov_to_csv
     @election = Election.find(params[:id])
-    @mov = @election.get_mov
 
     if params[:sorted] == "1"
       sorted = true
@@ -91,8 +90,20 @@ class ElectionsController < ApplicationController
       sorted = false
     end
 
-    if sorted
+    if params[:adjusted] == "1"
+      adjusted = true
+    else
+      adjusted = false
+    end
+
+    @mov = @election.get_mov(adjusted)
+
+    if sorted && adjusted
+      filename ="sorted_adjusted_mov_for_#{adjusted_filename(@election)}"
+    elsif sorted
       filename ="sorted_mov_for_#{adjusted_filename(@election)}"
+    elsif adjusted
+      filename ="adjusted_mov_for_#{adjusted_filename(@election)}"
     else
       filename ="regular_mov_for_#{adjusted_filename(@election)}"
     end
@@ -133,6 +144,7 @@ class ElectionsController < ApplicationController
         end
         csv << add_to_csv
       end
+      csv << (["TBV"] + @election.get_tbv_array)
     end
 
     send_data csv_data,

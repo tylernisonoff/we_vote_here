@@ -1,39 +1,38 @@
-<%= render @valid_svc %>
-
-<br><br>
-
-<h3>Active Vote:</h3>
-<br>
-<% if @active_vote %>
-	BSN: <%=display_vote_helper(@active_vote, @active_vote.id)%> <br>
-	<% if @active_preferences.blank? %>
-		This vote is active, but has no recorded preferences.
-	<% else %>
-		<% @active_preferences.each do |active_preference| %>
-			<%= active_preference.position %>) <%= active_preference.choice.name %>
-			<br>
-		<% end %>
-	<% end %>
-<% else %>
-<p> There is no active vote for this SVC </p>
-<% end %>
-
-<br><br>
+<div class="span4">
+	<%= render partial: 'shared/user_and_group', locals: {group: @valid_svc.election.group} %>
+	<hr>
+	<big><b>Election information</b></big>
+	<br><br>
+	<%= render partial: 'elections/election_info', locals: {election: @valid_svc.election} %>
+</div>
 
 
-<h3>BSNs associated with this SVC:</h3>
-<br>
-<% if @votes.any? %>
-	<% @votes.each_with_index do |vote, index| %>
-		BSN #<%= index+1 %>: <%= display_vote_helper(vote, vote.id) %> - 
-		<% if @active_vote && @active_vote.id == vote.id %>
-			This vote is active
+<div class="span3">
+	<big><b>Active Vote</b></big>
+	<% if @active_vote %>
+		<% if @active_preferences.blank? %>
+			This vote is active, but has no recorded preferences.
 		<% else %>
-			<%= link_to "Activate", activate_vote_path(svc: vote.svc, id: vote.id) %>
-			- <%= link_to "Destroy", destroy_vote_path(svc: vote.svc, id: vote.id) %>
+			<ul class="lists">
+				<%= render @active_preferences %>
+			</ul>
 		<% end %>
-		<br>
+	<% else %>
+	<p> There is no active vote for this SVC </p>
 	<% end %>
-<% else %>
-	<p> There are no BSNs associated with this SVC. <%= link_to "Cast a vote!", vote_path(@valid_svc.svc) %> </p>
-<% end %>
+</div>
+
+<div class="span4">
+	<big><b>BSNs associated with this SVC:</b></big>
+	<br>
+	<ul class="lists">
+	<% if @votes.any? %>
+		<% @votes.each_with_index do |vote, index| %>
+			<%= render partial: 'vote_index', locals: {index: index, vote: vote} %>
+		<% end %>
+	<% else %>
+		<li> There are no BSNs associated with this SVC.</li>
+		<li> <%= link_to "Cast a vote!", vote_path(@valid_svc.svc), class: "btn-btn-large btn-success btn-block" %> </li>
+	<% end %>
+	</ul>
+</div>

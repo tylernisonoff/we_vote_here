@@ -3,7 +3,7 @@
 <div>	
 	<div class="span4">
 		<%= render partial: 'shared/user_and_group', locals: {group: @election.group} %>
-		<div class="row">
+		<div>
 			<hr>
 			<%= render partial: 'election_choices', locals: {choices: @election.choices} %>
 		</div>
@@ -14,14 +14,17 @@
 			<p><%= button_to "See results", results_election_path(@election), class: "btn btn-large btn-block btn-info" %></p>
 			<hr>
 		</div>
+		<big><b>Information</b></big>
+		<br><br>
 		<%= render partial: 'election_info', locals: {election: @election} %>
+		<hr>
 		<div>
 			<p><big><b>Ballot Serial Numbers</b></big></p>
-		</div>
-		<div>
-			<ul>
-				<%= render @votes %>
-			</ul>
+			<div class="row">
+				<ul>
+					<%= render @votes %>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>

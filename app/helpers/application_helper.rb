@@ -17,27 +17,30 @@ module ApplicationHelper
     image_tag(gravatar_url, alt: user.pretty_name, class: "gravatar")
   end
 
- # 	def new_child_fields_template(form_builder, association, options = {})
- #  		options[:object] ||= form_builder.object.class.reflect_on_association(association).klass.new
- #  		options[:partial] ||= association.to_s.singularize
- #  		options[:form_builder_local] ||= :f
 
- #  		content_for :jstemplates do
- #    		content_tag(:div, :id => "#{association}_fields_template", :style => "display: none") do
- #      			form_builder.fields_for(association, options[:object], :child_index => "new_#{association}") do |f|        
- #        			render(:partial => options[:partial], :locals => { options[:form_builder_local] => f })        
- #      			end
- #    		end
- #  		end
-	# end
+  def you_arent(user, current_user, caps=true)
+    if user == current_user
+      if caps
+        return "You aren't"
+      else
+        return "you aren't"
+      end
+    else
+      return user.pretty_name + " isn't"
+    end
+  end
 
-	# def add_child_link(name, association)
- #  		link_to(name, "javascript:void(0)", :class => "add_child", :"data-association" => association)
-	# end
-
-	# def remove_child_link(name, f)
- #  		f.hidden_field(:_destroy) + link_to(name, "javascript:void(0)", :class => "remove_child")
-	# end
+  def you_dont(user, current_user, caps=true)
+    if user == current_user
+      if caps
+        return "You don't"
+      else
+        return "you don't"
+      end
+    else
+      return user.pretty_name + " doesn't"
+    end
+  end
 
 
 end

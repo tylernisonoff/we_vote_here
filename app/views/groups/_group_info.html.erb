@@ -3,11 +3,13 @@
 	<div style="float: left">
 			<big><b>Name: <%= link_to group.name, group %></b></big>
 	</div>
+	<% if edit_group_condition(current_user, group) %>
 	<div class="right">
-		<% if edit_group_condition(current_user, group) %>
-			<%= link_to "edit group", edit_group_path(group) %>
-	  	<% end %>
-	 </div>
+		<%= link_to "edit group", edit_group_path(group) %>
+	</div>
+	<% else %>
+		<br>
+	<% end %>
 	<br>
 	<div class="label label-success">
 		<% if group.privacy %>

@@ -347,7 +347,7 @@ class Election < ActiveRecord::Base
 
     @votes_hash = Hash.new
 
-    @active_votes = Vote.find(:all, conditions: {election_id: self.id, active: true})
+    @active_votes = Vote.find(:all, conditions: {election_id: self.id, active: true, trashed: false, tie_breaking: false})
     @active_votes.each do |active_vote|
       @votes_hash[active_vote.id] = Hash.new
       # Using vote.active_preferences does NOT work
@@ -505,7 +505,7 @@ class Election < ActiveRecord::Base
         text.push("\nIgnoring: #{id_to_name_hash[winner]} beats #{id_to_name_hash[loser]} by #{margin}\n")
         next
       elsif winner_hash[winner].include?(loser)
-        text.push("\nWe already know: #{id_to_name_hash[winner]} beats #{id_to_name_hash[loser]} by #{margin}\n")
+        text.push("\nWe already know: #{id_to_name_hash[winner]} beats #{id_to_name_hash[loser]} (by #{margin})\n")
         next
       else
         text.push("\nWinner: #{id_to_name_hash[winner]}\nLoser: #{id_to_name_hash[loser]}\nMargin: #{margin}\n")
@@ -615,6 +615,16 @@ class Election < ActiveRecord::Base
         @result.save
       end
     end
+  end
+
+  def get_tbv_array
+    tbp = Preference.find(:all, conditions: {svc: self.id.to_s, tie_breaking: true})
+    ret = Array.new
+    tbp.sort_by { |a| a.position }
+    tbp.each do |pref|
+      ret.push(pref.choice.name)
+    end
+    return ret
   end
 
 end

@@ -1,0 +1,13 @@
+<li>
+	<div style="float: left">
+	<%= link_to index+1, display_vote_path(vote), class: "btn btn-large btn-primary" %>
+	</div>
+	<div class="right">
+		<% if @active_vote && @active_vote.id == vote.id %>
+			This vote is active
+		<% else %>
+			<%= link_to "Activate", activate_vote_path(svc: vote.svc, id: vote.id) %>
+			- <%= link_to "Destroy", destroy_vote_path(svc: vote.svc, id: vote.id) %>
+		<% end %>
+	</div>
+</li>
