@@ -6,7 +6,7 @@
 <div class="span3">
 	<big><b>Active Vote</b></big>
 	<% if @active_vote %>
-		<% if @active_preferences.any? %>
+		<% unless @active_preferences.any? %>
 			This vote is active, but has no recorded preferences.
 		<% else %>
 			<ul class="lists">
