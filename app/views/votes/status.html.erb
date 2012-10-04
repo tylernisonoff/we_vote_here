@@ -1,16 +1,12 @@
 <div class="span4">
-	<%= render partial: 'shared/user_and_group', locals: {group: @valid_svc.election.group} %>
-	<hr>
-	<big><b>Election information</b></big>
-	<br><br>
-	<%= render partial: 'elections/election_info', locals: {election: @valid_svc.election} %>
+	<%= render partial: 'election_info', locals: {election: @valid_svc.election} %>
 </div>
 
 
 <div class="span3">
 	<big><b>Active Vote</b></big>
 	<% if @active_vote %>
-		<% if @active_preferences.blank? %>
+		<% if @active_preferences.any? %>
 			This vote is active, but has no recorded preferences.
 		<% else %>
 			<ul class="lists">
@@ -28,11 +24,11 @@
 	<ul class="lists">
 	<% if @votes.any? %>
 		<% @votes.each_with_index do |vote, index| %>
-			<%= render partial: 'vote_index', locals: {index: index, vote: vote} %>
+			<%= render partial: 'vote_id', locals: {vote: vote} %>
 		<% end %>
 	<% else %>
 		<li> There are no BSNs associated with this SVC.</li>
-		<li> <%= link_to "Cast a vote!", vote_path(@valid_svc.svc), class: "btn-btn-large btn-success btn-block" %> </li>
 	<% end %>
+	<li> <%= link_to "Vote!", vote_path(@valid_svc.svc), class: "btn-btn-large btn-success btn-block" %> </li>
 	</ul>
 </div>

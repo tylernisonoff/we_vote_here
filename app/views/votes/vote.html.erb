@@ -33,12 +33,12 @@
 
 
 <div>
-  <div class="span5">
+  <div class="span4">
     <big><b><div class="center">Ballot</div></b></big><br>
     <ol id="sortable1" class = "connectedSortable lists">
     </ol>
   </div>
-  <div class="offset1 span5">
+  <div class="offset3 span4">
     <big><b><div class="center">Unsorted Choices</div></b></big><br>
     <ul id="sortable2" class = "connectedSortable lists">
       <% @vote.election.choices.each do |choice| %>
@@ -47,12 +47,6 @@
       <% end %>
     </ul>
   </div>
-
-  <br><br><br><br><br>
-  <br><br><br><br><br>
-  <br><br><br><br><br>
-  <br><br><br><br><br>
-  <br><br>
 
   <div class="span11">
     <hr>

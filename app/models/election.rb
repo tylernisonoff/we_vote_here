@@ -433,9 +433,9 @@ class Election < ActiveRecord::Base
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over
     if tbv
-      unless Vote.exists?(svc: self.id.to_s)
+      # unless Vote.exists?(svc: self.id.to_s)
         create_tie_breaking_vote
-      end
+      # end
     end
 
     text = Array.new

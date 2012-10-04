@@ -13,7 +13,6 @@ WeVoteHere::Application.routes.draw do
       get :edit_password
       put :change_password
       get :add_emails
-      post :save_emails
       get :emails
     end
   end
@@ -53,6 +52,7 @@ WeVoteHere::Application.routes.draw do
 
   match 'users/:id/make_primary_email/:user_email_id', to: 'users#make_primary_email', as: :make_primary_email_user
   match 'users/:id/unfollow_group/:group_id', to: 'users#unfollow_group', as: :unfollow_group_user
+  match 'users/:id/save_emails', to: 'users#save_emails', as: :save_emails_user
 
   # Votes custom routes
   match 'vote/:svc', to: 'votes#vote', as: :vote

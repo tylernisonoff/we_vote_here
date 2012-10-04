@@ -1,10 +1,10 @@
 <% provide(:title, "Results: #{@election.name}") %>
 <h1>Results: <%= link_to @election.name, @election %></h1>
-<div class="row">	
+<div>	
 	<div class="span4">
 		<%= render partial: 'shared/user_and_group', locals: {group: @election.group} %>
 		<hr>
-		<div class="row">
+		<div>
 		<p>
 		<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0}), class: "btn btn-large btn-adjusted-block" %>
 		</p>
@@ -25,8 +25,8 @@
 		</p>
 		</div>
 	</div>
-	<div class="offset1 span7">
-		<div class="row">
+	<div class="span7">
+		<div>
 			<p><big><b>Results</b></big></p>
 			<% unless @results_array %>
 				<p>This election has not yet started.</p>

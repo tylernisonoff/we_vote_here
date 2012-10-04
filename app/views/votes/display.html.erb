@@ -1,14 +1,21 @@
 <% provide(:title, "View vote") %>
 <h1>View vote</h1>
-<h2> Group: <%= link_to @vote.election.group.name, @vote.election.group %> </h2>
-<h2> Election: <%= link_to @vote.election.name, @vote.election %> </h2>
 
-<br><br>
+<div class="span3">
+	<%= render partial: 'election_info', locals: {election: @vote.election} %>
+</div>
 
-<h3>Choices</h3>
-<br>
-<% if @preferences && @preferences.any? %>
-	<%= render @preferences %>
-<% else %>
-	<p> This ballot has no choices </p>
-<% end %>
+<div class="span6">
+	<% if @vote %>
+		<big><b><div class="center">BSN: <%= @vote.id %></div></b></big>
+		<ul class="lists">
+		<% if @preferences.any? %>
+			<li>This vote has no recorded preferences.</li>
+		<% else %>
+				<%= render @preferences %>
+		<% end %>
+		</ul>
+	<% else %>
+	<p> We could not find this vote </p>
+	<% end %>
+</div>

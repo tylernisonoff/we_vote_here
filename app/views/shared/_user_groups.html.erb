@@ -7,7 +7,7 @@
   <% if user.groups.any? %>
       <%= render user.groups %>
   <% else %>
-    <li><%=you_dont(user, current_user, true)%> own any groups yet!</li>
+    <li><%=you_dont(user, current_user, true)%> own any groups yet! Groups of voters are necessary to create elections.)</li>
   <% end %>
   <% if user == current_user %>
     <li>
