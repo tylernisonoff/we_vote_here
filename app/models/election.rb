@@ -246,6 +246,16 @@ class Election < ActiveRecord::Base
     return @choice_names
   end
 
+  def get_choice_hash
+    choice_hash = Hash.new
+    choices = Choice.find(:all, conditions: {election_id: self.id, trashed: false})
+    choices.each do |choice|
+      choice_hash[choice.id] = choice.name
+    end
+
+    return choice_hash
+  end
+
   def choice_id_array(sort_by_results = false)
     # If sort_by_results is true, returns choice ids sorted by choice id
     @sorted_choices = get_sorted_choices(sort_by_results)
@@ -390,7 +400,7 @@ class Election < ActiveRecord::Base
         pos1 = pref1.position
         tbv_preferences.each do |pref2|
           pos2 = pref2.position
-          add = (pos2 - pos1) + (pos2 - pos1)*n - (sum_from_1_to_i(pos2 - pos1))
+          add = ((pos2 - pos1) + (pos2 - pos1)*(n-1) - (sum_from_1_to_i(pos2 - pos1)).to_f)/(n*n).to_f
           @mov[pref1.choice_id][pref2.choice_id] += add
           @mov[pref2.choice_id][pref1.choice_id] -= add
         end
@@ -416,18 +426,23 @@ class Election < ActiveRecord::Base
     end
   end
 
-  def ranked_pairs(save = false, tbv = true)
+  def ranked_pairs(save = false, tbv = true, return_text = false)
     # returns hash where keys are choice_ids and values are positions
+    # unless return_text is true, where it returns the ordering
 
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over
     if tbv
-      create_tie_breaking_vote
+      unless Vote.exists?(svc: self.id.to_s)
+        create_tie_breaking_vote
+      end
     end
 
-    @mov = self.get_mov(tbv)
-    printer = 0
+    text = Array.new
+    id_to_name_hash = self.get_choice_hash
 
+    @mov = self.get_mov(tbv)
+  
     ### ALGO TEST STARTS HERE
 
     @mov_list = Array.new
@@ -487,50 +502,37 @@ class Election < ActiveRecord::Base
       if winner_hash[loser].include?(winner)
         # if this inequality is inconsistent with
         # previous inequalities, ignore this inequality
+        text.push("\nIgnoring: #{id_to_name_hash[winner]} beats #{id_to_name_hash[loser]} by #{margin}\n")
+        next
+      elsif winner_hash[winner].include?(loser)
+        text.push("\nWe already know: #{id_to_name_hash[winner]} beats #{id_to_name_hash[loser]} by #{margin}\n")
         next
       else
-        unless printer == 0
-          print "\nWinner: #{winner}\nLoser: #{loser}\nMargin: #{margin}\n"
-        end
+        text.push("\nWinner: #{id_to_name_hash[winner]}\nLoser: #{id_to_name_hash[loser]}\nMargin: #{margin}\n")
 
         # add the loser to set of those the winner beats
         winner_hash[winner].add(loser)
-        if printer == 1
-          print "#{winner} beat #{loser}\n"
-        end
 
         # add the winner to the set of those the loser loses to
         loser_hash[loser].add(winner)
-        if printer == -1
-          print "#{loser} lost to #{winner}\n"
-        end
 
+        # text.push("#{id_to_name_hash[winner]} beat #{id_to_name_hash[loser]}\n")
+
+
+        before_merge = Set.new(winner_hash[winner])
 
         # add the set of choices the loser beat
         # to the set of choices the winner beat
-        before_merge = Set.new(winner_hash[winner])
         winner_hash[winner].merge(winner_hash[loser])
-        
-        if printer == 1  
-          added = winner_hash[winner] - before_merge
-          unless added.empty?
-            added.each do |lost_to_loser|
-              print "#{winner} beat #{lost_to_loser}\n"
-            end
-          end
-        end
 
         # add the set of choices that beat the winner
         # to the set of choices the loser has lost to.
-        before_merge = Set.new(loser_hash[loser])
         loser_hash[loser].merge(loser_hash[winner])
-        
-        if printer == -1
-          added = loser_hash[loser] - before_merge
-          unless added.empty?
-            added.each do |beat_winner|
-              print "#{loser} lost to #{beat_winner}\n"
-            end
+
+        added = winner_hash[winner] - before_merge
+        unless added.empty?
+          added.each do |lost_to_loser|
+            text.push("#{id_to_name_hash[winner]} beat #{id_to_name_hash[lost_to_loser]}\n")
           end
         end
 
@@ -538,39 +540,23 @@ class Election < ActiveRecord::Base
         # add the set of choices that has beaten the loser
         # to the set of choices that has beaten "L"
         winner_hash[loser].each do |lost_to_loser|
-          # print "Recall: #{loser} beat #{lost_to_loser}\n"
-          before_merge = Set.new(loser_hash[lost_to_loser])
           loser_hash[lost_to_loser].merge(loser_hash[loser])
-          if print == -1
-            added = loser_hash[lost_to_loser] - before_merge
-            unless added.empty?
-              added.each do |beat_loser|
-                print "#{lost_to_loser} lost to #{beat_loser}\n"
-              end
-            end
-          end
         end
 
         # for each choice, "W", that beat the winner,
         # add the set of choices that the winner has beaten
         # to the set of choices that W beat.
         loser_hash[winner].each do |beat_winner|
-          # print "Recall: #{winner} lost to #{beat_winner}\n"
           before_merge = Set.new(winner_hash[beat_winner])
           winner_hash[beat_winner].merge(winner_hash[winner])
-          if printer == 1
-            added = winner_hash[beat_winner] - before_merge
-            unless added.empty?
-              added.each do |lost_to_winner|
-                print "#{beat_winner} beat #{lost_to_winner}\n"
-              end
+          added = winner_hash[beat_winner] - before_merge
+          unless added.empty?
+            # text.push("Recall: #{winner} lost to #{beat_winner}\n")
+            added.each do |lost_to_winner|
+              text.push("#{id_to_name_hash[beat_winner]} beat #{id_to_name_hash[lost_to_winner]}\n")
             end
           end
         end
-
-      # print "\n\n"
-
-       # print "\n"
       end
     end
 
@@ -610,7 +596,11 @@ class Election < ActiveRecord::Base
       save_ranked_pairs_results(result_hash)
     end
 
-    return result_hash
+    if return_text
+      return text
+    else 
+      return result_hash
+    end
     
   end
 

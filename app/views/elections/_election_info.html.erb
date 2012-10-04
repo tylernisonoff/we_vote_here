@@ -1,25 +1,18 @@
-<div class="row">
-	<p>
-  		<big><b>Information</b></big>
-	  	<% if edit_election_condition(current_user, election) %>
-	    	- <%= link_to "edit election", edit_election_path(election) %>
+<div>
+	<big><b>Information</b></big>
+  	<div class="timestamp">
+		<p>
+		<% if edit_election_condition(current_user, election) %>
+			<%= link_to "edit election", edit_election_path(election) %>
 	  	<% end %>
-	</p>
-</div>
-<div class="row">
-	  	<div class="timestamp">
-			<p>
-				Start time: <%= pretty_time(election.start_time) %>
-				<br>
-				Finish time: <%= pretty_time(election.finish_time) %>
-			</p>
-		</div>
-		<hr>
+		Start time: <%= pretty_time(election.start_time) %>
+		<br>
+		Finish time: <%= pretty_time(election.finish_time) %>
+		</p>
+	</div>
 </div>
 <% unless election.info.blank? %>
-	<div class="row">
-			<big><b>Voting instructions</b></big>
-			<p><%= @election.info %></p>
-			<hr>
-	</div>
+	<big><b>Voting instructions</b></big>
+	<p><%= @election.info %></p>
+	<hr>
 <% end %>

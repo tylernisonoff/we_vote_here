@@ -4,30 +4,17 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>You have been invited by <%= @election.group.user.pretty_name %> to vote in an group at <%= link_to "WeVoteHere.com!", root_url %></h1>
+    <big><b>You have been invited by <%= @election.group.user.pretty_name %> to vote in an election at <%= link_to "WeVoteHere.com!", root_url %></b></big>
 
-    <% if @election.group.privacy %>
-      <p>You will use your Secret Voting Code (SVC) to securely vote on this election. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
-      <p>Your SVC is <%= link_to @svc, vote_url(@svc) %>. You can click it to vote.</p>
-      <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_url(@svc) %></p>
-    <% else %>
-      <p><%= link_to "Click here to vote", make_election_valid_svcs_url(@election) %></p>
-    <% end %>
-
-    <h2>Election Information</h2>
-    Owner:
-    	 <%= link_to @election.group.user.pretty_name, user_url(@election.group.user) %>
-    	<br>
-  	Group:
-    	<%= link_to @election.group.name, group_url(@election.group) %>
-    	<br>
-  	Election:
-    	<%= link_to @election.name, election_url(@election) %>
-
-    <br>
-  	<br>
-  	
-  	<h3>Choices</h3>
-  	<%= render @election.choices %>
+    <div>
+      <% if @election.group.privacy %>
+        <p>You will use your Secret Voting Code (SVC) to securely vote in this election. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
+        <big></b><p>Your SVC is <%= link_to @svc, vote_url(@svc) %>. You can click it to vote.</p></b></big>
+        <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_url(@svc) %></p>
+      <% else %>
+        <p>You will receive a Secret Voting Code (SVC) to securely vote in this election. Even we do not know your secret voting code; it is not associated with your email in any way. Therefore, please don't lose your SVC!</p>
+        <big><b><p><%= link_to "Click here to vote", make_election_valid_svcs_url(@election) %></p></b></big>
+      <% end %>
+    </div>
   </body>
 </html>

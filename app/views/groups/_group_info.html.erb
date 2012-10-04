@@ -1,14 +1,19 @@
 <div>
-  	<p><big><b>Name: <%= link_to group.name, group %></b><big>
-  	<% if edit_group_condition(current_user, group) %>
-    	- <%= link_to "edit", edit_group_path(group) %>
-  	<% end %></p>
+	<br>
+	<div style="float: left">
+			<big><b>Name: <%= link_to group.name, group %></b></big>
+	</div>
+	<div class="right">
+		<% if edit_group_condition(current_user, group) %>
+			<%= link_to "edit group", edit_group_path(group) %>
+	  	<% end %>
+	 </div>
+	<br>
+	<div class="label label-success">
+		<% if group.privacy %>
+	  		private group
+		<% else %>
+	  		public group
+		<% end %>
+	</div>
 </div>
-<div class="label label-success">
-	<% if group.privacy %>
-  		private group
-	<% else %>
-  		public group
-	<% end %>
-</div>
-<hr>

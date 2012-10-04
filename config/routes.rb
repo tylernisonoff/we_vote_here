@@ -72,6 +72,7 @@ WeVoteHere::Application.routes.draw do
   match 'elections/:id/results', to: 'elections#results', as: :results_election
   match 'elections/:id/mov/export', to: 'elections#export_mov_to_csv', as: :export_mov_to_csv_election
   match 'elections/:id/votes/export', to: 'elections#export_votes_to_csv', as: :export_votes_to_csv_election
+  match 'elections/:id/ranked_pairs/export', to: 'elections#export_ranked_pairs_to_txt', as: :export_ranked_pairs_to_txt
 
 # -----------------------------------------------------------------------
 

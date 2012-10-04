@@ -3,15 +3,25 @@
 <div class="row">	
 	<div class="span4">
 		<%= render partial: 'shared/user_and_group', locals: {group: @election.group} %>
+		<hr>
 		<div class="row">
 		<p>
-		<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0}), class: "btn btn-large btn-adjusted-block btn-inverse" %>
+		<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0}), class: "btn btn-large btn-adjusted-block" %>
 		</p>
 		<p>
-		<%= link_to 'Export Sorted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-adjusted-block btn-info" %>
+		<%= link_to 'Export Regular Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
 		</p>
 		<p>
-		<%= link_to 'Export Votes to CSV', export_votes_to_csv_election_path(@election), class: "btn btn-large btn-adjusted-block btn-primary" %>
+		<%= link_to 'Export Sorted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-adjusted-block" %>
+		</p>
+		<p>
+		<%= link_to 'Export Sorted Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
+		</p>
+		<p>
+		<%= link_to 'Export Votes to CSV', export_votes_to_csv_election_path(@election), class: "btn btn-large btn-adjusted-block" %>
+		</p>
+		<p>
+		<%= link_to 'Export Ranked Pairs to TXT', export_ranked_pairs_to_txt_path(@election), class: "btn btn-large btn-info btn-adjusted-block" %>
 		</p>
 		</div>
 	</div>

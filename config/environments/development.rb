@@ -48,6 +48,11 @@ WeVoteHere::Application.configure do
       password: "condorcet89S"
     }
 
+  config.action_mailer.default_url_options = {
+    :host => '127.0.0.1',
+    :port => 3000
+  }
+
   # Make sure Rails raises errors on mail delivery:
   config.action_mailer.raise_delivery_errors = true
 

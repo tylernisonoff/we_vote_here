@@ -1,7 +1,10 @@
 <li class="lists">
-  <div class="content"><%= link_to election.name, election %>
-	  <% if current_user?(election.group.user) %>
-	    - <%= link_to "edit", edit_election_path(election) %>
-	  <% end %>
-  </div>
+	<div style="float: left">
+		<%= link_to election.name, election %>
+	</div>
+	<div class="right">
+		<% if current_user?(election.group.user) %>
+			<%= link_to "edit", edit_election_path(election) %>
+	  	<% end %>
+	</div>
 </li>

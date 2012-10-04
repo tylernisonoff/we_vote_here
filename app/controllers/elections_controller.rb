@@ -55,7 +55,7 @@ class ElectionsController < ApplicationController
       @group_id = params[:group_id]
       @elections = Election.find(:all, conditions: {group_id: params[:group_id], trashed: false})
     else
-      @elections = Election.find(:all, conditions: {trashed: false})
+      @elections = Election.find(:all, conditions: {privacy: false, trashed: false})
     end
   end
 
@@ -138,6 +138,21 @@ class ElectionsController < ApplicationController
     send_data csv_data,
       type: 'text/csv; charset=iso-8859-1; header=present',
       disposition: "attachment; filename=#{filename}.csv"
+  end
+
+  def export_ranked_pairs_to_txt
+    @election = Election.find(params[:id])
+
+    text_array = @election.ranked_pairs(true, true, true)
+
+    filename ="ranked_pairs_for_#{adjusted_filename(@election)}"
+
+    txt_data = "Ranked Pairs for #{@election.name}\n"
+    text_array.each do |text|
+      txt_data = txt_data + text + "\n"
+    end
+
+    send_data txt_data, filename: "ranked_pairs_for_#{adjusted_filename(@election)}.txt"
   end
 
   private
