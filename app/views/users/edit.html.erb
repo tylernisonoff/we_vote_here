@@ -10,7 +10,7 @@
     <%= f.label :email %>
     <%= f.text_field :email %>
 
-    <%= f.submit "Save changes", class: "btn btn-large btn-primary btn-block" %>
+    <%= f.submit "Save changes", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
 <% end %>
 
 <% if @user == current_user %>

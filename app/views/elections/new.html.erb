@@ -41,6 +41,6 @@
 	
 	<hr>
 
-	<%= f.submit "Save", class: "btn btn-large btn-primary btn-block" %>
-	<%= f.submit "Save and add another election", class: "btn btn-large btn-primary btn-block" %>
+	<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
+	<%= f.submit "Save and add another election", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
 <% end %>

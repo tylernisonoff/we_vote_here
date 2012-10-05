@@ -14,6 +14,6 @@
 	<%= f.label :finish_time, "Finish time:" %>
 	<%= f.datetime_select :finish_time, value: @election.finish_time %>
 
-<%= f.submit "Save", class: "btn btn-large btn-primary btn-adjusted-block" %>
+<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-adjusted-block" %>
 <%= link_to "Destroy", destroy_election_path(@election), class: "btn btn-large btn-danger" %>
 <% end %>

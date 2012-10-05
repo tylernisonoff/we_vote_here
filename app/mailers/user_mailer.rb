@@ -9,10 +9,11 @@ class UserMailer < ActionMailer::Base
 
   def election_email(email, election, svc=false)
   	@election = election
+    owner = @election.group.user
   	if svc
       @svc = svc
     end
-  	mail(to: email, subject: "You are invited to vote at WeVoteHere!")
+  	mail(to: email, subject: "#{owner.pretty_name} invited you to vote in the election: #{@election.name}")
   end
 
 end
