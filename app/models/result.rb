@@ -1,5 +1,5 @@
 class Result < ActiveRecord::Base
-  attr_accessible :election_id, :choice_id, :position, :trashed
+  attr_accessible :election_id, :choice_id, :position
 
   belongs_to :election
   belongs_to :choice

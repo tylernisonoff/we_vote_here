@@ -5,7 +5,7 @@ class VotesController < ApplicationController
    	vote_id = params[:id]
     if Vote.exists?(vote_id)
       @vote = Vote.find(vote_id)
-      @preferences = Preference.find(:all, conditions: {vote_id: vote_id, trashed: false})
+      @preferences = Preference.find(:all, conditions: {vote_id: vote_id})
       @preferences.sort! { |a, b| a.position <=> b.position }
     else
       flash[:error] = "Sorry, that is an invalid BSN."
@@ -18,8 +18,8 @@ class VotesController < ApplicationController
     vote_id = params[:id]
     if match(vote_id, svc)
       @vote = Vote.find(vote_id)    
-      @vote.trash_vote
-      unless Preference.exists?(svc: svc, active: true, trashed: false)
+      @vote.destroy
+      unless Preference.exists?(svc: svc, active: true)
         flash[:warning] = "There are now no active preferences for your SVC. Change that by clicking the 'Vote' button!"
       end
       redirect_to status_vote_path(svc: svc)
@@ -32,12 +32,12 @@ class VotesController < ApplicationController
   def status
     svc = params[:svc]
     @valid_svc = ValidSvc.find_by_svc(svc)
-    @votes = Vote.find(:all, conditions: {svc: svc, trashed: false})
+    @votes = Vote.find(:all, conditions: {svc: svc})
     @votes.sort! { |a, b| a.created_at <=> b.created_at}
 
     if Vote.exists?(svc: svc, active: true)
-      @active_vote = Vote.find(:first, conditions: {svc: svc, active: true, trashed: false})
-      @active_preferences = Preference.find(:all, conditions: {svc: svc, active: true, trashed: false})
+      @active_vote = Vote.find(:first, conditions: {svc: svc, active: true})
+      @active_preferences = Preference.find(:all, conditions: {svc: svc, active: true})
       @active_preferences.sort! { |a, b| a.position <=> b.position }
     end
   end
@@ -61,7 +61,7 @@ class VotesController < ApplicationController
         else  
           @vote_to_activate.activate_vote
 
-          @active_vote = Vote.find(:first, conditions: {svc: svc, active: true, trashed: false})
+          @active_vote = Vote.find(:first, conditions: {svc: svc, active: true})
           @active_preferences = Preference.find(:all, conditions: {vote_id: vote_id, active: true})
           @active_preferences.sort! { |a, b| a.position <=> b.position }
         end
@@ -85,19 +85,52 @@ class VotesController < ApplicationController
       elsif @election.finish_time < Time.now
         flash[:error] = "This election has already ended."
         redirect_to results_election_path(@election)
-      else
-        @vote = Vote.new
-        @vote.election = @election
-        @vote.assign_vote_svc(svc)
-        unless @vote.save
-          flash[:error] = "We were unable to save your vote"
-          redirect_to @election
-        end
       end 
     else
       flash[:error] = "This is an invalid SVC."
       redirect_back_or root_path
     end
+  end
+
+  def sort
+    unless params["choice"].blank?
+      choices = Array.new
+      params["choice"].each do |str|
+        choices.push(str.to_i)
+      end
+      @valid_svc = ValidSvc.find_by_svc(params[:svc])
+      @election = @valid_svc.election
+      @vote = Vote.new
+      @vote.svc = @valid_svc.svc
+      @vote.election_id = @election.id
+      if @vote.save
+        election_choices = @election.choice_id_array
+        n = election_choices.size
+        choices.each_with_index do |choice_id, i|
+          @preference = Preference.new
+          @preference.svc = @vote.svc
+          @preference.vote_id = @vote.id
+          @preference.choice_id = choice_id
+          @preference.position = i + 1
+          @preference.save
+        end
+        not_voted_on = election_choices - choices
+        not_voted_on.each do |choice_id|
+          @preference = Preference.new
+          @preference.svc = @vote.svc
+          @preference.vote_id = @vote.id
+          @preference.choice_id = choice_id
+          @preference.position = n
+          @preference.save
+        end
+        @vote.activate_vote
+      else
+        flash[:error] = "We were unable to save your vote :("
+      end
+    else
+      flash[:warning] = "You didn't submit any preferences!"
+    end
+    render nothing: true
   end
 
 	private

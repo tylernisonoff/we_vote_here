@@ -1,0 +1,27 @@
+<h1>Export data for election: <%= @election.name %> </h1>
+<ul class="lists center">
+	<div class="span3">
+		<li>
+			<%= link_to 'Votes', export_votes_to_csv_election_path(@election) %>
+		</li>
+		<li>
+			<%= link_to 'Ranked Pairs logic', export_ranked_pairs_to_txt_path(@election) %>
+		</li>
+	</div>
+	<div class="span4">
+		<li>
+			<%= link_to 'Margin of Victory Matrix', export_mov_to_csv_election_path(@election, {sorted: 0}) %>
+		</li>
+		<li>
+			<%= link_to 'Margin of Victory Matrix with tie-breaker', export_mov_to_csv_election_path(@election, {sorted: 0, adjusted: 1}) %>
+		</li>
+	</div>
+	<div class="span4">
+		<li>
+			<%= link_to 'Sorted Margin of Victory Matrix', export_mov_to_csv_election_path(@election, {sorted: 1, adjusted: 1}) %>
+		</li>
+		<li>
+			<%= link_to 'Sorted Margin of Victory Matrix with tie-breaker', export_mov_to_csv_election_path(@election, {sorted: 1, adjusted: 1}) %>
+		</li>
+	</div>
+</ul>

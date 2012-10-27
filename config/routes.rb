@@ -1,48 +1,40 @@
 WeVoteHere::Application.routes.draw do
   
-  resources :groups do
-    resources :elections, only: [:index, :new, :create]
-    member do
-      get :add_voters
-    end
+  devise_for :users do
+    get "/users/sign_out" => "devise/sessions#destroy", :as => :destroy_user_session
   end
 
-  resources :users do
+  resources :users, except: [:edit, :update] do
     member do
       get :groups
-      get :edit_password
-      put :change_password
+      get :elections
       get :add_emails
       get :emails
     end
   end
+
+  resources :groups
   
   resources :elections do
     member do
       get :choices # might be useless
+      get :export
     end
-  end
-
-  resources :preferences, only: [] do
-    post :sort, on: :collection
   end
 
   resources :choices, only: [:update] # might be useless
 
-  resources :sessions, only: [:new, :create, :destroy]
-
   root to: 'static_pages#home'
 
-  match '/edit',   to: 'users#edit'
-  match '/signup', to: 'users#new'
-  match '/signin', to: 'sessions#new'
-  match '/signout', to: 'sessions#destroy', via: :delete
-
+  # match '/edit',   to: 'users#edit'
   match '/about', to: 'static_pages#about'
   match '/terms', to: 'static_pages#terms'
   match '/privacy', to: 'static_pages#privacy'
 
   match '/new_group', to: 'groups#new'
+  match 'elections/:election_id/new_group', to: 'groups#new', as: :new_election_group
+  
+  match 'groups/:group_id/new_election', to: 'elections#new', as: :new_group_election
   match '/new_election', to: 'elections#new'
 
   get "static_pages/home"
@@ -54,19 +46,26 @@ WeVoteHere::Application.routes.draw do
   match 'users/:id/unfollow_group/:group_id', to: 'users#unfollow_group', as: :unfollow_group_user
   match 'users/:id/save_emails', to: 'users#save_emails', as: :save_emails_user
 
+  match 'groups/:group_id/add_voters', to: 'groups#add_voters', as: :add_voters_group
+  match 'elections/:election_id/add_voters', to: 'groups#add_voters', as: :add_voters_election
+  match 'elections/:election_id/add_groups', to: 'elections#add_groups', as: :add_groups_election
+  match 'elections/:election_id/add_parties', to: 'elections#add_parties', as: :add_parties_election
+  match 'elections/:election_id/save_groups', to: 'elections#save_groups', as: :save_groups_election
+
   # Votes custom routes
   match 'vote/:svc', to: 'votes#vote', as: :vote
-  match 'votes/:svc', to: 'votes#vote'
   match 'votes/:svc/activate/:id', to: 'votes#activate', as: :activate_vote
   match 'votes/:svc/destroy/:id', to: 'votes#destroy', as: :destroy_vote
   match 'votes/:svc/status', to: 'votes#status', as: :status_vote
   match 'votes/display/:id', to: 'votes#display', as: :display_vote
+  match 'votes/sort', to: 'votes#sort', as: :sort_vote
   # match 'votes/:svc/display/:id', to: 'votes#display', as: :display_private_vote
   # match 'votes/display/:id', to: 'votes#display', as: :display_public_vote
 
   match 'elections/:election_id/valid_svcs/make', to: 'valid_svcs#make', as: :make_election_valid_svcs
   match 'elections/:election_id/valid_svcs/enter', to: 'valid_svcs#enter', as: :enter_election_valid_svcs
   match 'elections/:election_id/valid_svcs/confirm', to: 'valid_svcs#confirm', as: :confirm_election_valid_svcs
+  match 'elections/:election_id/add_voters', to: 'elections#add_voters', as: :add_voters_election
 
   match 'elections/:id/destroy', to: 'elections#destroy', as: :destroy_election
   match 'elections/:id/results', to: 'elections#results', as: :results_election

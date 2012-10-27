@@ -1,6 +1,13 @@
 <big><b>Owner information</b></big>
 	<%= render group.user %>
 <br><br>
-<hr>
-<big><b>Group information</b></big>
-<%= render partial: 'groups/group_info', locals: {group: group} %>
+<ul class="lists">
+	<% if edit_group_condition(current_user, group) %>
+		<li>
+			<%= link_to "Edit group", edit_group_path(group), class: "btn btn-large btn-adjusted85-block" %>
+		</li>
+		<li>
+			<%= link_to "Add more voters", add_voters_group_path(@group), class: "btn btn-large btn-adjusted85-block" %>
+		</li>
+	<% end %>
+

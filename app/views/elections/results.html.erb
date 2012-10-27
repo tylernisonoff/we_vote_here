@@ -1,54 +1,29 @@
-<% provide(:title, "Results: #{@election.name}") %>
-<h1>Results: <%= link_to @election.name, @election %></h1>
-<div>	
-	<div class="span4">
-		<%= render partial: 'shared/user_and_group', locals: {group: @election.group} %>
+<% provide(:title, "Results for election: #{@election.name}") %>
+<h1>Results for election: <%= link_to @election.name, @election %></h1>
+<hr>
+<div class="span4">
+	<div class="center">
+		<big><b>Election owner</b></big>
 		<hr>
-		<div>
-		<p>
-		<%= link_to 'Export Regular MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0}), class: "btn btn-large btn-adjusted-block" %>
-		</p>
-		<p>
-		<%= link_to 'Export Regular Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 0, adjusted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
-		</p>
-		<p>
-		<%= link_to 'Export Sorted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1, adjusted: 1}), class: "btn btn-large btn-adjusted-block" %>
-		</p>
-		<p>
-		<%= link_to 'Export Sorted Adjusted MOV to CSV', export_mov_to_csv_election_path(@election, {sorted: 1, adjusted: 1}), class: "btn btn-large btn-info btn-adjusted-block" %>
-		</p>
-		<p>
-		<%= link_to 'Export Votes to CSV', export_votes_to_csv_election_path(@election), class: "btn btn-large btn-adjusted-block" %>
-		</p>
-		<p>
-		<%= link_to 'Export Ranked Pairs to TXT', export_ranked_pairs_to_txt_path(@election), class: "btn btn-large btn-info btn-adjusted-block" %>
-		</p>
-		</div>
-	</div>
-	<div class="span7">
-		<div>
-			<p><big><b>Results</b></big></p>
-			<% unless @results_array %>
-				<p>This election has not yet started.</p>
+	</div>	
+	<%= render partial: 'users/full_user', locals: {user: @election.user} %>
+	<%= render partial: 'eligible_groups', locals: {election: @election} %>
+</div>
+<div class="offset1 span6">
+	<div>
+		<% unless @results_array %>
+			<p><big><b>This election has not yet started.</b></big></p>
+		<% else %>
+			<% if @election.finish_time > Time.now %>
+				<p><big><b>This election is in progress. Current results:</b></big></p>
 			<% else %>
-				<% if @election.finish_time > Time.now %>
-					<p>This election is in progress. Current results:</p>
-				<% else %>
-					<p>This election has ended. Final results:</p>
-				<% end %>
-				<ul class="lists">
-					<% @results_array.each_with_index do |result, index| %>
-						<%= render partial: 'result', locals: {index: index, result: result} %>	
-					<% end %>
-				</ul>
-				<div>
-					<br>
-					<p><b>Tie-breaking vote</b></p>
-					<ul class="lists">
-						<%= render @tie_breaking_preferences %>	
-					</ul>
-				</div>
+				<p><big><b>This election has ended. Final results:</b></big></p>
 			<% end %>
-		</div>
+			<ul class="lists">
+				<% @results_array.each_with_index do |result, index| %>
+					<%= render partial: 'result', locals: {index: index, result: result} %>	
+				<% end %>
+			</ul>
+		<% end %>
 	</div>
 </div>

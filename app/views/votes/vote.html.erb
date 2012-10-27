@@ -1,9 +1,37 @@
 <% provide(:title, "Submit your vote") %>
 <h1>Submit your vote</h1>
+
+<style>
+#sortable1, #sortable2 { 
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 2.5em;
+    float: center;
+    margin-right: 10px;
+    border-style: none;
+    min-height: 500px;
+  }
+
+  #sortable1 {
+    background-color: #ddffdd;
+  }
+
+  #sortable2 {
+    background-color: #ffddff;
+  } 
+  
+  #sortable1 li, #sortable2 li {
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+  }
+</style>
+
+
 <div class="center">
-  <big><b>Election: <%= @vote.election.name%></b></big>
-  <% unless @vote.election.info.blank? %>
-    <p>Voting instructions: <%= @vote.election.info %></p>
+  <big><b>Election: <%= @election.name%></b></big>
+  <% unless @election.info.blank? %>
+    <p>Voting instructions: <%= @election.info %></p>
   <% end %>
   <hr>
   <p>Drag and drop your preferences in your preferred order in the green region</p>
@@ -17,19 +45,20 @@
       items: 'li',
       opacity: 0.4,
       scroll: true,
-      update: function(){
-        $.ajax({
-          type: 'post',
-          data: $('#sortable1').sortable('serialize') +"&svc=<%= @vote.svc %>"+"&vote_id=<%= @vote.id %>",
-          dataType: 'script',
-          complete: function(request){
-            // $('#sortable1').effect('highlight');
-          },
-          url: '/preferences/sort'
-        })
-      }
     });
+    $('#submit_preferences').click(function() {
+      $.ajax({
+        type: 'post',
+        data: $('#sortable1').sortable('serialize') +'&svc=<%= @valid_svc.svc %>',
+        dataType: 'script',
+        complete: function(request){
+          // $('#sortable1').effect('highlight');
+        },
+        url: '/votes/sort'
+      })
+    })
   });
+
   //getter
   var placeholder = $( ".selector" ).sortable( "option", "placeholder" );
   //setter
@@ -38,7 +67,10 @@
   var forcePlaceholderSize = $( ".selector" ).sortable( "option", "forcePlaceholderSize" );
   //setter
   $( ".selector" ).sortable( "option", "forcePlaceholderSize", true );
+
+  var voting_data = $('#sortable1').sortable('serialize') +'&svc=<%= @valid_svc.svc %>'
   </script>
+
 
 
 <div>
@@ -50,7 +82,7 @@
   <div class="offset3 span4">
     <big><b><div class="center">Unsorted Choices</div></b></big><br>
     <ul id="sortable2" class = "connectedSortable lists">
-      <% @vote.election.choices.each do |choice| %>
+      <% @election.choices.each do |choice| %>
       <li id="choice_<%= choice.id %>
       " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
       <% end %>
@@ -59,8 +91,9 @@
 
   <div class="span11">
     <hr>
-    <p><%= link_to "Click here to VOTE", activate_vote_path(svc: @vote.svc, id: @vote.id), class: "btn btn-large btn-success btn-adjusted2-block" %></p>
+    <p><%= link_to "Click here to VOTE", status_vote_path(@valid_svc.svc), id: "submit_preferences", class: "btn btn-large btn-success btn-adjusted2-block", disable_with: "Saving ..." %>
+    </p>
     <hr>
-    <p><%= link_to "DISCARD VOTE AND EXIT", destroy_vote_path(svc: @vote.svc, id: @vote.id), class: "btn btn-large btn-danger btn-adjusted2-block" %></p>
+    <p><%= link_to "DISCARD VOTE AND EXIT", @election, class: "btn btn-large btn-danger btn-adjusted2-block" %></p>
   </div>
 </div>

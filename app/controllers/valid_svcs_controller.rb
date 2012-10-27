@@ -6,12 +6,20 @@ class ValidSvcsController < ApplicationController
     @election = Election.find(params[:election_id])
 
     # for public groups
-    unless @election.group.privacy
-      @valid_svc = ValidSvc.new
-      @valid_svc.election = @election
-      @valid_svc.assign_valid_svc
-      @valid_svc.save
-      redirect_to vote_path(svc: @valid_svc.svc)
+    unless @election.privacy
+      if @election.start_time > Time.now  
+        flash[:error] = "This election has not started yet."
+        redirect_to results_election_path(@election)
+      elsif @election.finish_time < Time.now
+        flash[:error] = "This election has already ended."
+        redirect_to results_election_path(@election)
+      else
+        @valid_svc = ValidSvc.new
+        @valid_svc.election = @election
+        @valid_svc.assign_valid_svc
+        @valid_svc.save
+        redirect_to vote_path(svc: @valid_svc.svc)
+      end
     else
       redirect_to @election
     end

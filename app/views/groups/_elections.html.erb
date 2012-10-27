@@ -2,9 +2,6 @@
 	<% if group.elections.any? %>
 	    <%= render group.elections %>
 	<% else %>
-	  <li>This group doesn't have any elections yet!</li>
-	<% end %>
-	<% if edit_group_condition(current_user, group) %>
-	  <li><%= link_to "Add a new election", new_group_election_path(group), class: "btn btn-large btn-adjusted-block btn-primary" %></li>
+	  <li>This group doesn't have any elections yet! To add an election, create an election and then add this group to it.</li>
 	<% end %>
 </ul>

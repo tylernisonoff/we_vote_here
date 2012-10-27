@@ -9,6 +9,7 @@ gem 'bcrypt-ruby', '3.0.1'
 gem 'faker', '1.0.1'
 gem "nested_form", :git => 'https://github.com/ryanb/nested_form.git'
 gem 'activerecord-postgresql-adapter'
+gem 'devise'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'

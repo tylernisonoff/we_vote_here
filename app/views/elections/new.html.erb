@@ -1,11 +1,10 @@
 <% provide(:title, "Create an election") %>
 <h1>Create an election</h1>
-<h2> Group: <%= @group.name %> </h2>
 
-<%= nested_form_for(@election, url: group_elections_path(@group)) do |f| %>
+<%= nested_form_for(@election) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.text_field :name, placeholder: "enter the question you would like to pose to the group" %>
+	<%= f.text_field :name, placeholder: "enter the question you would like to ask" %>
 
 	<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
 
@@ -15,6 +14,14 @@
 
 	<%= f.label :finish_time, "Finish time" %>
 	<%= f.datetime_select :finish_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") + 1.week %>
+
+	<hr>
+
+	<%= f.radio_button :privacy, '1', :checked => true %> 
+  	<%= label :privacy, 'Private', style: "display:inline" %>
+  	<br>
+  	<%= f.radio_button :privacy, '0' %>
+  	<%= label :privacy, 'Public', style: "display:inline" %>
 
 	<script>
 	$(document).ready(function(){
@@ -41,6 +48,5 @@
 	
 	<hr>
 
-	<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
-	<%= f.submit "Save and add another election", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
+	<%= f.submit "Save and add voters", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
 <% end %>

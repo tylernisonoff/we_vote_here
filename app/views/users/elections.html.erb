@@ -1,0 +1,16 @@
+<% provide(:title, @user.pretty_name) %>
+<div>
+	<div class="span4">
+    	<section>
+      		<h1>
+        		<%= @user.pretty_name %>
+      		</h1>
+    	</section>
+  	</aside>
+	<div class="span7">
+  	<% if @elections.any? %>
+    		<%= render @elections %>
+    <% else %>
+      This user has no elections!
+  	<% end %>
+</div>

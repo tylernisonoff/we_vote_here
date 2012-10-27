@@ -1,0 +1,55 @@
+<div class="span3">
+  <%= render partial: 'users/full_user', locals: {user: user} %>
+  <% if user == current_user %>
+  <%= link_to "Create a group", new_group_path, class: "btn btn-large btn-adjusted85-block" %>
+  <hr>
+  <%= link_to "Create an election", new_election_path, class: "btn btn-large btn-adjusted85-block" %>
+  <hr>
+    <% end %>
+</div>
+<div class="span4">
+  <div class="center">
+    <big><b>Elections I own (<%= user.elections.count %>)</b></big>
+  </div>
+    <ul class="lists">
+    <% if user.elections.any? %>
+        <%= render user.elections %>
+    <% else %>
+    <li><%=you_dont(user, current_user, true)%> own any elections yet!</li>
+    <% end %>
+    <% if user == current_user %>
+    <% end %>
+    </ul>
+    <div class="center">
+      <br>
+      <big><b>Elections I'm in (<%= user.followed_elections.count %>)</b></big>
+    </div>
+    <ul class="lists">
+    <% if user.followed_elections.any? %>
+        <%= render user.followed_elections %>
+    <% else %>
+    <li><%=you_arent(user, current_user, true)%> in any elections yet!</li>
+    <% end %>
+    </ul>
+</div>
+<div class="span4">
+  <div class="center">
+  <big><b>Groups I own (<%= user.groups.count %>)</b></big></div>
+  <ul class="lists">
+  <% if user.groups.any? %>
+      <%= render user.groups %>
+  <% else %>
+    <li><%=you_dont(user, current_user, true)%> own any groups yet!</li>
+  <% end %>
+  </ul>
+  <div class="center">
+    <br>
+  <big><b>Groups I'm in (<%= user.followed_groups.count %>)</b></big></div>
+    <ul class="lists">
+    <% if user.followed_groups.any? %>
+        <%= render user.followed_groups %>
+    <% else %>
+    <li><%=you_arent(user, current_user, true)%> in any groups yet!</li>
+    <% end %>
+    </ul>
+</div>

@@ -1,0 +1,13 @@
+<% provide(:title, "Invite voters") %>
+<h1>Invite voters</h1>
+
+<div class="span5">
+	<div class="center">
+		<%= link_to "add entire groups", add_groups_election_path(@election), class: "btn btn-info btn-large" %>
+	</div>
+</div>
+<div class="span5">
+	<div class="center">
+		<%= link_to "add individual voters", add_voters_election_path(@election), class: "btn btn-info btn-large" %>
+	</div>
+</div>

@@ -4,7 +4,4 @@
 	<% else %>
 	  <li>This group doesn't have any voters yet!</li>
 	<% end %>
-	<% if edit_group_condition(current_user, @group) %>
-		<li><%= link_to "Add more voters", add_voters_group_path(@group), class: "btn btn-large btn-adjusted-block btn-primary" %></li>
-	<% end %>
 </ul>

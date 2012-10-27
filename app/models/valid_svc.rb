@@ -1,6 +1,6 @@
 class ValidSvc < ActiveRecord::Base
   
-  attr_accessible :svc, :election_id, :trashed
+  attr_accessible :svc, :election_id
 
   belongs_to :election
 
@@ -25,9 +25,5 @@ class ValidSvc < ActiveRecord::Base
     self.svc = @random_svc
   end
 
-  def trash_valid_svc
-    self.trashed = true
-    self.save
-  end
 
 end

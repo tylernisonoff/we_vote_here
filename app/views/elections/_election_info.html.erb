@@ -1,16 +1,40 @@
-<big><b>Name: <%= link_to election.name, election %></b></big>
-<% if edit_election_condition(current_user, election) %>
-- <%= link_to "edit election", edit_election_path(election) %>
-<br>
-<% end %>
-	<div class="timestamp">
+<div>
 	<p>
+		<%= link_to election.user.pretty_name, election.user %> asked:
+		<big><b><%= link_to election.name, election %></b></big>
+	</p>
+	<% if current_user == election.user %>
+		<ul class="lists">
+			<li>
+				<%= link_to "edit election", edit_election_path(election), class: "btn btn-adjusted-block" %>
+			</li>
+			<li>
+				<%= link_to "add entire groups", add_groups_election_path(election), class: "btn btn-adjusted-block" %>
+			</li>
+			<li>
+				<%= link_to "add individual voters", add_voters_election_path(election), class: "btn btn-adjusted-block" %>
+			</li>
+		</ul>
+	<% end %>
+</div>
+<br>
+<div class="timestamp">
 	Start time: <%= pretty_time(election.start_time) %>
 	<br>
 	Finish time: <%= pretty_time(election.finish_time) %>
-	</p>
 </div>
+<hr>
+<div class="label label-success center">
+	<% if election.privacy %>
+		private election
+	<% else %>
+		public election
+	<% end %>
+</div>
+<hr>
+<div>
 <% unless election.info.blank? %>
-	<big><b>Voting instructions</b></big>
-	<p><%= election.info %></p>
+	<p><b>Voting instructions</b>: <%= election.info %></p>
+	<hr>
 <% end %>
+</div>

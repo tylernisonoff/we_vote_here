@@ -1,0 +1,25 @@
+<h2>Sign up</h2>
+
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), html: {autocomplete: "off"}) do |f| %>
+  <%= devise_error_messages! %>
+
+  <div>
+    <%= f.text_field :nickname, placeholder: "nickname" %>
+  </div>
+
+  <div>
+  	<%= f.email_field :email, placeholder: "email" %>
+  </div>
+
+  <div>
+  	<%= f.password_field :password, placeholder: "password" %>
+  </div>
+
+  <div>
+  	<%= f.password_field :password_confirmation, placeholder: "confirm password" %>
+  </div>
+
+  <div><%= f.submit "Sign up", class: "btn btn-primary btn-large" %></div>
+<% end %>
+
+<%= render "devise/shared/links" %>

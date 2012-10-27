@@ -3,12 +3,6 @@
 
 	<%= f.text_field :name, value: @group.name %>
 	
-	<%= f.radio_button :privacy, 0, checked: !@group.privacy %>
-	<%= f.label :privacy, "Public", style: "display:inline" %>
-	<br>
-	<%= f.radio_button :privacy, 1, checked: @group.privacy %>
-	<%= f.label :privacy, "Private", style: "display:inline" %>
-
 	<%= f.submit "Submit", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
 <% end %>
 

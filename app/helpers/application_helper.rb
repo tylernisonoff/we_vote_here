@@ -42,5 +42,13 @@ module ApplicationHelper
     end
   end
 
+  def pretty_time(time)
+    if time > Time.now
+      return "in #{distance_of_time_in_words_to_now(time)}"
+    else
+      return "#{time_ago_in_words(time)} ago"
+    end
+  end
+
 
 end

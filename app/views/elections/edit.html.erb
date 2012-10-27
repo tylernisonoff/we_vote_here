@@ -4,7 +4,7 @@
 <%= form_for(@election) do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.text_field :name, placeholder: "enter the question you would like to pose to the group" %>
+	<%= f.text_field :name, placeholder: "enter the question you would like to ask" %>
 
 	<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
 
@@ -14,6 +14,6 @@
 	<%= f.label :finish_time, "Finish time:" %>
 	<%= f.datetime_select :finish_time, value: @election.finish_time %>
 
-<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-adjusted-block" %>
-<%= link_to "Destroy", destroy_election_path(@election), class: "btn btn-large btn-danger" %>
+<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-adjusted85-block" %>
+<%= link_to "Destroy election", destroy_election_path(@election), class: "btn btn-large btn-danger", confirm: "Are you sure you want to permanantly destroy this election?" %>
 <% end %>

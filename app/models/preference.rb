@@ -1,6 +1,6 @@
 class Preference < ActiveRecord::Base
   
-	attr_accessible :position, :choice_id, :vote_id, :svc, :active, :trashed, :tie_breaking
+	attr_accessible :position, :choice_id, :vote_id, :svc, :active, :tie_breaking
 
       belongs_to :vote
 	belongs_to :choice
@@ -21,10 +21,6 @@ class Preference < ActiveRecord::Base
             self.save
       end
 
-      def trash_preference
-            self.trashed = true
-            self.save
-      end
 
 
 end

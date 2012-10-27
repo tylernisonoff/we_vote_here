@@ -4,15 +4,11 @@ class Voter < ActiveRecord::Base
   has_many :valid_emails, dependent: :destroy
 
   belongs_to :user
-  belongs_to :group
+ 
+  has_many :memberships, dependent: :destroy
+  has_many :groups, through: :memberships, source: :group
 
-  def trash_voter
-  	self.trashed = true
-  	if self.save
-  		self.valid_emails.each do |valid_email|
-  			valid_email.trash_valid_email
-  		end
-  	end
+  def merge_voters
   end
 
 end

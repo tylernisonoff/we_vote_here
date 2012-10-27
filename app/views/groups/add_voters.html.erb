@@ -2,7 +2,7 @@
 <%= form_for @group do |f| %>
 	<%= render 'shared/error_messages', object: f.object %>
 	
-	<%= f.text_area :emails, value: "", placeholder: "separate voters by commas, and voters by spaces. For example, the entry \"christiandrappi@gmail.com christian.drappi@duke.edu, bray@duke.edu\" would add two voters." %>
+	<%= f.text_area :emails, value: "", placeholder: "separate voters by commas, and emails of those voters by spaces. For example, the entry \"christiandrappi@gmail.com christian.drappi@duke.edu, bray@duke.edu\" would add two voters." %>
 
 	<%= f.submit "Submit", class: "btn btn-large btn-primary btn-block" %>
 <% end %>
