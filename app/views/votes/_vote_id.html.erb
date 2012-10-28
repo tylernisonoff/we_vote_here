@@ -3,7 +3,7 @@
 	<%= link_to vote.id, display_vote_path(vote), class: "btn btn-large btn-primary" %>
 	</div>
 	<div class="right">
-		<% if @active_vote && @active_vote.id == vote.id %>
+		<% if active_vote && active_vote.id == vote.id %>
 			This vote is active
 		<% else %>
 			<%= link_to "Activate", activate_vote_path(svc: vote.svc, id: vote.id) %>

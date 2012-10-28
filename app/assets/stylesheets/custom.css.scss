@@ -1,4 +1,11 @@
+@import "bootswatch/cyborg/variables";
 @import "bootstrap";
+body {
+  padding-top: 60px;
+  height: 100%
+}
+@import "bootstrap-responsive";
+@import "bootswatch/cyborg/bootswatch";
 
 /* mixins, variables, etc. */
 
@@ -18,11 +25,6 @@ $grayMediumLight: #eaeaea;
 
 html {
   overflow-y: scroll;
-  height: 100%
-}
-
-body {
-  padding-top: 60px;
   height: 100%
 }
 
@@ -313,12 +315,15 @@ aside {
 
 input, .uneditable-input {
   border: 1px solid #bbb;
-  width: 100%;
   padding: 10px;
+  width: 100%;
   height: auto;
   margin-top: 12px;
   margin-bottom: 15px;
   @include box_sizing;
+  .full-width {
+    width: 100%;
+  }
 }
 
 textarea, .uneditable-input {

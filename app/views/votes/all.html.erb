@@ -1,0 +1,14 @@
+<div class="offset3 span6">
+	<big><b>All votes with this SVC:</b></big>
+	<br>
+	<ul class="lists">
+	<% if @votes.any? %>
+		<% @votes.each_with_index do |vote, index| %>
+			<%= render partial: 'vote_id', locals: {vote: vote, active_vote: @active_vote} %>
+		<% end %>
+	<% else %>
+		<li> There are no BSNs associated with this SVC.</li>
+	<% end %>
+	<li> <%= link_to "Vote!", vote_path(@valid_svc.svc), class: "btn btn-large btn-success", style: "width: 94%" %> </li>
+	</ul>
+</div>

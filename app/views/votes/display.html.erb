@@ -1,9 +1,7 @@
 <% provide(:title, "View vote") %>
 <h1>View vote</h1>
 
-<div class="span3">
-	<%= render partial: 'elections/election_info', locals: {election: @vote.election} %>
-</div>
+<%= render partial: 'elections/election_info', locals: {election: @vote.election} %>
 
 <div class="span6">
 	<% if @vote %>

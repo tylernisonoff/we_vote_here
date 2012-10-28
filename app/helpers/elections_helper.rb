@@ -8,6 +8,7 @@ module ElectionsHelper
 	end
 
 	def vote_path_helper(election)
+		puts "\n\n\n\n\n\n#{election}\n\n\n\n\n"
 		if election.privacy
 			return enter_election_valid_svcs_path(election)
 		else

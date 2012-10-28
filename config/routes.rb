@@ -58,6 +58,7 @@ WeVoteHere::Application.routes.draw do
   match 'votes/:svc/destroy/:id', to: 'votes#destroy', as: :destroy_vote
   match 'votes/:svc/status', to: 'votes#status', as: :status_vote
   match 'votes/display/:id', to: 'votes#display', as: :display_vote
+  match 'votes/:svc/all', to: 'votes#all', as: :all_vote
   match 'votes/sort', to: 'votes#sort', as: :sort_vote
   # match 'votes/:svc/display/:id', to: 'votes#display', as: :display_private_vote
   # match 'votes/display/:id', to: 'votes#display', as: :display_public_vote

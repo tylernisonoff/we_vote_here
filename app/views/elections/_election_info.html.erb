@@ -1,40 +1,37 @@
-<div>
-	<p>
-		<%= link_to election.user.pretty_name, election.user %> asked:
-		<big><b><%= link_to election.name, election %></b></big>
-	</p>
+<div class="row span4">
+	<div>	
+		<p class="center">
+			<%= link_to election.user.pretty_name, election.user %> asked:
+			<big><b><%= link_to election.name, election %></b></big>
+		</p>
+		<p>
+			<%= link_to "See results", results_election_path(election), class: "btn btn-large btn-info", style: "width: 22%" %>
+			<%= link_to "Vote", vote_path_helper(election), class: "btn btn-large btn-success", style: "width: 30%" %>
+			<%= link_to "Export data", export_election_path(election), class: "btn btn-large btn-info", style: "width: 22%" %>
+		</p>
 	<% if current_user == election.user %>
-		<ul class="lists">
-			<li>
-				<%= link_to "edit election", edit_election_path(election), class: "btn btn-adjusted-block" %>
-			</li>
-			<li>
-				<%= link_to "add entire groups", add_groups_election_path(election), class: "btn btn-adjusted-block" %>
-			</li>
-			<li>
-				<%= link_to "add individual voters", add_voters_election_path(election), class: "btn btn-adjusted-block" %>
-			</li>
-		</ul>
+		<p>
+			<%= link_to "add entire groups", add_groups_election_path(election), class: "btn", style: "width: 30%" %>
+			<%= link_to "edit election", edit_election_path(election), class: "btn btn-info", style: "width: 20%" %>
+			<%= link_to "add single voters", add_voters_election_path(election), class: "btn", style: "width: 30%"%>
+		</p>
 	<% end %>
-</div>
-<br>
-<div class="timestamp">
-	Start time: <%= pretty_time(election.start_time) %>
+	</div>
 	<br>
-	Finish time: <%= pretty_time(election.finish_time) %>
-</div>
-<hr>
-<div class="label label-success center">
-	<% if election.privacy %>
-		private election
-	<% else %>
-		public election
-	<% end %>
-</div>
-<hr>
-<div>
-<% unless election.info.blank? %>
-	<p><b>Voting instructions</b>: <%= election.info %></p>
+	<div class="row timestamp center">
+		<div class="span2">
+			Start time:<br> <%= pretty_time(election.start_time) %>
+		</div>
+		<div class="span2">
+			Finish time:<br> <%= pretty_time(election.finish_time) %>
+		</div>
+	</div>
 	<hr>
-<% end %>
+	<div>
+		<% unless election.info.blank? %>
+			<p><b>Voting instructions</b>: <%= election.info %></p>
+			<hr>
+		<% end %>
+	</div>
+	<%= render partial: 'elections/eligible_groups', locals: {election: election} %>
 </div>

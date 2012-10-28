@@ -1,6 +1,13 @@
 <div class="center">
-		<big><b>Groups eligible to vote</b></big>
+	<big><b>Groups eligible to vote
+		<% if election.privacy %>
+			<span style="color:#FFFF00">(private election)</span>
+		<% else %>
+			<span style="color:#FF00FF">(public election)</span>
+		<% end %>
+	</b></big>
 </div>
+
 <ul class="lists">
-	<%= render @election.groups %>
+	<%= render election.groups %>
 </ul>

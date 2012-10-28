@@ -32,13 +32,21 @@ class VotesController < ApplicationController
   def status
     svc = params[:svc]
     @valid_svc = ValidSvc.find_by_svc(svc)
-    @votes = Vote.find(:all, conditions: {svc: svc})
-    @votes.sort! { |a, b| a.created_at <=> b.created_at}
 
     if Vote.exists?(svc: svc, active: true)
       @active_vote = Vote.find(:first, conditions: {svc: svc, active: true})
       @active_preferences = Preference.find(:all, conditions: {svc: svc, active: true})
       @active_preferences.sort! { |a, b| a.position <=> b.position }
+    end
+  end
+
+  def all
+    svc = params[:svc]
+    @valid_svc = ValidSvc.find_by_svc(svc)
+    @votes = Vote.find(:all, conditions: {svc: svc})
+    @votes.sort! { |a, b| a.created_at <=> b.created_at}
+    if Vote.exists?(svc: svc, active: true)
+      @active_vote = Vote.find(:first, conditions: {svc: svc, active: true})
     end
   end
 
@@ -79,6 +87,13 @@ class VotesController < ApplicationController
     if ValidSvc.exists?(svc: svc)
       @valid_svc = ValidSvc.find_by_svc(svc)
       @election = @valid_svc.election
+      @choices = @election.choices
+      @results = @election.results
+      choice_to_results = Hash.new
+      @results.each do |result|
+        choice_to_results[result.choice_id] = result.position
+      end
+      @choices.sort_by { |a| choice_to_results[a.id] }
       if @election.start_time > Time.now  
         flash[:error] = "This election has not started yet."
         redirect_to results_election_path(@election)

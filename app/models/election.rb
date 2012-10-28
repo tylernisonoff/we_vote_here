@@ -8,6 +8,7 @@ class Election < ActiveRecord::Base
   
   has_many :choices, dependent: :destroy
   has_many :preferences, dependent: :destroy, through: :choices
+  has_many :results
 
   has_many :inclusions, dependent: :destroy#, foreign_key: "election_id"
   has_many :groups, through: :inclusions, source: :group
@@ -511,10 +512,6 @@ class Election < ActiveRecord::Base
         # add the winner to the set of those the loser loses to
         loser_hash[loser].add(winner)
 
-        # text.push("#{id_to_name_hash[winner]} beat #{id_to_name_hash[loser]}\n")
-
-        # before_merge = Set.new(winner_hash[winner])
-
         # add the set of choices the loser beat
         # to the set of choices the winner beat
         winner_hash[winner].merge(winner_hash[loser])
@@ -522,13 +519,6 @@ class Election < ActiveRecord::Base
         # add the set of choices that beat the winner
         # to the set of choices the loser has lost to.
         loser_hash[loser].merge(loser_hash[winner])
-
-        # added = winner_hash[winner] - before_merge
-        # unless added.empty?
-        #   added.each do |lost_to_loser|
-        #     # text.push("#{id_to_name_hash[winner]} beat #{id_to_name_hash[lost_to_loser]}\n")
-        #   end
-        # end
 
         # for each choice, "L" that the loser has beaten,
         # add the set of choices that has beaten the loser
@@ -541,15 +531,7 @@ class Election < ActiveRecord::Base
         # add the set of choices that the winner has beaten
         # to the set of choices that W beat.
         loser_hash[winner].each do |beat_winner|
-          # before_merge = Set.new(winner_hash[beat_winner])
           winner_hash[beat_winner].merge(winner_hash[winner])
-          # added = winner_hash[beat_winner] - before_merge
-          # unless added.empty?
-          #   # text.push("Recall: #{winner} lost to #{beat_winner}\n")
-          #   added.each do |lost_to_winner|
-          #     # text.push("#{id_to_name_hash[beat_winner]} beat #{id_to_name_hash[lost_to_winner]}\n")
-          #   end
-          # end
         end
       end
     end

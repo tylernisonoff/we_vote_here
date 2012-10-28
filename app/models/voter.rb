@@ -8,7 +8,4 @@ class Voter < ActiveRecord::Base
   has_many :memberships, dependent: :destroy
   has_many :groups, through: :memberships, source: :group
 
-  def merge_voters
-  end
-
 end

@@ -24,26 +24,6 @@ class User < ActiveRecord::Base
   validates :password, length: { within: 6..50 }, on: :create
   validates :password_confirmation, presence: true, on: :update, :unless => lambda{ |user| user.password.blank? }
 
-  # def deliver_signup_notification
-  #   # Tell the UserMailer to send a welcome Email after save
-  #   UserMailer.welcome_email(self).deliver
-  # end
-
-  def check_valid_emails
-    if ValidEmail.exists?(email: self.email)
-      valid_email = ValidEmail.find_by_email(self.email)
-      voter = valid_email.voter
-      if voter.user  
-        errors.add(:email, "^Sorry, another account is already using that email!")
-        return false
-      else
-        return true
-      end
-    else
-      return true
-    end
-  end
-
   def followed_groups
     total_groups = self.voter.groups.to_set
     followed_groups_set = total_groups - self.groups.to_set
@@ -62,6 +42,8 @@ class User < ActiveRecord::Base
         end
       end
     end
+    users_elections_set = self.elections.to_set
+    ret = ret - users_elections_set
     ret = ret.to_a
     ret.sort! { |a, b| a.created_at <=> b.created_at }
     return ret

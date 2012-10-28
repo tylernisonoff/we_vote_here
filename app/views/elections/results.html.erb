@@ -11,7 +11,7 @@
 </div>
 <div class="offset1 span6">
 	<div>
-		<% unless @results_array %>
+		<% unless @results %>
 			<p><big><b>This election has not yet started.</b></big></p>
 		<% else %>
 			<% if @election.finish_time > Time.now %>
@@ -20,7 +20,7 @@
 				<p><big><b>This election has ended. Final results:</b></big></p>
 			<% end %>
 			<ul class="lists">
-				<% @results_array.each_with_index do |result, index| %>
+				<% @results.each_with_index do |result, index| %>
 					<%= render partial: 'result', locals: {index: index, result: result} %>	
 				<% end %>
 			</ul>

@@ -1,32 +1,18 @@
 <% provide(:title, @election.name) %>
 <h1>Election: <%= @election.name %></h1>
-<div>	
-	<div class="span4">
-		<%= render partial: 'election_info', locals: {election: @election} %>
-		<%= render partial: 'eligible_groups', locals: {election: @election} %>
+
+<%= render partial: 'election_info', locals: {election: @election} %>
+
+<div class="offset1 span6">
+	<div>
+		<%= render partial: 'election_choices', locals: {choices: @election.choices} %>
 	</div>
-	<div class="offset1 span6">
-		<div>
-			<p>
-			<%= link_to "Vote", vote_path_helper(@election), class: "btn btn-large btn-block btn-success" %>
-			</p>
-			<p>
-			<%= link_to "See results", results_election_path(@election), class: "btn btn-large btn-block btn-info" %>
-			</p>
-			<p>
-			<%= link_to "Export data", export_election_path(@election), class: "btn btn-large btn-block btn-info" %>
-			</p>
-		</div>
-		<div>
-			<%= render partial: 'election_choices', locals: {choices: @election.choices} %>
-		</div>
-		<div>
-			<p class="center"><big><b>Active Votes by their Ballot Serial Number</b></big></p>
-			<div class="row">
-				<ul>
-					<%= render @votes %>
-				</ul>
-			</div>
+	<div>
+		<p class="center"><big><b>Active Votes by their Ballot Serial Number</b></big></p>
+		<div class="row">
+			<ul>
+				<%= render @votes %>
+			</ul>
 		</div>
 	</div>
 </div>

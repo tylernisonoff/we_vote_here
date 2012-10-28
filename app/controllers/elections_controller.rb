@@ -40,8 +40,13 @@ class ElectionsController < ApplicationController
   end
 
   def destroy
+    eid = @election.id
     if @election.destroy
       flash[:success] = "Successfully destroyed election."
+      if Group.exists?(election_id: eid)
+        g = Group.find(:first, election_id: eid)
+        g.destroy
+      end
       redirect_to root_path
     else
       flash[:error] = "We were unable to destroy this election."
@@ -71,7 +76,8 @@ class ElectionsController < ApplicationController
     @election = Election.find(params[:id])
     # @sorted_mov = 
     if @election.start_time < Time.now
-      @results_array = @election.choice_name_array(true)
+      @results = @election.results
+      @results.sort_by { |a| a.position }
     end
   end
 
