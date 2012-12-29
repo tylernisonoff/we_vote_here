@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-  attr_accessible :name, :user_id, :election_id, :emails, :voter_attributes
+  attr_accessible :name, :user_id, :election_id, :emails, :voter_attributes, :membership_attributes
   
   has_many :reverse_inclusions, class_name: "Inclusion", dependent: :destroy
   has_many :elections, through: :reverse_inclusions, source: :election
@@ -9,14 +9,36 @@ class Group < ActiveRecord::Base
 
   belongs_to :user # the owner of the group
 
-  accepts_nested_attributes_for :elections, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
+  # accepts_nested_attributes_for :elections, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
+  # accepts_nested_attributes_for :elections, allow_destroy: true, reject_if: lambda { |c| c.values.all?(&:blank?) }
 
   validates_presence_of :user
-
   validates :name, presence: true, length: { within: 2..255 }
 
+  validate :has_valid_emails
+
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+
+  def has_valid_emails
+    ret = true
+    puts "\n\n\nself.emails: #{self.emails}\n\n\n"
+    unless self.emails.blank?
+      emails_array = self.emails.split(/[\s,]+/)
+      emails_array.each do |email|
+        unless VALID_EMAIL_REGEX.match(email)
+          errors.add(:emails, "^#{email} is not a valid email address.")
+          ret = false
+        end
+      end
+    else
+      errors.add(:emails, "can't be blank")
+    end
+    return ret
+  end
 
   def emails
+    # this returns voters separated by commas and
+    # emails separated by spaces within those commas
     ret = ""
     self.voters.each_with_index do |v, i1|
       v.valid_emails.each_with_index do |e, i2|
@@ -25,7 +47,7 @@ class Group < ActiveRecord::Base
           ret += " "
         end
       end
-      if i2 + 1 < self.voters.size
+      if i1 + 1 < self.voters.size
         ret += ","
       end
     end
@@ -33,10 +55,25 @@ class Group < ActiveRecord::Base
   end
 
   def emails=(emails_text)
-    get_split_voters(emails_text)
+    emails_array = emails_text.split(/[\s,]+/)
+    emails_array.each do |email|
+      if ValidEmail.exists?(email: email)
+        valid_email = ValidEmail.find_by_email(email)
+        voter = valid_email.voter
+        unless Membership.exists?(group_id: self.id, voter_id: voter.id)
+          v = self.voters.build(voter)
+        end
+      else
+        voter = self.voters.build
+        # membership.save # this should also save when I save the group
+        valid_email = voter.valid_emails.build
+        valid_email.email = email
+        # valid_email.save # MAYBE NOW IT WILL ; this will not save when I save the group
+      end
+    end
   end
 
-  # i am skeptical of this function
+    # i am skeptical of this function
   def get_split_voters(emails_text)
     voter_array = Array.new
     split_voter_array = emails_text.split(",")
@@ -50,31 +87,5 @@ class Group < ActiveRecord::Base
     return voter_array
   end
 
-  def save_emails(emails_text)
-    emails_array = emails_text.split(/[\s,]+/)
-    emails_array.each do |email|
-      if ValidEmail.exists?(email: email)
-        valid_email = ValidEmail.find_by_email(email)
-        voter = valid_email.voter
-        unless Membership.exists?(group_id: self.id, voter_id: voter.id)
-          membership = Membership.new
-          membership.voter_id = voter.id
-          membership.group_id = self.id
-          membership.save
-        end
-      else
-        voter = Voter.new
-        voter.save
-        membership = Membership.new
-        membership.group_id = self.id
-        membership.voter_id = voter.id
-        membership.save
-        valid_email = ValidEmail.new
-        valid_email.voter_id = voter.id
-        valid_email.email = email
-        valid_email.save
-      end
-    end
-  end
 
 end

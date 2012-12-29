@@ -1,14 +1,10 @@
-<div class="span3">
-  <%= render partial: 'users/full_user', locals: {user: user} %>
-  <% if user == current_user %>
-  <%= link_to "Create a group", new_group_path, class: "btn btn-large btn-adjusted85-block" %>
-  <hr>
-  <%= link_to "Create an election", new_election_path, class: "btn btn-large btn-adjusted85-block" %>
-  <hr>
-    <% end %>
-</div>
-<div class="span4">
+<h1><%=user.pretty_name%>'s homepage</h1>
+<div class="offset1 span4">
   <div class="center">
+    <% if user == current_user %>
+      <%= link_to "Create an election", new_election_path, class: "btn btn-large", style: "width: 92%" %>
+      <hr>
+    <% end %>
     <big><b>Elections I own (<%= user.elections.count %>)</b></big>
   </div>
     <ul class="lists">
@@ -32,8 +28,12 @@
     <% end %>
     </ul>
 </div>
-<div class="span4">
+<div class="offset2 span4">
   <div class="center">
+    <% if user == current_user %>
+      <%= link_to "Create a group", new_group_path, class: "btn btn-large btn-block", style: "width: 92%" %>
+      <hr>
+    <% end %>
   <big><b>Groups I own (<%= user.groups.count %>)</b></big></div>
   <ul class="lists">
   <% if user.groups.any? %>

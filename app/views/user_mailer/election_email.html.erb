@@ -5,16 +5,16 @@
   </head>
   <body>
     <div><big><b>You have been invited by <%= @election.user.pretty_name %> to vote in a <% if @election.privacy %> private election <% else %> public election <% end %> at <%= link_to "WeVoteHere.com!", root_url %></b></big>
-    <div>
-      <% if @election.privacy %>
-        <p>You will use your Secret Voting Code (SVC) to securely vote in this election. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
-        <p><b>Your SVC is <%= link_to @svc, vote_url(@svc) %>. You can click it to vote.</b></p>
-        <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_url(@svc) %></p>
-      <% else %>
-        <p>You will receive a Secret Voting Code (SVC) to securely vote in this @election. Even we do not know your secret voting code; it is not associated with your email in any way. Therefore, please don't lose your SVC!</p>
-        <big><b><p><%= link_to "Click here to vote", make_election_valid_svcs_url(@election) %></p></b></big>
-      <% end %>
-    </div>
+      <div>
+        <% if @election.privacy %>
+          <p>You will use your Secret Voting Code (SVC) to securely vote in this election. Even we do not know your secret voting code; once this email is sent, we delete the association from our memory. Therefore, please don't lose your SVC!</p>
+          <p><b>Your SVC is <%= link_to @svc, vote_url(@svc) %>. You can click it to vote.</b></p>
+          <p>You can also view the status of your vote here: <%= link_to "Status", status_vote_url(@svc) %></p>
+        <% else %>
+          <p>You will receive a Secret Voting Code (SVC) to securely vote in this election. Even we do not know your secret voting code; it is not associated with your email in any way. Therefore, please don't lose your SVC!</p>
+          <big><b><p><%= link_to "Click here to vote", make_election_valid_svcs_url(@election) %></p></b></big>
+        <% end %>
+      </div>
     </div>
     <div>  
       <div>
@@ -24,6 +24,11 @@
         <% unless @election.info.blank? %>
           <big><b>Voting instructions</b></big>
           <p><%= @election.info %></p>
+        <% end %>
+        <br>
+        <big><b>Choices for this election:</b></big>
+        <% @election.choices.each do |choice| %>
+          <p><%=choice.name%></p>
         <% end %>
       </div>
   </body>

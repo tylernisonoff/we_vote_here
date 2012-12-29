@@ -1,9 +1,12 @@
 <% if user_signed_in? %>
-  <%= render partial: 'shared/user_groups_elections', locals: {user: current_user} %>  
+  <div class="row">
+  	<%= render partial: 'shared/user_groups_elections', locals: {user: current_user} %>  
+  </div>
 <% else %>
-  <div class="center hero-unit">
+  <div class="center">
+  	<br>
     <h1>Welcome to WeVoteHere</h1>
-
+    <br>
     <%= link_to "Sign up now!", new_user_registration_path, 
         class: "btn btn-large btn-primary" %>
   </div>

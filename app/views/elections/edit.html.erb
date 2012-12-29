@@ -1,19 +1,21 @@
 <% provide(:title, "Edit your election") %>
-<h1>Edit your election</h1>
+<div class="row">
+	<h1>Edit your election</h1>
 
-<%= form_for(@election) do |f| %>
-	<%= render 'shared/error_messages', object: f.object %>
+	<%= form_for(@election) do |f| %>
+		<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.text_field :name, placeholder: "enter the question you would like to ask" %>
+		<%= f.text_field :name, placeholder: "enter the question you would like to ask" %>
 
-	<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
+		<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
 
-	<%= f.label :start_time, "Start time:" %>
-	<%= f.datetime_select :start_time, value: @election.start_time %>
+		<%= f.label :start_time, "Start time:" %>
+		<%= f.datetime_select :start_time, value: @election.start_time %>
 
-	<%= f.label :finish_time, "Finish time:" %>
-	<%= f.datetime_select :finish_time, value: @election.finish_time %>
+		<%= f.label :finish_time, "Finish time:" %>
+		<%= f.datetime_select :finish_time, value: @election.finish_time %>
 
-<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-adjusted85-block" %>
-<%= link_to "Destroy election", destroy_election_path(@election), class: "btn btn-large btn-danger", confirm: "Are you sure you want to permanantly destroy this election?" %>
-<% end %>
+	<%= f.submit "Save", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-adjusted85-block" %>
+	<%= link_to "Destroy election", destroy_election_path(@election), class: "btn btn-large btn-danger", confirm: "Are you sure you want to permanantly destroy this election?" %>
+	<% end %>
+</div>

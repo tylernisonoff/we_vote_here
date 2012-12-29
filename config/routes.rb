@@ -4,10 +4,8 @@ WeVoteHere::Application.routes.draw do
     get "/users/sign_out" => "devise/sessions#destroy", :as => :destroy_user_session
   end
 
-  resources :users, except: [:edit, :update] do
+  resources :users, except: [:edit, :update, :new, :create] do
     member do
-      get :groups
-      get :elections
       get :add_emails
       get :emails
     end
@@ -26,16 +24,12 @@ WeVoteHere::Application.routes.draw do
 
   root to: 'static_pages#home'
 
-  # match '/edit',   to: 'users#edit'
   match '/about', to: 'static_pages#about'
   match '/terms', to: 'static_pages#terms'
   match '/privacy', to: 'static_pages#privacy'
 
-  match '/new_group', to: 'groups#new'
   match 'elections/:election_id/new_group', to: 'groups#new', as: :new_election_group
-  
   match 'groups/:group_id/new_election', to: 'elections#new', as: :new_group_election
-  match '/new_election', to: 'elections#new'
 
   get "static_pages/home"
   get "static_pages/about"
@@ -68,6 +62,7 @@ WeVoteHere::Application.routes.draw do
   match 'elections/:election_id/valid_svcs/confirm', to: 'valid_svcs#confirm', as: :confirm_election_valid_svcs
   match 'elections/:election_id/add_voters', to: 'elections#add_voters', as: :add_voters_election
 
+  match 'groups/:id/destroy', to: 'groups#destroy', as: :destroy_group
   match 'elections/:id/destroy', to: 'elections#destroy', as: :destroy_election
   match 'elections/:id/results', to: 'elections#results', as: :results_election
   match 'elections/:id/mov/export', to: 'elections#export_mov_to_csv', as: :export_mov_to_csv_election

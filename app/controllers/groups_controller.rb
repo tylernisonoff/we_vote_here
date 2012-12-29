@@ -15,7 +15,7 @@ class GroupsController < ApplicationController
   	@group = current_user.groups.build(params[:group])
     if @group.election_id
       @election = Election.find(@group.election_id)
-      @group.name = "Additional voters for election: #{@election.name}"
+      @group.name = "Additional voters for election: \##{@election.id}"
       inc = Inclusion.new
       inc.election_id = @group.election_id
       inc.group = @group

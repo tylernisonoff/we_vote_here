@@ -1,29 +1,7 @@
 <% provide(:title, "Create an election") %>
 <h1>Create an election</h1>
 
-<%= nested_form_for(@election) do |f| %>
-	<%= render 'shared/error_messages', object: f.object %>
-
-	<%= f.text_field :name, placeholder: "enter the question you would like to ask" %>
-
-	<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
-
-
-	<%= f.label :start_time, "Start time" %>
-	<%= f.datetime_select :start_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") %>
-
-	<%= f.label :finish_time, "Finish time" %>
-	<%= f.datetime_select :finish_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") + 1.week %>
-
-	<hr>
-
-	<%= f.radio_button :privacy, '1', :checked => true %> 
-  	<%= label :privacy, 'Private', style: "display:inline" %>
-  	<br>
-  	<%= f.radio_button :privacy, '0' %>
-  	<%= label :privacy, 'Public', style: "display:inline" %>
-
-	<script>
+<script>
 	$(document).ready(function(){
 		$(document).keypress(function(event){ // change to ".enter_election_name"
     		if(event.keyCode == 13){ // clicked enter, which is key number 13.
@@ -32,21 +10,49 @@
     		}
 		});
 	});
-	</script>
+</script>
+<div class="row">
+	<%= nested_form_for(@election) do |f| %>
+		<div class="span12">
+			<%= render 'shared/error_messages', object: f.object %>
+		</div>
+		<div class="span6">
+			<%= f.text_field :name, placeholder: "enter the question you would like to ask" %>
 
-	<hr>
+			<%= f.text_area :info, placeholder: "enter any additional instructions for voters (optional)" %>
 
-	<big><b>Choices</b></big>
-	<% f.fields_for :choices do |c| %>
-		<%= c.text_field :name, placeholder: "choice", class: "enter_choice_name", style: "width: 90%" %>
-		<%= c.link_to_remove "Remove", class: "btn btn-large btn-danger" %>
+		</div>
+		<div class="span6">
+			<big><b>Choices</b></big>
+			<% f.fields_for :choices do |c| %>
+				<%= c.text_field :name, placeholder: "choice", class: "enter_choice_name", style: "width: 69%" %>
+				<%= c.link_to_remove "Remove", class: "btn btn-large btn-danger", style: "margin-left: 5%; width: 20%" %>
+			<% end %>
+
+			<hr>
+			
+			<%= f.link_to_add "Add new choice", :choices, id: "add_new_choice", class: "btn btn-large btn-success", style: "width: 95%" %>
+			
+		</div>
+		<div class="span12">
+			<%= f.label :start_time, "Start time" %>
+			<%= f.datetime_select :start_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") %>
+
+			<%= f.label :finish_time, "Finish time" %>
+			<%= f.datetime_select :finish_time, default: Time.now.in_time_zone("Eastern Time (US & Canada)") + 1.week %>
+
+			<hr>
+
+			<%= f.radio_button :privacy, '1', :checked => true %> 
+		  	<%= label :privacy, 'Private', style: "display:inline" %>
+		  	
+		  	<br>
+		  	
+		  	<%= f.radio_button :privacy, '0' %>
+		  	<%= label :privacy, 'Public', style: "display:inline" %>
+		  	
+		  	<hr>
+			<%= f.submit "Save and add voters", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
+		</div>
 	<% end %>
-
-	<hr>
-	
-	<%= f.link_to_add "Add new choice", :choices, id: "add_new_choice", class: "btn btn-large btn-success btn-adjusted3-block" %>
-	
-	<hr>
-
-	<%= f.submit "Save and add voters", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
-<% end %>
+</div>

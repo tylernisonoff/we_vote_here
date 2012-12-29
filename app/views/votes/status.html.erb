@@ -1,22 +1,25 @@
-<%= render partial: 'elections/election_info', locals: {election: @valid_svc.election} %>
+<div class="row">
+
+	<%= render partial: 'elections/election_info', locals: {election: @valid_svc.election} %>
 
 
-<div class="offset1 span5">
-	<big><b>Your current vote</b></big>
-	<ul class="lists">
-		<% if @active_vote %>
-			<% unless @active_preferences.any? %>
-				<li>
-					This vote is active, but has no recorded preferences.
-				</li>
+	<div class="offset1 span5">
+		<big><b>Your current vote</b></big>
+		<ul class="lists">
+			<% if @active_vote %>
+				<% unless @active_preferences.any? %>
+					<li>
+						This vote is active, but has no recorded preferences.
+					</li>
+				<% else %>
+					<%= render @active_preferences %>
+				<% end %>
 			<% else %>
-				<%= render @active_preferences %>
+			<p> There is no active vote for this SVC </p>
 			<% end %>
-		<% else %>
-		<p> There is no active vote for this SVC </p>
-		<% end %>
-		<li>
-			<%= link_to "View your old votes", all_vote_path(@valid_svc.svc), class: "btn", style: "width: 95%" %>
-		</li>
-	</ul>
+			<li>
+				<%= link_to "View your old votes", all_vote_path(@valid_svc.svc), class: "btn", style: "width: 95%" %>
+			</li>
+		</ul>
+	</div>
 </div>

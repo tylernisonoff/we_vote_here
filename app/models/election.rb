@@ -20,8 +20,7 @@ class Election < ActiveRecord::Base
 
   validates :name, presence: true, length: { within: 2..255 }
 
-  # validates :choices, length: { minimum: 2, message: "^Election must have at least 2 choices" }
-  validate :choices_check
+  validates :choices, length: { minimum: 2, message: "^Election must have at least 2 choices" }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
@@ -260,36 +259,19 @@ class Election < ActiveRecord::Base
 
     if sort_by_results
     # If true, returns array of choices sorted by ranked pairs results
-      @sorted_choices = Array.new
-      results = Result.find(:all, conditions: {election_id: self.id})
-      results.sort_by { |a| a.position }
-      results.each do |res|
-        ch = Choice.find(res.choice_id)
-        @sorted_choices.push(ch)
+      choice_to_result = self.choice_result_hash
+      @sorted_choices = self.choices
+      @sorted_choices.sort! do |a, b|
+        choice_to_result[a.id] <=> choice_to_result[b.id]
       end
     else
-    # If false or empty, returns array of choices sorted by choice id
-      @sorted_choices = self.choices.sort_by { |a| a.id }
+    # If false or empty, returns array of choices sorted by name
+      @sorted_choices = self.choices.sort! do |a, b|
+        a.name <=> b.name
+      end
     end
 
     return @sorted_choices
-  end
-
-# This should be recoded.
-  def choices_check
-  	self.choices.each do |choice1|
-  		count = 0
-  		self.choices.each do |choice2|
-  			if choice1.name == choice2.name
-  				count = count + 1
-  			end
-  		end
-  		if count > 1
-  			errors.add(:choices, "^Names of choices must be unique.")
-  			break
-  		end
-  	end
-  	return true
   end
 
   def get_voter_array
@@ -309,13 +291,14 @@ class Election < ActiveRecord::Base
     voter_hash.each do |key, set|
       voter_array.push(set.to_a)
     end
+    puts "\n\n#{voter_array}\n\n"
     return voter_array
   end
 
   def send_election_emails(voter_array=false)
     unless voter_array
       # populate voter_array if there's no argument
-      voter_array = get_voter_array
+      voter_array = self.get_voter_array
     end
 
     if self.privacy
@@ -358,7 +341,7 @@ class Election < ActiveRecord::Base
     return @votes_hash
   end
 
-  def get_mov
+  def get_mov(sorted=false, adjusted=false)
     
     # Initialize margin-of-victory hash-of-hashes
     # @mov[i][j] stores the margin of victory of choice j over 
@@ -396,20 +379,39 @@ class Election < ActiveRecord::Base
       tbv_preferences = Preference.find(:all, conditions: {svc: self.id.to_s, tie_breaking: true}) 
     else self.finish_time > Time.now
       tbv_preferences = Preference.find(:all, conditions: {svc: (-1*self.id).to_s, tie_breaking: true}) 
-    end  
-    tbv_preferences.each do |pref1|
-      pos1 = pref1.position
-      tbv_preferences.each do |pref2|
-        pos2 = pref2.position
-        add = ((pos2-pos1)*(pos1-1).to_f)/((10*n*n).to_f)
-        add = (add*1000).round / 1000.0
-        @mov[pref1.choice_id][pref2.choice_id] += add
-        @mov[pref2.choice_id][pref1.choice_id] -= add
+    end
+    if adjusted  
+      tbv_preferences.each do |pref1|
+        pos1 = pref1.position
+        tbv_preferences.each do |pref2|
+          pos2 = pref2.position
+          add = ((pos2-pos1)*(pos1-1).to_f)/((10*n*n).to_f)
+          add = (add*1000).round / 1000.0
+          @mov[pref1.choice_id][pref2.choice_id] += add
+          @mov[pref2.choice_id][pref1.choice_id] -= add
+        end
       end
     end
+
+    if sorted && Result.exists?(election_id: self.id)
+       choice_to_result = self.choice_result_hash
+       @mov.sort_by { |k, v| choice_to_result[k] }
+    end  
     
     return @mov
   end
+
+  # returns a hash with keys as choice_ids and values as result positions
+  def choice_result_hash
+    results = Result.find(:all, conditions: {election_id: self.id})
+    choice_to_result = Hash.new
+    results.each do |res|
+      choice_to_result[res.choice_id] = res.position
+    end
+    return choice_to_result
+  end
+
+
 
   def sum_from_1_to_i(i)
     if i == 0
@@ -460,7 +462,11 @@ class Election < ActiveRecord::Base
       end
     end
 
-    @mov_list.sort! { |a, b| a[0] <=> b[0] }
+    puts "\n\n\n\n#{@mov_list}\n\n\n"
+    @mov_list.sort! do |a, b|
+       a[0] <=> b[0]
+    end
+    puts "\n\n\n\n#{@mov_list}\n\n\n"
 
     winner_hash = Hash.new
     # for choice id "i",
@@ -482,9 +488,6 @@ class Election < ActiveRecord::Base
       winner = strongest_inequality[1]
       loser = strongest_inequality[2]
 
-      added = Set.new
-      before_merge = Set.new
-
       [winner, loser].each do |i|
         # If winner_hash[choice] does not exist,
         # create it as an empty set
@@ -498,11 +501,9 @@ class Election < ActiveRecord::Base
       if winner_hash[loser].include?(winner)
         # if this inequality is inconsistent with
         # previous inequalities, ignore this inequality
-        text.push("\n#{margin}: #{id_to_name_hash[winner]} > #{id_to_name_hash[loser]} X\n")
-        next
+        text.push("#{margin}: #{id_to_name_hash[winner]} > #{id_to_name_hash[loser]} X\n")
       elsif winner_hash[winner].include?(loser)
-        text.push("\n#{margin}: #{id_to_name_hash[winner]} > #{id_to_name_hash[loser]}\n")
-        next
+        text.push("#{margin}: #{id_to_name_hash[winner]} > #{id_to_name_hash[loser]}\n")
       else
         text.push("#{margin}: #{id_to_name_hash[winner]} > #{id_to_name_hash[loser]}\n")
 
@@ -566,7 +567,7 @@ class Election < ActiveRecord::Base
       index = index + tie_index
     end
 
-    save_ranked_pairs_results(result_hash)
+    self.save_ranked_pairs_results(result_hash)
 
     if return_text
       return text

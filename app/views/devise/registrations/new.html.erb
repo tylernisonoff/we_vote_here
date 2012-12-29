@@ -1,25 +1,24 @@
-<h2>Sign up</h2>
+<div class="offset3 span6">
+  <h2>Sign up</h2>
 
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), html: {autocomplete: "off"}) do |f| %>
-  <%= devise_error_messages! %>
+  <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), html: {autocomplete: "off"}) do |f| %>
+    <%= devise_error_messages! %>
 
-  <div>
-    <%= f.text_field :nickname, placeholder: "nickname" %>
-  </div>
+    <div>
+      <%= f.text_field :nickname, placeholder: "nickname (optional)" %>
+    </div>
 
-  <div>
-  	<%= f.email_field :email, placeholder: "email" %>
-  </div>
+    <div>
+    	<%= f.email_field :email, placeholder: "email" %>
+    </div>
 
-  <div>
-  	<%= f.password_field :password, placeholder: "password" %>
-  </div>
+    <div>
+    	<%= f.password_field :password, placeholder: "password", style: "width: 48%; margin-right: 3.5%;" %>
+    	<%= f.password_field :password_confirmation, placeholder: "confirm password", style: "width: 48%" %>
+    </div>
 
-  <div>
-  	<%= f.password_field :password_confirmation, placeholder: "confirm password" %>
-  </div>
+    <div><%= f.submit "Sign up", class: "btn btn-primary btn-large" %></div>
+  <% end %>
 
-  <div><%= f.submit "Sign up", class: "btn btn-primary btn-large" %></div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+  <%= render "devise/shared/links" %>
+</div>

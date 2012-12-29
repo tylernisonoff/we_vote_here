@@ -1,5 +1,5 @@
 class Voter < ActiveRecord::Base
-  attr_accessible :election_id, :valid_emails_attributes, :user_id
+  attr_accessible :election_id, :valid_emails_attributes, :user_id, :id
 
   has_many :valid_emails, dependent: :destroy
 

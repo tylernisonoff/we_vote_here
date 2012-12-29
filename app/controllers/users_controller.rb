@@ -3,32 +3,13 @@ class UsersController < ApplicationController
 
   before_filter :authenticate_user!
   before_filter :signed_in_user, 
-                only: [:index, :edit, :update, :destroy]
+                only: [:index, :update, :destroy]
   before_filter :correct_user,   only: [:edit, :update, :edit_password, :change_password, :edit_password, :add_emails, :save_emails]
   before_filter :group_follower, only: [:unfollow_group]
-
 
   
   def show
   	@user = User.find(params[:id])
-  end
-
-  def new
-  	@user = User.new
-  end
-
-  def create
-    @user = User.new(params[:user])
-    if @user.save
-      sign_in @user
-      flash[:success] = "Welcome to WeVoteHere!"
-      redirect_to root_path
-    else
-      render 'new'
-    end
-  end
-
-  def edit
   end
 
   def groups
@@ -140,7 +121,13 @@ class UsersController < ApplicationController
     end
 
     def signed_in_user
-      return current_user# = User.find(params[:id])
+      unless user_signed_in?
+        flash[:error] = "You must be signed in to see this!"
+        redirect_back_or new_user_session_path
+        return false
+      else
+        return true
+      end
     end
 
 end

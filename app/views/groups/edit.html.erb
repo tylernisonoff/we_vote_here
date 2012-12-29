@@ -1,11 +1,17 @@
-<%= form_for @group do |f| %>
-	<%= render 'shared/error_messages', object: f.object %>
+<div class="row">
+	<div class="offset3 span6">
+		<h1>Edit group</h1>
+		<%= form_for @group do |f| %>
+			<%= render 'shared/error_messages', object: f.object %>
 
-	<%= f.text_field :name, value: @group.name %>
-	
-	<%= f.submit "Submit", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
-<% end %>
+			<%= f.text_field :name, value: @group.name %>
+			
+			<%= f.submit "Submit", disable_with: "Saving ...", class: "btn btn-large btn-primary", style: "width: 69%" %>
+			<%= link_to "Destroy group", destroy_group_path(@group), class: "btn btn-large btn-danger", confirm: "Are you sure you want to permanantly destroy this group?", style: "width: 20%; margin-left: 5%" %>
+		<% end %>
 
-<hr>
+		<hr>
 
-<%= link_to "Add voters", add_voters_group_path(@group), class: "btn btn-info btn-large btn-adjusted3-block" %>
+		<%= link_to "Add voters", add_voters_group_path(@group), class: "btn btn-info btn-large", style: "width: 95%" %>
+	</div>
+</div>

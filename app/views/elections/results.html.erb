@@ -1,14 +1,7 @@
 <% provide(:title, "Results for election: #{@election.name}") %>
 <h1>Results for election: <%= link_to @election.name, @election %></h1>
 <hr>
-<div class="span4">
-	<div class="center">
-		<big><b>Election owner</b></big>
-		<hr>
-	</div>	
-	<%= render partial: 'users/full_user', locals: {user: @election.user} %>
-	<%= render partial: 'eligible_groups', locals: {election: @election} %>
-</div>
+<%= render partial: 'election_info', locals: {election: @election} %>
 <div class="offset1 span6">
 	<div>
 		<% unless @results %>

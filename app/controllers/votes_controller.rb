@@ -83,17 +83,15 @@ class VotesController < ApplicationController
 
   def vote
     svc = params[:svc]
-    puts "\n\n\n\n\n\n#{params}\n\n\n\n"
     if ValidSvc.exists?(svc: svc)
       @valid_svc = ValidSvc.find_by_svc(svc)
       @election = @valid_svc.election
       @choices = @election.choices
       @results = @election.results
-      choice_to_results = Hash.new
-      @results.each do |result|
-        choice_to_results[result.choice_id] = result.position
+      choice_to_results = @election.choice_result_hash
+      @choices.sort! do |a, b|
+        choice_to_results[a.id] <=> choice_to_results[b.id]
       end
-      @choices.sort_by { |a| choice_to_results[a.id] }
       if @election.start_time > Time.now  
         flash[:error] = "This election has not started yet."
         redirect_to results_election_path(@election)

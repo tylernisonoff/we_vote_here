@@ -1,6 +1,9 @@
 <%= provide(:title, 'All groups') %>
-<h1>Groups (<%= @groups.count %>)</h1>
-
-<ul class="lists">
-	<%= render @groups %>
-</ul>
+<div class="row">	
+	<div class="offset3 span6">
+		<h1>Groups (<%= @groups.count %>)</h1>
+		<ul class="lists">
+			<%= render @groups %>
+		</ul>
+	</div>
+</div>

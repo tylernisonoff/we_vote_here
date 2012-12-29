@@ -1,23 +1,25 @@
 <% provide(:title, "Edit user") %> 
-<h1>Update your profile</h1>
+<div class="row">
+    <h1>Update your profile</h1>
 
-<%= form_for(@user) do |f| %>
-	<%= render 'shared/error_messages', object: f.object %>
+    <%= form_for(@user) do |f| %>
+    	<%= render 'shared/error_messages', object: f.object %>
 
-    <%= f.label "Nickname (optional)" %>
-    <%= f.text_field :nickname %>
+        <%= f.label "Nickname (optional)" %>
+        <%= f.text_field :nickname %>
 
-    <%= f.label :email %>
-    <%= f.text_field :email %>
+        <%= f.label :email %>
+        <%= f.text_field :email %>
 
-    <%= f.submit "Save changes", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
-<% end %>
+        <%= f.submit "Save changes", disable_with: "Saving ...", class: "btn btn-large btn-primary btn-block" %>
+    <% end %>
 
-<% if @user == current_user %>
-    <div class="center">
-        <%= link_to "change your password", edit_user_registration_path, class: "btn btn-large" %>
-        <%= link_to "link other email addresses", add_emails_user_path(@user), class: "btn btn-large btn-info" %>
-        <%= link_to "view my email addresses", emails_user_path(@user), class: "btn btn-large" %>
-        <%= link_to "change your gravatar", "http://gravatar.com/emails", class: "btn btn-large btn-info" %>
-    </div>
-<% end %>
+    <% if @user == current_user %>
+        <div class="center">
+            <%= link_to "change your password", edit_user_registration_path, class: "btn btn-large" %>
+            <%= link_to "link other email addresses", add_emails_user_path(@user), class: "btn btn-large btn-info" %>
+            <%= link_to "view my email addresses", emails_user_path(@user), class: "btn btn-large" %>
+            <%= link_to "change your gravatar", "http://gravatar.com/emails", class: "btn btn-large btn-info" %>
+        </div>
+    <% end %>
+</div>

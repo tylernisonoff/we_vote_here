@@ -44,7 +44,7 @@ class ElectionsController < ApplicationController
     if @election.destroy
       flash[:success] = "Successfully destroyed election."
       if Group.exists?(election_id: eid)
-        g = Group.find(:first, election_id: eid)
+        g = Group.find(:first, conditions: {election_id: eid})
         g.destroy
       end
       redirect_to root_path
@@ -74,10 +74,11 @@ class ElectionsController < ApplicationController
 
   def results
     @election = Election.find(params[:id])
-    # @sorted_mov = 
     if @election.start_time < Time.now
       @results = @election.results
-      @results.sort_by { |a| a.position }
+      @results.sort! do |a, b| 
+        a.position <=> b.position
+      end
     end
   end
 
@@ -103,7 +104,7 @@ class ElectionsController < ApplicationController
         elsif @election.finish_time > Time.now
           voter_array_after = @election.get_voter_array
           voter_array_diff = voter_array_after - voter_array_before
-          @election.send_election_emails
+          @election.send_election_emails(voter_array_diff)
         end
       end
     end
@@ -135,7 +136,7 @@ class ElectionsController < ApplicationController
       adjusted = false
     end
 
-    @mov = @election.get_mov(adjusted)
+    @mov = @election.get_mov(sorted, adjusted)
 
     if sorted && adjusted
       filename ="sorted_adjusted_mov_for_#{adjusted_filename(@election)}"

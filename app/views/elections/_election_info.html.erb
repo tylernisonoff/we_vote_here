@@ -1,4 +1,4 @@
-<div class="row span4">
+<div class="span4">
 	<div>	
 		<p class="center">
 			<%= link_to election.user.pretty_name, election.user %> asked:
@@ -33,5 +33,6 @@
 			<hr>
 		<% end %>
 	</div>
+	
 	<%= render partial: 'elections/eligible_groups', locals: {election: election} %>
 </div>

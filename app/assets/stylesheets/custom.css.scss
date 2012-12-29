@@ -145,6 +145,7 @@ h1 {
   letter-spacing: -2px;
   margin-bottom: 30px;
   text-align: center;
+  color: #FFFFFF;
 }
 
 h2 {
@@ -153,7 +154,7 @@ h2 {
   margin-bottom: 30px;
   text-align: center;
   font-weight: normal;
-  color: $grayLight;
+  color: #fff;
 }
 
 p {
@@ -179,6 +180,13 @@ p {
 
 .btn.btn-adjusted85-block {
   width: 85%;
+}
+
+.btn.btn-round {
+    height: 90px;
+    width: 98%;
+    border-radius: 100px;
+    padding: 75px 0px 0px 0px;
 }
 
 /* ^^ I know this ruins the whole point of sass but I just couldn't get it right. */
@@ -225,9 +233,9 @@ footer {
   color: #999;
   clear: both;
   a {
-    color: #555;
+    color: #999;
     &:hover { 
-      color: #222;
+      color: #ddd;
     }
   }  
   small { 
@@ -321,9 +329,6 @@ input, .uneditable-input {
   margin-top: 12px;
   margin-bottom: 15px;
   @include box_sizing;
-  .full-width {
-    width: 100%;
-  }
 }
 
 textarea, .uneditable-input {

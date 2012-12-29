@@ -1,54 +1,56 @@
-<script>
-$(document).ready(function() {
-	
-	/* see if anything is previously checked and reflect that in the view*/
-	$(".checklist input:checked").parent().addClass("selected");
-	
-	/* handle the user selections */
-	$(".checklist .checkbox-select").click(
-		function(event) {
-			event.preventDefault();
-			$(this).parent().addClass("selected");
-			$(this).parent().find(":checkbox").attr("checked","checked");
-		}
-	);
-	
-	$(".checklist .checkbox-deselect").click(
-		function(event) {
-			event.preventDefault();
-			$(this).parent().removeClass("selected");
-			$(this).parent().find(":checkbox").removeAttr("checked");
-		}
-	);
-});	
-</script>	
+<div class="row">
+	<script>
+	$(document).ready(function() {
+		
+		/* see if anything is previously checked and reflect that in the view*/
+		$(".checklist input:checked").parent().addClass("selected");
+		
+		/* handle the user selections */
+		$(".checklist .checkbox-select").click(
+			function(event) {
+				event.preventDefault();
+				$(this).parent().addClass("selected");
+				$(this).parent().find(":checkbox").attr("checked","checked");
+			}
+		);
+		
+		$(".checklist .checkbox-deselect").click(
+			function(event) {
+				event.preventDefault();
+				$(this).parent().removeClass("selected");
+				$(this).parent().find(":checkbox").removeAttr("checked");
+			}
+		);
+	});	
+	</script>	
 
-<%= form_tag(save_groups_election_path, {multipart: true}) %>
-	<%= hidden_field_tag :election_id, @election.id %>
-	<div class="span5">
-		<strong><big>Groups you own</big></strong><hr>
-		<ul class="checklist">
-			<% @users_groups.each do |g| %>	
-			<li>
-				<%= check_box :group, g.id, {} %>
-				<label for="<%=g.id%>"><%=g.name%></label>
-				<a class="checkbox-select" href="#">Select</a>
-				<a class="checkbox-deselect" href="#">Cancel</a>
-			</li>
-			<% end %>
-		</ul>
-	</div>
-	<div class="offset1 span5">
-		<strong><big>Groups you follow</big></strong><hr>
-		<ul class="checklist">
-			<% @followed_groups.each do |g| %>	
+	<%= form_tag(save_groups_election_path, {multipart: true}) %>
+		<%= hidden_field_tag :election_id, @election.id %>
+		<div class="span5">
+			<strong><big>Groups you own</big></strong><hr>
+			<ul class="checklist">
+				<% @users_groups.each do |g| %>	
 				<li>
 					<%= check_box :group, g.id, {} %>
 					<label for="<%=g.id%>"><%=g.name%></label>
 					<a class="checkbox-select" href="#">Select</a>
 					<a class="checkbox-deselect" href="#">Cancel</a>
 				</li>
-			<% end %>
-		</ul>
-	</div>
-<%= submit_tag "Submit", class: "btn btn-large btn-primary btn-block" %>
+				<% end %>
+			</ul>
+		</div>
+		<div class="offset1 span5">
+			<strong><big>Groups you follow</big></strong><hr>
+			<ul class="checklist">
+				<% @followed_groups.each do |g| %>	
+					<li>
+						<%= check_box :group, g.id, {} %>
+						<label for="<%=g.id%>"><%=g.name%></label>
+						<a class="checkbox-select" href="#">Select</a>
+						<a class="checkbox-deselect" href="#">Cancel</a>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	<%= submit_tag "Submit", class: "btn btn-large btn-primary btn-block" %>
+</div>

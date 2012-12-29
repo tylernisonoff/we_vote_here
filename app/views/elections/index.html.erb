@@ -1,5 +1,9 @@
 <%= provide(:title, 'All elections') %>
-<h1>Elections (<%=@elections.count%>)</h1>
-<ul class="lists">
-	<%= render @elections %>
-</ul>
+<div class="row">	
+	<div class="offset3 span6">
+		<h1>Elections (<%=@elections.count%>)</h1>
+		<ul class="lists">
+			<%= render @elections %>
+		</ul>
+	</div>
+</div>

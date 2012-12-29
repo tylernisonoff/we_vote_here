@@ -73,13 +73,20 @@
 
 
 
-<div>
+<div class="row">
   <div class="span4">
     <big><b><div class="center">Ballot</div></b></big><br>
     <ol id="sortable1" class = "connectedSortable lists">
     </ol>
   </div>
-  <div class="offset3 span4">
+  <div class="offset1 span2">
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <p><%= link_to "Click here to VOTE", status_vote_path(@valid_svc.svc), id: "submit_preferences", class: "btn btn-large btn-success btn-round", disable_with: "Saving ..." %>
+    </p>
+    <br><br><br><br><br><br><br><br>
+    <p><%= link_to "DISCARD VOTE AND EXIT", @election, class: "btn btn-large btn-danger", style: "width: 80%" %></p>
+  </div>
+  <div class="offset1 span4">
     <big><b><div class="center">Unsorted Choices</div></b></big><br>
     <ul id="sortable2" class = "connectedSortable lists">
       <% @choices.each do |choice| %>
@@ -87,13 +94,5 @@
       " class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> <%= choice.name %> </li>
       <% end %>
     </ul>
-  </div>
-
-  <div class="span11">
-    <hr>
-    <p><%= link_to "Click here to VOTE", status_vote_path(@valid_svc.svc), id: "submit_preferences", class: "btn btn-large btn-success btn-adjusted2-block", disable_with: "Saving ..." %>
-    </p>
-    <hr>
-    <p><%= link_to "DISCARD VOTE AND EXIT", @election, class: "btn btn-large btn-danger btn-adjusted2-block" %></p>
   </div>
 </div>

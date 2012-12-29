@@ -1,18 +1,12 @@
 <% provide(:title, @election.name) %>
-<h1>Election: <%= @election.name %></h1>
+<div class="row">
+	<h1>Election: <%= @election.name %></h1>
 
-<%= render partial: 'election_info', locals: {election: @election} %>
-
-<div class="offset1 span6">
-	<div>
-		<%= render partial: 'election_choices', locals: {choices: @election.choices} %>
-	</div>
-	<div>
+	<%= render partial: 'election_info', locals: {election: @election} %>
+	<div class="span4 center">
 		<p class="center"><big><b>Active Votes by their Ballot Serial Number</b></big></p>
-		<div class="row">
-			<ul>
-				<%= render @votes %>
-			</ul>
-		</div>
+		<hr>
+		<%= render @votes %>
 	</div>
+	<%= render partial: 'election_choices', locals: {choices: @election.choices} %>
 </div>
