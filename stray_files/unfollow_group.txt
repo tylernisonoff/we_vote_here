@@ -1,0 +1,3 @@
+<% if group_follower_condition(current_user, group) %>
+	- <%= link_to "unfollow", unfollow_group_user_path(id: current_user.id, group_id: group.id)%>
+<% end %>
