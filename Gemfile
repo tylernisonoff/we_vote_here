@@ -9,6 +9,7 @@ gem 'faker', '1.0.1'
 gem "nested_form", :git => 'https://github.com/ryanb/nested_form.git'
 gem 'activerecord-postgresql-adapter'
 gem 'devise'
+gem 'thin'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -24,6 +25,7 @@ end
 # in production environments by default.
 group :assets do
   gem 'jquery-ui-rails'
+  gem 'jquery-rails'
   gem 'sass-rails',   '~> 3.2.3'
   # gem 'coffee-rails', '~> 3.2.1'
 
